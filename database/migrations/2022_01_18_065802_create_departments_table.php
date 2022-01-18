@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateDepartmentsTable extends Migration
@@ -19,6 +20,7 @@ class CreateDepartmentsTable extends Migration
             $table->string('address')->nullable()->comment('部门地址');
             $table->nestedSet();
         });
+        DB::statement("COMMENT ON TABLE departmetns is '部门表'");
     }
 
     /**
