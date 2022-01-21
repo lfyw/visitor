@@ -33,7 +33,12 @@ class GateController extends Controller
 
     public function destroy(GateRequest $gateRequest)
     {
-        Gate::destroy($gateRequest->ids);
+        Gate::findMany($gateRequest->ids)->each->delete();
         return no_content();
+    }
+
+    public function select()
+    {
+        return send_data(GateResource::collection(Gate::all()));
     }
 }

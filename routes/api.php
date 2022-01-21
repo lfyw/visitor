@@ -31,6 +31,7 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::apiResource('visitorTypes', VisitorTypeController::class);
 
     //闸机管理
+    Route::get('gates/select', [GateController::class, 'select'])->name('gates.select');
     Route::delete('gates', [GateController::class, 'destroy'])->name('gates.destroy');
     Route::apiResource('gates', GateController::class)->except(['destroy']);
 
