@@ -3,7 +3,8 @@
 namespace App\Http\Requests\Pc;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Supports\Enums\GateRule;
+use Lfyw\LfywEnum\Rules\EnumValue;
+use App\Enums\GateRule;
 use Illuminate\Validation\Rule;
 
 class GateRequest extends FormRequest
@@ -25,14 +26,27 @@ class GateRequest extends FormRequest
      */
     public function rules()
     {
-        dump(GateRule::IN->getName());
-        return [
-            'number' => ['required', 'unique:gates', 'max:32'],
-            'type' => ['required', 'max:32'],
-            'location' => ['required', 'max:128'],
-            'rule' => ['required', Rule::in(GateRule::getValues())],
-            'note' => ['nullable', 'max:256']
-        ];
+        return match($this->method()){
+            'POST' => [
+                'number' => ['required', 'unique:gates', 'max:32'],
+                'type' => ['required', 'max:32'],
+                'location' => ['required', 'max:128'],
+                'rule' => ['required', new EnumValue(GateRule::class)],
+                'note' => ['nullable', 'max:256']
+            ],
+            'PUT' => [
+                'number' => ['required', 'max:32', Rule::unique('gates')->ignore($this->gate)],
+                'type' => ['required', 'max:32'],
+                'location' => ['required', 'max:128'],
+                'rule' => ['required', new EnumValue(GateRule::class)],
+                'note' => ['nullable', 'max:256']
+            ],
+            'DELETE' => [
+                'ids' => 'required|array',
+                'ids.*' => 'required|exists:gates,id'
+            ],
+            default => [],
+        };
     }
 
     public function attributes()

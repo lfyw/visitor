@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f0a6f421ec4209c819104f11f1dd1911",
+    "content-hash": "7f2e38878d3373ab3aaa3fd93ca0e310",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2024,6 +2024,59 @@
                 }
             ],
             "time": "2021-11-21T11:48:40+00:00"
+        },
+        {
+            "name": "lfyw/lfyw-enum",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lfyw/lfyw-enum.git",
+                "reference": "b2706cf9053a25cdedff21db10d57774112b82ce"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lfyw/lfyw-enum/zipball/b2706cf9053a25cdedff21db10d57774112b82ce",
+                "reference": "b2706cf9053a25cdedff21db10d57774112b82ce",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Lfyw\\LfywEnum\\EnumServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Lfyw\\LfywEnum\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "lfyw",
+                    "email": "1559897062@qq.com"
+                }
+            ],
+            "description": "A php8.1 enum helper.",
+            "support": {
+                "issues": "https://github.com/lfyw/lfyw-enum/issues",
+                "source": "https://github.com/lfyw/lfyw-enum/tree/1.0.1"
+            },
+            "time": "2022-01-21T02:02:45+00:00"
         },
         {
             "name": "monolog/monolog",

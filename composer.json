@@ -13,6 +13,7 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "lfyw/lfyw-enum": "1.0.1",
         "overtrue/laravel-lang": "~5.0"
     },
     "require-dev": {
