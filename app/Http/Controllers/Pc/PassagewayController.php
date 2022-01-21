@@ -51,4 +51,9 @@ class PassagewayController extends Controller
         Passageway::findMany($passagewayRequest->ids)->each->delete();
         return no_content();
     }
+
+    public function select()
+    {
+        return send_data(PassagewayResource::collection(Passageway::all()));
+    }
 }
