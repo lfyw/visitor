@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\PassagewayRequest;
 use App\Http\Resources\Pc\PassagewayResource;
 use App\Models\Passageway;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -48,7 +49,15 @@ class PassagewayController extends Controller
 
     public function destroy(PassagewayRequest $passagewayRequest)
     {
-        Passageway::findMany($passagewayRequest->ids)->each->delete();
+        $passageways = Passageway::findMany($passagewayRequest->ids);
+
+        foreach($passageways as $passageway){
+            if($passageway->ways->first()){
+                return error(sprintf("%s 路线关联此通道，请先解除关联", implode(',', $passageway->ways->pluck('name')->toArray())), Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            $passageway->delete();
+        }
+
         return no_content();
     }
 

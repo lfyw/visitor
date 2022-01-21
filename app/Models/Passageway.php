@@ -25,6 +25,11 @@ class Passageway extends Model
         return $this->belongsToMany(Gate::class);
     }
 
+    public function ways():BelongsToMany
+    {
+        return $this->belongsToMany(Way::class);
+    }
+
     public function scopeWhenName(Builder $builder, $name):Builder
     {
         return $builder->when(filled($name), fn(Builder $builder) => $builder->where('name', 'like', "%{$name}%"));
