@@ -14,7 +14,7 @@ class Gate extends Model
 
     public $timestamps = false;
 
-    public function scopeFilterByNumber(Builder $builder, $number):Builder
+    public function scopeWhenNumber(Builder $builder, $number):Builder
     {
         return $builder->when(filled($number), fn() => $builder->where('number', 'like', "%{$number}%"));
     }

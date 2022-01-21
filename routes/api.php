@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
+use App\Http\Controllers\Pc\PassagewayController;
 use App\Http\Controllers\Pc\VisitorTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,4 +33,9 @@ Route::prefix('pc')->name('pc.')->group(function(){
     //闸机管理
     Route::delete('gates', [GateController::class, 'destroy'])->name('gates.destroy');
     Route::apiResource('gates', GateController::class)->except(['destroy']);
+
+    //通道管理
+    Route::delete('passageways', [PassagewayController::class, 'destroy'])->name('passageways.destroy');
+    Route::apiResource('passageways', PassagewayController::class)->except('destroy');
+
 });

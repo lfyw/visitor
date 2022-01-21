@@ -50,14 +50,14 @@ class Handler extends ExceptionHandler
             );
         });
         $this->renderable(fn(NotFoundHttpException $e) => error(
-            '数据不存在',
+            '数据不存在或请求路径错误',
             status:Response::HTTP_NOT_FOUND
             )
         );
 
         $this->renderable(fn(Exception $e) => error(
             $e->getMessage(),
-            status:$e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR,
+            status:($e->getCode() && is_int($e->getCode())) ?: Response::HTTP_INTERNAL_SERVER_ERROR,
             data:[
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),

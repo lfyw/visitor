@@ -11,7 +11,7 @@ class GateController extends Controller
 {
     public function index()
     {
-        return GateResource::collection(Gate::filterByNumber(request('number'))->orderByDesc('id')->paginate(request('pageSize', 10)));
+        return GateResource::collection(Gate::whenNumber(request('number'))->orderByDesc('id')->paginate(request('pageSize', 10)));
     }
 
     public function store(GateRequest $gateRequest)
