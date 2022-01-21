@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\GateRequest;
 use App\Http\Resources\Pc\GateResource;
 use App\Models\Gate;
+use Illuminate\Http\Response;
 
 class GateController extends Controller
 {
@@ -33,7 +34,14 @@ class GateController extends Controller
 
     public function destroy(GateRequest $gateRequest)
     {
-        Gate::findMany($gateRequest->ids)->each->delete();
+        $gates = Gate::findMany($gateRequest->ids);
+        foreach($gates as $gate){
+            if($gate->passageways->first()){
+                $passagewayNames = $gate->passageways->pluck('name');
+                return error(sprintf("%s 路线关联此闸门，请先解除关联", implode(',', $passagewayNames->toArray())), Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+        }
+        $gates->delete();
         return no_content();
     }
 

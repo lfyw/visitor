@@ -15,11 +15,6 @@ class Gate extends Model
 
     public $timestamps = false;
 
-    public static function booted()
-    {
-        static::deleted(fn(Gate $gate) => $gate->passageways()->detach());
-    }
-
     public function passageways():BelongsToMany
     {
         return $this->belongsToMany(Passageway::class);
