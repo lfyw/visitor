@@ -12,8 +12,7 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $departments = Department::whereParentId($parentId = request('parent_id', null));
-        return DepartmentResource::collection($parentId == 0 ? $departments->paginate(request('pageSize', 10)) : $departments->get());
+        return Department::all()->toTree();
     }
 
     public function store(DepartmentRequest $departmentRequest)
@@ -33,9 +32,9 @@ class DepartmentController extends Controller
         return send_data(new DepartmentResource($department));
     }
 
-    public function destroy(DepartmentRequest $departmentRequest)
+    public function destroy(Department $department)
     {
-        Department::findMany($departmentRequest->ids)->each->delete();
+        $department->delete();
         return no_content();
     }
 }

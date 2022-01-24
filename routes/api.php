@@ -3,6 +3,7 @@
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\PassagewayController;
+use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\VisitorTypeController;
 use App\Http\Controllers\Pc\WayController;
 use Illuminate\Http\Request;
@@ -25,8 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('pc')->name('pc.')->group(function(){
     //部门管理
-    Route::delete('departments', [DepartmentController::class, 'destroy'])->name('departments.destroy');
-    Route::apiResource('departments', DepartmentController::class)->except(['destroy']);
+    Route::apiResource('departments', DepartmentController::class);
 
     //访客设置
     Route::apiResource('visitorTypes', VisitorTypeController::class);
@@ -44,4 +44,7 @@ Route::prefix('pc')->name('pc.')->group(function(){
     //路线管理
     Route::delete('ways', [WayController::class, 'destroy'])->name('ways.destroy');
     Route::apiResource('ways', WayController::class)->except('destroy');
+
+    //权限管理
+    Route::apiResource('permissions', PermissionController::class);
 });

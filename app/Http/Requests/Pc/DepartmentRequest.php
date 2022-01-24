@@ -48,10 +48,6 @@ class DepartmentRequest extends FormRequest
                     }
                 }]
             ],
-            'DELETE' => [
-                'ids' => ['required'],
-                'ids.*' => ['exists:departments,id']
-            ],
             default => [],
         };
     }
@@ -62,8 +58,6 @@ class DepartmentRequest extends FormRequest
             'name' => '部门名称',
             'address' => '地址',
             'parent_id' => '上级部门',
-            'ids' => '单位id',
-            'ids.*' => '单位id'
         ];
     }
 }

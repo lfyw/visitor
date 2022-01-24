@@ -234,7 +234,10 @@ return [
     |
     */
 
-    'register_providers' => [],
+    'register_providers' => [
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -249,7 +252,10 @@ return [
     |
     */
 
-    'cleaners' => [],
+    'cleaners' => [
+        Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class,
+        Hhxsv5\LaravelS\Illuminate\Cleaners\AuthCleaner::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------
