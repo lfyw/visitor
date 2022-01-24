@@ -4,6 +4,7 @@ use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\PassagewayController;
 use App\Http\Controllers\Pc\PermissionController;
+use App\Http\Controllers\Pc\RoleController;
 use App\Http\Controllers\Pc\VisitorTypeController;
 use App\Http\Controllers\Pc\WayController;
 use Illuminate\Http\Request;
@@ -47,4 +48,8 @@ Route::prefix('pc')->name('pc.')->group(function(){
 
     //权限管理
     Route::apiResource('permissions', PermissionController::class);
+
+    //角色管理
+    Route::delete('roles', [RoleController::class, 'destroy'])->name('roles.destroy');
+    Route::apiResource('roles', RoleController::class)->except(['destroy']);
 });
