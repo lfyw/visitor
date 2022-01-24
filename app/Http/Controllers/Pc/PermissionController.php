@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\PermissionRequest;
 use App\Http\Resources\Pc\PermissionResouce;
 use App\Models\Permission;
+use DB;
 
 class PermissionController extends Controller
 {
@@ -33,7 +34,10 @@ class PermissionController extends Controller
 
     public function destroy(Permission $permission)
     {
-        $permission->delete();
+        DB::transaction(function() use ($permission){
+            $permission->getDescendants()->each(fn($descendant) => $descendant->roles()->detach());
+            $permission->delete();
+        });
         return no_content();
     }
 }
