@@ -52,4 +52,6 @@ Route::prefix('pc')->name('pc.')->group(function(){
     //角色管理
     Route::delete('roles', [RoleController::class, 'destroy'])->name('roles.destroy');
     Route::apiResource('roles', RoleController::class)->except(['destroy']);
+
+    
 });
