@@ -16,7 +16,7 @@ class FileResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'origin_name' => $this->origin_name,
+            'original_name' => $this->original_name,
             'save_name' => $this->save_name,
             'url' => config('app.url') . $this->url,
             'created_at' => (string)$this->created_at,
