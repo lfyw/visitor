@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Department;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,8 +14,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            PassagewayTableSeeder::class,
-            DepartmentTableSeeder::class
+            WayTableSeeder::class,
+            DepartmentTableSeeder::class,
+            RoleTableSeeder::class,
+            UserTypeTableSeeder::class
         ]);
     }
 }

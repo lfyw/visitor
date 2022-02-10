@@ -2027,16 +2027,16 @@
         },
         {
             "name": "lfyw/file-manager",
-            "version": "4.0.7",
+            "version": "4.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lfyw/file-manager.git",
-                "reference": "017e5a56fc3508bca0f35f98598ada02095bb15c"
+                "reference": "b05260eb1b99ad07dbb94c082b2767536a8c9b06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lfyw/file-manager/zipball/017e5a56fc3508bca0f35f98598ada02095bb15c",
-                "reference": "017e5a56fc3508bca0f35f98598ada02095bb15c",
+                "url": "https://api.github.com/repos/lfyw/file-manager/zipball/b05260eb1b99ad07dbb94c082b2767536a8c9b06",
+                "reference": "b05260eb1b99ad07dbb94c082b2767536a8c9b06",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2079,9 +2079,9 @@
             "description": "A file manager",
             "support": {
                 "issues": "https://github.com/lfyw/file-manager/issues",
-                "source": "https://github.com/lfyw/file-manager/tree/4.0.7"
+                "source": "https://github.com/lfyw/file-manager/tree/4.0.8"
             },
-            "time": "2022-02-10T02:07:06+00:00"
+            "time": "2022-02-10T08:33:26+00:00"
         },
         {
             "name": "lfyw/lfyw-enum",
