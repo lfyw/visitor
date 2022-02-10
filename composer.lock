@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7f2e38878d3373ab3aaa3fd93ca0e310",
+    "content-hash": "952ad7241d45b860fe5b05849e1898bd",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2024,6 +2024,64 @@
                 }
             ],
             "time": "2021-11-21T11:48:40+00:00"
+        },
+        {
+            "name": "lfyw/file-manager",
+            "version": "4.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lfyw/file-manager.git",
+                "reference": "017e5a56fc3508bca0f35f98598ada02095bb15c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lfyw/file-manager/zipball/017e5a56fc3508bca0f35f98598ada02095bb15c",
+                "reference": "017e5a56fc3508bca0f35f98598ada02095bb15c",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Lfyw\\FileManager\\FileManagerProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Lfyw\\FileManager\\": [
+                        "src"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "lfyw",
+                    "email": "littledragoner@163.com"
+                }
+            ],
+            "description": "A file manager",
+            "support": {
+                "issues": "https://github.com/lfyw/file-manager/issues",
+                "source": "https://github.com/lfyw/file-manager/tree/4.0.7"
+            },
+            "time": "2022-02-10T02:07:06+00:00"
         },
         {
             "name": "lfyw/lfyw-enum",
