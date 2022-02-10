@@ -20,7 +20,7 @@ class CreateDepartmentsTable extends Migration
             $table->string('address')->nullable()->comment('部门地址');
             $table->nestedSet();
         });
-        DB::statement("COMMENT ON TABLE departmetns is '部门表'");
+        DB::statement("COMMENT ON TABLE departments is '部门表'");
     }
 
     /**
