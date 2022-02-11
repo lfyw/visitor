@@ -42,8 +42,20 @@ class RoleController extends Controller
 
     public function destroy(RoleRequest $roleRequest)
     {
-        Role::findMany($roleRequest->ids)->each->delete();
-        return no_content();
+        $roles = Role::findMany($roleRequest->ids);
+        $invalidRoleIds = [];
+        $invalidRoleNames = [];
+        foreach($roles as $role){
+            if($role->users->first()){
+                array_push($invalidRoleIds, $role->id);
+                array_push($invalidRoleNames, $role->name);
+            }
+        }
+        Role::whereIn('id', $roleRequest->ids)->whereNotIn('id', $invalidRoleIds)->get()->each->delete();
+
+        return $invalidRoleIds
+            ? send_message(sprintf("角色 %s 已关联人员，请先解除对应关联", implode(',', $invalidRoleNames)), Response::HTTP_OK)
+            : no_content();
     }
 
     public function select()
