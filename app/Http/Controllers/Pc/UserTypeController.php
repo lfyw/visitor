@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\UserTypeRequest;
 use App\Http\Resources\Pc\UserTypeResource;
 use App\Models\UserType;
+use Illuminate\Http\Response;
 
 class UserTypeController extends Controller
 {
@@ -14,26 +15,29 @@ class UserTypeController extends Controller
         return UserTypeResource::collection(UserType::paginate(request('pageSize', 10)));
     }
 
-    public function store(UserTypeRequest $UserTypeRequest)
+    public function store(UserTypeRequest $userTypeRequest)
     {
-        $UserType = UserType::create($UserTypeRequest->validated());
-        return send_data(new UserTypeResource($UserType));
+        $userType = UserType::create($userTypeRequest->validated());
+        return send_data(new UserTypeResource($userType));
     }
 
-    public function show(UserType $UserType)
+    public function show(UserType $userType)
     {
-        return send_data(new UserTypeResource($UserType));
+        return send_data(new UserTypeResource($userType));
     }
 
-    public function update(UserType $UserType, UserTypeRequest $UserTypeRequest)
+    public function update(UserType $userType, UserTypeRequest $userTypeRequest)
     {
-        $UserType->fill($UserTypeRequest->validated())->save();
-        return send_data(new UserTypeResource($UserType));
+        $userType->fill($userTypeRequest->validated())->save();
+        return send_data(new UserTypeResource($userType));
     }
 
-    public function destroy(UserType $UserType)
+    public function destroy(UserType $userType)
     {
-        $UserType->delete();
+        if($userType->users->first()){
+            return error(sprintf("人员类型 %s 已经关联了人员，请先解除关联", $userType->name), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        $userType->delete();
         return no_content();
     }
 }
