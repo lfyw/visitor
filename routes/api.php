@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\PassagewayController;
 use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
+use App\Http\Controllers\Pc\UserController;
 use App\Http\Controllers\Pc\UserTypeController;
 use App\Http\Controllers\Pc\WayController;
 use Illuminate\Http\Request;
@@ -53,5 +55,10 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::delete('roles', [RoleController::class, 'destroy'])->name('roles.destroy');
     Route::apiResource('roles', RoleController::class)->except(['destroy']);
 
+    //人员管理
+    Route::delete('users', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::apiResource('users', UserController::class);
 
+    //文件上传
+    Route::post('files', [FileController::class, 'store'])->name('files.store');
 });

@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Supports\Enums\GateRule;
+use App\Enums\GateRule;
 
 class CreateGatesTable extends Migration
 {

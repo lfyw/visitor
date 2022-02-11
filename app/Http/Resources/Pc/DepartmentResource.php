@@ -19,6 +19,7 @@ class DepartmentResource extends JsonResource
             'name' => $this->name,
             'address' => $this->address,
             'parent_id' => $this->parent_id,
+            'ancestors' => $this->whenLoaded('ancestors'),
         ];
     }
 }
