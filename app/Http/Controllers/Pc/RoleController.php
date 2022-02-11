@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\RoleRequest;
 use App\Http\Resources\Pc\RoleResource;
 use App\Models\Role;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class RoleController extends Controller
 {
     public function index()
     {
-        return RoleResource::collection(Role::with('permissions')->latest('id')->paginate(request('pageSize', 10)));
+        return RoleResource::collection(Role::withCount('users')->with('permissions')->latest('id')->paginate(request('pageSize', 10)));
     }
 
     public function store(RoleRequest $roleRequest)
@@ -51,6 +52,7 @@ class RoleController extends Controller
                 array_push($invalidRoleNames, $role->name);
             }
         }
+
         Role::whereIn('id', $roleRequest->ids)->whereNotIn('id', $invalidRoleIds)->get()->each->delete();
 
         return $invalidRoleIds
