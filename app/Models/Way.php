@@ -20,6 +20,11 @@ class Way extends Model
         static::deleted(fn(Way $way) => $way->passageways()->detach());
     }
 
+    public function users():BelongsToMany
+    {
+        return $this->belongsToMany(User::class);
+    }
+
     public function passageways():BelongsToMany
     {
         return $this->belongsToMany(Passageway::class);

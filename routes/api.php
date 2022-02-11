@@ -52,6 +52,7 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::apiResource('permissions', PermissionController::class);
 
     //角色管理
+    Route::get('roles/select', [RoleController::class, 'select'])->name('roles.select');
     Route::delete('roles', [RoleController::class, 'destroy'])->name('roles.destroy');
     Route::apiResource('roles', RoleController::class)->except(['destroy']);
 

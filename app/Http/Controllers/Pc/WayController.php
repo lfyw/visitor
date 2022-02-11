@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\WayRequest;
 use App\Http\Resources\Pc\WayResource;
 use App\Models\Way;
+use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -49,7 +50,19 @@ class WayController extends Controller
 
     public function destroy(WayRequest $wayRequest)
     {
-        Way::findMany($wayRequest->ids)->each->delete();
-        return no_content();
+        $ways = Way::findMany($wayRequest->ids);
+        $invalidWayNames = [];
+        $invalidWayIds = [];
+        foreach($ways as $way){
+            if($way->users->first()){
+                array_push($invalidWayNames, $way->name);
+                array_push($invalidWayIds, $way->id);
+            }
+        }
+        $ways->whereNotIn('id', $invalidWayIds)->each->delete();
+
+        return $invalidWayIds
+            ? send_message(sprintf("路线 %s 已关联人员，请先解除对应关联", implode(',', $invalidWayNames)), Response::HTTP_OK)
+            : no_content();
     }
 }

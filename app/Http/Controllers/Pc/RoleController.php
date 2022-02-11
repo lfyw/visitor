@@ -45,4 +45,9 @@ class RoleController extends Controller
         Role::findMany($roleRequest->ids)->each->delete();
         return no_content();
     }
+
+    public function select()
+    {
+        return send_data(RoleResource::collection(Role::all()));
+    }
 }
