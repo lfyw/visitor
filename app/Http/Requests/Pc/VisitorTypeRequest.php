@@ -5,7 +5,7 @@ namespace App\Http\Requests\Pc;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UserTypeRequest extends FormRequest
+class VisitorTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,11 +26,11 @@ class UserTypeRequest extends FormRequest
     {
         return match($this->method()){
             'POST' => [
-                'name' => ['required', 'unique:user_types', 'max:64'],
+                'name' => ['required', 'unique:visitor_types', 'max:64'],
                 'note' => ['nullable', 'max:256']
             ],
             'PUT' => [
-                'name' => ['required', Rule::unique('user_types', 'name')->ignore($this->userType)],
+                'name' => ['required', Rule::unique('visitor_types', 'name')->ignore($this->visitorType)],
                 'note' => ['nullable', 'max:256']
             ],
             default => [],

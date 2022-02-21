@@ -8,6 +8,7 @@ use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
 use App\Http\Controllers\Pc\UserController;
 use App\Http\Controllers\Pc\UserTypeController;
+use App\Http\Controllers\Pc\VisitorTypeController;
 use App\Http\Controllers\Pc\WayController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,9 +32,6 @@ Route::prefix('pc')->name('pc.')->group(function(){
     //部门管理
     Route::apiResource('departments', DepartmentController::class);
 
-    //访客设置
-    Route::apiResource('user-types', UserTypeController::class);
-
     //闸机管理
     Route::get('gates/select', [GateController::class, 'select'])->name('gates.select');
     Route::delete('gates', [GateController::class, 'destroy'])->name('gates.destroy');
@@ -56,10 +54,17 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::delete('roles', [RoleController::class, 'destroy'])->name('roles.destroy');
     Route::apiResource('roles', RoleController::class)->except(['destroy']);
 
+    //人员类型设置
+    Route::apiResource('user-types', UserTypeController::class);
+
     //人员管理
     Route::delete('users', [UserController::class, 'destroy'])->name('users.destroy');
     Route::apiResource('users', UserController::class);
 
     //文件上传
     Route::post('files', [FileController::class, 'store'])->name('files.store');
+
+    //访客类型
+    Route::get('visitor-types/select', [VisitorTypeController::class, 'select'])->name('visitor-types.select');
+    Route::apiResource('visitor-types', VisitorTypeController::class);
 });
