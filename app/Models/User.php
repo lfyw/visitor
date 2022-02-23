@@ -55,4 +55,12 @@ class User extends Authenticatable
     {
         return $builder->when(filled($userStatus), fn(Builder $builder) => $builder->where('user_status', $userStatus));
     }
+
+    public function scopeWhenDepartmentId(Builder $builder, $departmentId):Builder
+    {
+        return $builder->when(filled($departmentId), function($query) use ($departmentId){
+            $descendants = Department::descendantsAndSelf($departmentId)->pluck('id');
+            return $query->whereIn('department_id', $descendants);
+        });
+    }
 }

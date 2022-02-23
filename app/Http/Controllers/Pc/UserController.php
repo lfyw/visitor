@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\UserRequest;
 use App\Http\Resources\Pc\UserResource;
 use App\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -17,6 +18,7 @@ class UserController extends Controller
         return UserResource::collection(User::whenRealName(request('real_name'))
             ->whenRoleId(request('role_id'))
             ->whenUserStatus(request('user_status'))
+            ->whenDepartmentId(request('department_id'))
             ->with([
                 'department.ancestors',
                 'userType:id,name',
@@ -80,5 +82,16 @@ class UserController extends Controller
             $user->delete();
         });
         return no_content();
+    }
+
+    public function reset(User $user)
+    {
+        $this->validate(request(), [
+            'password' => ['required']
+        ],[], [
+            'password' => '密码'
+        ]);
+        $user->fill(['password' => bcrypt(request('password'))])->save();
+        return no_content(Response::HTTP_OK);
     }
 }
