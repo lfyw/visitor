@@ -8,6 +8,7 @@ use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
 use App\Http\Controllers\Pc\UserController;
 use App\Http\Controllers\Pc\UserTypeController;
+use App\Http\Controllers\Pc\VisitorSettingController;
 use App\Http\Controllers\Pc\VisitorTypeController;
 use App\Http\Controllers\Pc\WayController;
 use Illuminate\Http\Request;
@@ -67,4 +68,7 @@ Route::prefix('pc')->name('pc.')->group(function(){
     //访客类型
     Route::get('visitor-types/select', [VisitorTypeController::class, 'select'])->name('visitor-types.select');
     Route::apiResource('visitor-types', VisitorTypeController::class);
+
+    //访客设置
+    Route::apiResource('visitor-settings', VisitorSettingController::class);
 });
