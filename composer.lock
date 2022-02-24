@@ -4,8 +4,67 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "952ad7241d45b860fe5b05849e1898bd",
+    "content-hash": "63eaa0361bf0bacde26fd87280a3e42a",
     "packages": [
+        {
+            "name": "alicfeng/identity-card",
+            "version": "v3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alicfeng/IdentityCard.git",
+                "reference": "9a6ba2401d6ae0491371f320156d0a6b27e30efc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alicfeng/IdentityCard/zipball/9a6ba2401d6ae0491371f320156d0a6b27e30efc",
+                "reference": "9a6ba2401d6ae0491371f320156d0a6b27e30efc",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-gd": "*",
+                "ext-iconv": "*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AlicFeng\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "AlicFeng",
+                    "email": "a@samego.com"
+                }
+            ],
+            "description": "IdentityCard Library",
+            "keywords": [
+                "China",
+                "IdentityCard",
+                "alicfeng",
+                "id",
+                "idcard",
+                "identify",
+                "samego"
+            ],
+            "support": {
+                "issues": "https://github.com/alicfeng/IdentityCard/issues",
+                "source": "https://github.com/alicfeng/IdentityCard/tree/v3.1.0"
+            },
+            "time": "2020-02-23T14:37:36+00:00"
+        },
         {
             "name": "asm89/stack-cors",
             "version": "v2.0.5",

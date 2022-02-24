@@ -8,6 +8,7 @@ use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
 use App\Http\Controllers\Pc\UserController;
 use App\Http\Controllers\Pc\UserTypeController;
+use App\Http\Controllers\Pc\VisitorController;
 use App\Http\Controllers\Pc\VisitorSettingController;
 use App\Http\Controllers\Pc\VisitorTypeController;
 use App\Http\Controllers\Pc\WayController;
@@ -47,28 +48,35 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::delete('ways', [WayController::class, 'destroy'])->name('ways.destroy');
     Route::apiResource('ways', WayController::class)->except('destroy');
 
-    //权限管理
+    //系统设置-权限管理
     Route::apiResource('permissions', PermissionController::class);
 
-    //角色管理
+    //系统设置-角色管理
     Route::get('roles/select', [RoleController::class, 'select'])->name('roles.select');
     Route::delete('roles', [RoleController::class, 'destroy'])->name('roles.destroy');
     Route::apiResource('roles', RoleController::class)->except(['destroy']);
 
-    //人员类型设置
+    //系统设置-人员类型设置
     Route::apiResource('user-types', UserTypeController::class);
 
     //人员管理
     Route::delete('users', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::patch('users/{user}/reset', [UserController::class, 'reset'])->name('users.reset');
     Route::apiResource('users', UserController::class);
 
     //文件上传
     Route::post('files', [FileController::class, 'store'])->name('files.store');
 
-    //访客类型
+    //系统设置-访客设置-访客类型设置
     Route::get('visitor-types/select', [VisitorTypeController::class, 'select'])->name('visitor-types.select');
     Route::apiResource('visitor-types', VisitorTypeController::class);
 
-    //访客设置
+    //系统设置-访客设置
     Route::apiResource('visitor-settings', VisitorSettingController::class);
+
+    //访客管理
+    Route::patch('visitors/blanklist/cancel', [VisitorController::class, 'cancel'])->name('visitors.blanklist-cancel');
+    Route::patch('visitors/blanklist/block', [VisitorController::class, 'block'])->name('visitors.blanklist-block');
+    Route::delete('visitors', [VisitorController::class, 'destroy'])->name('visitors.destroy');
+    Route::apiResource('visitors', VisitorController::class)->except('destroy');
 });
