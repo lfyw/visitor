@@ -17,7 +17,12 @@ class Way extends Model
 
     public static function booted()
     {
-        static::deleted(fn(Way $way) => $way->passageways()->detach());
+        static::deleted(function(Way $way){
+            $way->passageways()->detach();
+            $way->users()->detach();
+            $way->visitors()->detach();
+            $way->visitorSettings()->detach();
+        });
     }
 
     public function users():BelongsToMany
@@ -28,6 +33,16 @@ class Way extends Model
     public function passageways():BelongsToMany
     {
         return $this->belongsToMany(Passageway::class);
+    }
+
+    public function visitors():BelongsToMany
+    {
+        return $this->belongsToMany(Visitor::class);
+    }
+
+    public function visitorSettings():BelongsToMany
+    {
+        return $this->belongsToMany(VisitorSetting::class);
     }
 
     public function scopeWhenName(Builder $builder, $name):Builder

@@ -50,19 +50,7 @@ class WayController extends Controller
 
     public function destroy(WayRequest $wayRequest)
     {
-        $ways = Way::findMany($wayRequest->ids);
-        $invalidWayNames = [];
-        $invalidWayIds = [];
-        foreach($ways as $way){
-            if($way->users->first()){
-                array_push($invalidWayNames, $way->name);
-                array_push($invalidWayIds, $way->id);
-            }
-        }
-        $ways->whereNotIn('id', $invalidWayIds)->each->delete();
-
-        return $invalidWayIds
-            ? send_message(sprintf("路线 %s 已关联人员，请先解除对应关联", implode(',', $invalidWayNames)), Response::HTTP_OK)
-            : no_content();
+        Way::destroy($wayRequest->ids);
+        return no_content();
     }
 }

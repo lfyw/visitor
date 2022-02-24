@@ -34,7 +34,7 @@ class UserTypeController extends Controller
 
     public function destroy(UserType $userType)
     {
-        if($userType->users->first()){
+        if($userType->users?->first()){
             return error(sprintf("人员类型 %s 已经关联了人员，请先解除关联", $userType->name), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $userType->delete();

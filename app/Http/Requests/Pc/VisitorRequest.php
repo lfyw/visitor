@@ -4,6 +4,7 @@ namespace App\Http\Requests\Pc;
 
 use Illuminate\Foundation\Http\FormRequest;
 use AlicFeng\IdentityCard\InfoHelper;
+use Illuminate\Validation\Rule;
 
 class VisitorRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class VisitorRequest extends FormRequest
      */
     public function rules()
     {
-        return match($this->method){
+        return match($this->method()){
             'POST' => [
                 'name' => ['required'],
                 'visitor_type_id' => ['required', 'exists:visitor_types,id'],
@@ -79,7 +80,7 @@ class VisitorRequest extends FormRequest
         };
     }
 
-    public function attibutes()
+    public function attributes()
     {
         return [
             'name' => '访客姓名',

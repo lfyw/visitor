@@ -52,7 +52,7 @@ class PassagewayController extends Controller
         $passageways = Passageway::findMany($passagewayRequest->ids);
 
         foreach($passageways as $passageway){
-            if($passageway->ways->first()){
+            if($passageway->ways?->first()){
                 return error(sprintf("%s 路线关联此通道，请先解除关联", implode(',', $passageway->ways->pluck('name')->toArray())), Response::HTTP_UNPROCESSABLE_ENTITY);
             }
             $passageway->delete();

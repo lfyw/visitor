@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\VisitorTypeRequest;
 use App\Http\Resources\Pc\VisitorTypeResource;
 use App\Models\VisitorType;
+use Illuminate\Http\Response;
 
 class VisitorTypeController extends Controller
 {
@@ -33,9 +34,14 @@ class VisitorTypeController extends Controller
 
     public function destroy(VisitorType $visitorType)
     {
-        // if($visitorType->users->first()){
-        //     return error(sprintf("人员类型 %s 已经关联了人员，请先解除关联", $userType->name), Response::HTTP_UNPROCESSABLE_ENTITY);
-        // }
+        if($visitorType->visitorSettings?->first()){
+            return error(sprintf("访客类型 %s 已经关联了访客设置，请先解除关联", $visitorType->name), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if($visitorType->visitors?->first()){
+            return error(sprintf("访客类型 %s 已经关联了访客，请先解除关联", $visitorType->name), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $visitorType->delete();
         return no_content();
     }

@@ -29,7 +29,7 @@ class VisitorSettingRequest extends FormRequest
     {
         return match($this->method()){
             'POST' => [
-                'visitor_type_id' => ['required', 'unique:visitor_settings,visitor_type_id'],
+                'visitor_type_id' => ['required', 'unique:visitor_settings,visitor_type_id', 'exists:visitor_types,id'],
                 'way_ids' => ['required', 'array'],
                 'way_ids.*' => ['required', 'exists:ways,id'],
                 'apply_period' => ['required', new EnumValue(ApplyPeriod::class)],
@@ -41,7 +41,7 @@ class VisitorSettingRequest extends FormRequest
                 'visitor_relation' => ['required', 'boolean'],
             ],
             'PUT' => [
-                'visitor_type_id' => ['required', Rule::unique('visitor_settings')->ignore($this->visitor_setting)],
+                'visitor_type_id' => ['required', Rule::unique('visitor_settings')->ignore($this->visitor_setting), 'exists:visitor_types,id'],
                 'way_ids' => ['required', 'array'],
                 'way_ids.*' => ['required', 'exists:ways,id'],
                 'apply_period' => ['required', new EnumValue(ApplyPeriod::class)],
