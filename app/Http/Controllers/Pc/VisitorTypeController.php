@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pc;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\VisitorTypeRequest;
 use App\Http\Resources\Pc\VisitorTypeResource;
+use App\Models\Visitor;
 use App\Models\VisitorType;
 use Illuminate\Http\Response;
 
@@ -48,6 +49,14 @@ class VisitorTypeController extends Controller
 
     public function select()
     {
-        return send_data(VisitorType::with('visitorSettings:visitor_type_id,visitor_relation')->get());
+        $select = [];
+        VisitorType::with('visitorSettings:visitor_type_id,visitor_relation')->get()->map(function (VisitorType $visitorType) use (&$select){
+            $select[] = [
+                'id' => $visitorType->id,
+                'name' => $visitorType->name,
+                'visitor_relation' => $visitorType->visitorSettings->first()?->visitor_relation
+            ];
+        });
+        return send_data($select);
     }
 }

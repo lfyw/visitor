@@ -20,7 +20,7 @@ class IdCardController extends Controller
         if (Blacklist::idCard(\request('id_card'))->exists()){
             return error('您已被纳入黑名单，无法进行访客登记', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
+        //返回访客信息
         return send_message('识别成功', Response::HTTP_OK);
     }
 }

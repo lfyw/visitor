@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuditController;
 use App\Http\Controllers\Api\IdCardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\Pc\BlacklistController;
@@ -88,4 +89,7 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::apiResource('rules', RuleController::class)->only(['update', 'index']);
 });
 
+//身份证号是否合法
 Route::get('id-cards/valid', [IdCardController::class, 'valid'])->name('idCards.valid');
+//发起临时审核
+Route::post('audit', [AuditController::class, 'store'])->name('audit.store');
