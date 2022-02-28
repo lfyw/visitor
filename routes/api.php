@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\IdCardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
@@ -86,3 +87,5 @@ Route::prefix('pc')->name('pc.')->group(function(){
     //规则管理
     Route::apiResource('rules', RuleController::class)->only(['update', 'index']);
 });
+
+Route::get('id-cards/valid', [IdCardController::class, 'valid'])->name('idCards.valid');
