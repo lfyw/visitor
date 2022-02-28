@@ -73,38 +73,4 @@ class VisitorController extends Controller
         });
         return no_content();
     }
-
-    public function block()
-    {
-        $this->validate(request(), [
-            'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'exists:visitors,id'],
-            'blanklist_reason' => ['nullable', 'string']
-        ],[], [
-            'ids' => '访客id',
-            'ids.*' => '访客id',
-            'blanklist_reason' => '黑名单原因'
-        ]);
-        Visitor::whereIn('id', request('ids'))->update([
-            'is_blanklist' => true,
-            'blanklist_reason' => request('blanklist_reason')
-        ]);
-        return no_content();
-    }
-
-    public function cancel()
-    {
-        $this->validate(request(), [
-            'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'exists:visitors,id']
-        ],[], [
-            'ids' => '访客id',
-            'ids.*' => '访客id'
-        ]);
-        Visitor::whereIn('id', request('ids'))->update([
-            'is_blanklist' => false,
-            'blanklist_reason' => null
-        ]);
-        return no_content();
-    }
 }

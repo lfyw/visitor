@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\PassagewayController;
@@ -75,8 +76,9 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::apiResource('visitor-settings', VisitorSettingController::class);
 
     //访客管理
-    Route::patch('visitors/blanklist/cancel', [VisitorController::class, 'cancel'])->name('visitors.blanklist-cancel');
-    Route::patch('visitors/blanklist/block', [VisitorController::class, 'block'])->name('visitors.blanklist-block');
     Route::delete('visitors', [VisitorController::class, 'destroy'])->name('visitors.destroy');
     Route::apiResource('visitors', VisitorController::class)->except('destroy');
+
+    //黑名单管理
+    Route::apiResource('blacklists', BlacklistController::class);
 });

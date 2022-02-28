@@ -31,9 +31,6 @@ class CreateVisitorsTable extends Migration
             $table->date('access_date')->nullable()->comment('访问期限');
             $table->json('access_time')->nullable()->comment('访问时间段');
 
-            $table->boolean('is_blanklist')->default(false)->comment('是否黑名单');
-            $table->text('blanklist_reason')->nullable()->comment('黑名单原因');
-
             $table->unsignedInteger('access_count')->default(0)->comment('访问记录');
 
             $table->tinyInteger('issue_status')->nullable()->comment('下发状态：1 => 成功 2 => 失败 3 => 部分成功');
