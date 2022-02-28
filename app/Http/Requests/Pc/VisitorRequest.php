@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Pc;
 
-use Illuminate\Foundation\Http\FormRequest;
 use AlicFeng\IdentityCard\InfoHelper;
-use Illuminate\Validation\Rule;
+use App\Models\Blacklist;
+use App\Rules\IdCard;
+use Illuminate\Foundation\Http\FormRequest;
 
 class VisitorRequest extends FormRequest
 {
@@ -29,9 +30,9 @@ class VisitorRequest extends FormRequest
             'POST' => [
                 'name' => ['required'],
                 'visitor_type_id' => ['required', 'exists:visitor_types,id'],
-                'id_card' => ['required', function($attribute, $value, $fail){
-                    if(!InfoHelper::identityCard()->validate($value)){
-                        $fail('身份证号格式错误');
+                'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail){
+                    if (Blacklist::idCard($value)->exists()){
+                        return $fail('已经存在于黑名单中');
                     }
                 }],
                 'phone' => ['required'],
@@ -52,9 +53,9 @@ class VisitorRequest extends FormRequest
             'PUT' => [
                 'name' => ['required'],
                 'visitor_type_id' => ['required', 'exists:visitor_types,id'],
-                'id_card' => ['required', function($attribute, $value, $fail){
-                    if(!InfoHelper::identityCard()->validate($value)){
-                        $fail('身份证号格式错误');
+                'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail){
+                    if (Blacklist::idCard($value)->exists()){
+                        return $fail('已经存在于黑名单中');
                     }
                 }],
                 'phone' => ['required'],
