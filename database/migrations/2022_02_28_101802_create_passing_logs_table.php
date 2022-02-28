@@ -15,6 +15,7 @@ class CreatePassingLogsTable extends Migration
     {
         Schema::create('passing_logs', function (Blueprint $table) {
             $table->id();
+            $table->morphs('visitable');
             $table->unsignedInteger('passageway_id')->index()->comment('通行通道id');
             $table->unsignedInteger('gate_id')->index()->comment('通行闸机id');
             $table->integer('issue_status')->nullable()->comment('下发状态:1 => 成功, 2 => 失败, 3 => 部分成功');
