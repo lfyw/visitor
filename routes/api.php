@@ -7,6 +7,7 @@ use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\PassagewayController;
 use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
+use App\Http\Controllers\Pc\RuleController;
 use App\Http\Controllers\Pc\UserController;
 use App\Http\Controllers\Pc\UserTypeController;
 use App\Http\Controllers\Pc\VisitorController;
@@ -81,4 +82,7 @@ Route::prefix('pc')->name('pc.')->group(function(){
 
     //黑名单管理
     Route::apiResource('blacklists', BlacklistController::class);
+
+    //规则管理
+    Route::apiResource('rules', RuleController::class)->only(['update', 'index']);
 });
