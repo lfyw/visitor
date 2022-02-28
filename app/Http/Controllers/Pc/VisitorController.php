@@ -8,6 +8,7 @@ use App\Http\Requests\Pc\VisitorRequest;
 use App\Http\Resources\Pc\VisitorResource;
 use App\Models\Visitor;
 use DB;
+use Illuminate\Support\Arr;
 
 class VisitorController extends Controller
 {
@@ -31,7 +32,7 @@ class VisitorController extends Controller
     public function store(VisitorRequest $visitorRequest)
     {
         $visitor = \DB::transaction(function() use ($visitorRequest){
-            $validated = $visitorRequest->only(['name', 'visitor_type_id', 'id_card', 'phone', 'unit', 'reason', 'limiter', 'user_id', 'access_date', 'access_time', 'relation']);
+            $validated = Arr::except($visitorRequest->validated(), ['face_picture_ids', 'way_ids']);
             $validated['gender'] = InfoHelper::identityCard()->sex($visitorRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($visitorRequest->id_card);
             $visitor = Visitor::create($validated);
@@ -50,7 +51,7 @@ class VisitorController extends Controller
     public function update(VisitorRequest $visitorRequest, Visitor $visitor)
     {
         $visitor = \DB::transaction(function() use ($visitorRequest, $visitor){
-            $validated = $visitorRequest->only(['name', 'visitor_type_id', 'id_card', 'phone', 'unit', 'reason', 'limiter', 'user_id', 'access_date', 'access_time', 'relation']);
+            $validated = Arr::except($visitorRequest->validated(), ['face_picture_ids', 'way_ids']);
             $validated['gender'] = InfoHelper::identityCard()->sex($visitorRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($visitorRequest->id_card);
             $visitor->fill($validated)->save();

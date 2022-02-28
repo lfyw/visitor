@@ -28,8 +28,10 @@ class CreateVisitorsTable extends Migration
             $table->unsignedInteger('user_id')->comment('被访问者id');
 
             $table->unsignedInteger('limiter')->default(0)->comment('访问次数');
-            $table->date('access_date')->nullable()->comment('访问期限');
-            $table->json('access_time')->nullable()->comment('访问时间段');
+            $table->date('access_date_from')->nullable()->comment('起始访问期限');
+            $table->date('access_date_to')->nullable()->comment('结束访问期限');
+            $table->string('access_time_from')->nullable()->comment('起始访问时间');
+            $table->string('access_time_to')->nullable()->comment('结束访问时间段');
 
             $table->unsignedInteger('access_count')->default(0)->comment('访问记录');
 

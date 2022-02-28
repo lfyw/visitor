@@ -66,12 +66,12 @@ class Visitor extends Model
 
     public function scopeWhenAccessDateFrom(Builder $builder, $accessDateFrom):Builder
     {
-        return $builder->when(filled($accessDateFrom), fn(Builder $visitor) => $visitor->whereDate('access_date', '>=', $accessDateFrom));
+        return $builder->when(filled($accessDateFrom), fn(Builder $visitor) => $visitor->whereDate('access_date_from', '>=', $accessDateFrom));
     }
 
     public function scopeWhenAccessDateTo(Builder $builder, $accessDateTo):Builder
     {
-        return $builder->when(filled($accessDateTo), fn(Builder $visitor) => $visitor->whereDate('access_date', '<=', $accessDateTo));
+        return $builder->when(filled($accessDateTo), fn(Builder $visitor) => $visitor->whereDate('access_date_to', '<=', $accessDateTo));
     }
 
 }
