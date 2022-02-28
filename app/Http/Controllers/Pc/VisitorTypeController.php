@@ -48,6 +48,6 @@ class VisitorTypeController extends Controller
 
     public function select()
     {
-        return send_data(VisitorType::all());
+        return send_data(VisitorType::with('visitorSettings:visitor_type_id,visitor_relation')->get());
     }
 }

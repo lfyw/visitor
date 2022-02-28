@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             DepartmentTableSeeder::class,
             RoleTableSeeder::class,
             UserTypeTableSeeder::class,
-            VisitorTypeTableSeeder::class
+            VisitorTypeTableSeeder::class,
+            VisitorSettingTableSeeder::class
         ]);
     }
 }
