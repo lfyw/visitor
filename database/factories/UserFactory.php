@@ -2,8 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Department;
+use App\Models\Role;
+use App\Models\UserType;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class UserFactory extends Factory
 {
@@ -14,26 +16,44 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        return [
-            'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+        $names = [
+            'lidakang' => '李达康',
+            'zhaodonglai' => '赵东来',
+            'houliangping' => '侯亮平',
+            'gaoyuliang' => '高育良',
+            'sharuijin' => '沙瑞金',
+            'qitongwei' => '祁同伟',
+            'jichangming' => '季昌明',
+            'chenyanshi' => '陈岩石',
+            'gaoxiaofeng' => '高小凤',
+            'gaoxiaoqin' => '高小琴'
         ];
-    }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    public function unverified()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'email_verified_at' => null,
-            ];
-        });
+        $idCards = [
+            '110101199003073255',
+            '110101199003070716',
+            '110101199003072519',
+            '110101199003072172',
+            '110101199003071313',
+            '110101199003071997',
+            '110101199003078398',
+            '110101199003077352',
+            '110101199003073212',
+            '110101199001071272'
+        ];
+
+
+        return [
+            'name' => ($this->faker->unique->randomElement(array_keys($names))),
+            'real_name' => $this->faker->randomElement($names),
+            'password' => bcrypt('1234567890'),
+            'department_id' => $this->faker->randomElement(Department::pluck('id')->toArray()),
+            'user_type_id' => $this->faker->randomElement(UserType::pluck('id')->toArray()),
+            'role_id' => $this->faker->randomElement(Role::pluck('id')->toArray()),
+            'user_status' => $this->faker->randomElement(\App\Enums\UserStatus::getValues()),
+            'duty' => $this->faker->randomElement(['职员']),
+            'id_card' => $this->faker->unique->randomElement($idCards),
+            'phone_number' => $this->faker->phoneNumber,
+        ];
     }
 }
