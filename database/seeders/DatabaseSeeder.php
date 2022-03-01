@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             RoleTableSeeder::class,
             UserTypeTableSeeder::class,
             VisitorTypeTableSeeder::class,
-            VisitorSettingTableSeeder::class
+            VisitorSettingTableSeeder::class,
+            UserTableSeeder::class
         ]);
     }
 }

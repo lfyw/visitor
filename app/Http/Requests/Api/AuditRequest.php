@@ -27,7 +27,7 @@ class AuditRequest extends FormRequest
         return [
             'name' => 'required',
             'id_card' => ['required', function($attribute, $value, $fail){
-            //审核通过期无需重复审核
+            //todo 审核通过期无需重复审核
             }],
             'phone' => 'required',
             'department' => 'required',

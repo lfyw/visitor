@@ -91,5 +91,6 @@ Route::prefix('pc')->name('pc.')->group(function(){
 
 //身份证号是否合法
 Route::get('id-cards/valid', [IdCardController::class, 'valid'])->name('idCards.valid');
-//发起临时审核
-Route::post('audit', [AuditController::class, 'store'])->name('audit.store');
+
+//临时审核
+Route::apiResource('audit', AuditController::class)->only(['index', 'store']);

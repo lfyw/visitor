@@ -17,7 +17,7 @@ class CreateAuditorsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('audit_id')->comment('审核id');
             $table->unsignedBigInteger('user_id')->comment('审核人id');
-            $table->boolean('status')->nullable()->comment('审核状态');
+            $table->integer('audit_status')->default(\App\Enums\AuditStatus::WAITING->value)->comment('审核状态:1 => 待审核 2 => 通过 3 => 审核拒绝');
             $table->timestamps();
         });
         DB::statement("COMMENT ON TABLE auditors is '审核人'");

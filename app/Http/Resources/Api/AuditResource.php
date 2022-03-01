@@ -4,6 +4,7 @@ namespace App\Http\Resources\Api;
 
 use App\Http\Resources\Pc\UserResource;
 use App\Http\Resources\Pc\VisitorTypeResource;
+use App\Http\Resources\Pc\WayResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AuditResource extends JsonResource
@@ -19,14 +20,17 @@ class AuditResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'id_card' => $this->id_card,
-            'department' => $this->department,
-            'user' => new UserResource($this->whenLoaded('user')),
-            'visitor_type' => new VisitorTypeResource($this->whenLoaded('visitorType')),
+            'reason' => $this->reason,
             'access_date_from' => $this->access_date_from,
             'access_date_to' => $this->access_date_to,
-            'reason' => $this->reason,
-            'relation' => $this->relation,
+            'access_time_from' => $this->access_time_from,
+            'access_time_to' => $this->access_time_to,
+            'access_count' => $this->access_count,
+            'limiter' => $this->limiter,
+            'user' => $this->whenLoaded('user'),
+            'auditors' => AuditorResource::collection($this->whenLoaded('auditors')),
+            'visitor_type' => new VisitorTypeResource($this->whenLoaded('visitorType')),
+            'ways' => WayResource::collection($this->whenLoaded('ways')),
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

@@ -27,11 +27,12 @@ class CreateAuditsTable extends Migration
             $table->string('relation')->nullable()->comment('访客关系');
 
             $table->json('access_time')->nullable()->comment('访问时间');
-            $table->integer('access_count')->default(0)->comment('访问次数');
+
+            $table->integer('limiter')->default(0)->comment('访问次数限制');
 
             $table->string('refused_reason')->nullable()->comment('拒绝理由');
 
-            $table->boolean('status')->nullable()->comment('审核状态');
+            $table->integer('audit_status')->default(\App\Enums\AuditStatus::WAITING->value)->comment('审核状态:1 => 待审核 2 => 通过 3 => 审核拒绝');
             $table->timestamps();
         });
         DB::statement("COMMENT ON TABLE audits is '临时访客审核表'");
