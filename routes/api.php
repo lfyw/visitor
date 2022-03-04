@@ -49,6 +49,7 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::apiResource('passageways', PassagewayController::class)->except('destroy');
 
     //路线管理
+    Route::get('ways/select', [WayController::class, 'select'])->name('ways.select');
     Route::delete('ways', [WayController::class, 'destroy'])->name('ways.destroy');
     Route::apiResource('ways', WayController::class)->except('destroy');
 
@@ -61,6 +62,7 @@ Route::prefix('pc')->name('pc.')->group(function(){
     Route::apiResource('roles', RoleController::class)->except(['destroy']);
 
     //系统设置-人员类型设置
+    Route::get('user-types/select', [UserTypeController::class, 'select'])->name('user-types.select');
     Route::apiResource('user-types', UserTypeController::class);
 
     //人员管理

@@ -40,4 +40,9 @@ class UserTypeController extends Controller
         $userType->delete();
         return no_content();
     }
+
+    public function select()
+    {
+        return send_data(UserType::all(['id', 'name']));
+    }
 }

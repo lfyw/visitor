@@ -53,4 +53,9 @@ class WayController extends Controller
         Way::destroy($wayRequest->ids);
         return no_content();
     }
+
+    public function select()
+    {
+        return send_data(Way::all(['id', 'name']));
+    }
 }
