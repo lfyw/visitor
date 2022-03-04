@@ -17,6 +17,7 @@ class GateResource extends JsonResource
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'ip' => $this->ip,
             'type' => $this->type,
             'location' => $this->location,
             'rule' => $this->rule,

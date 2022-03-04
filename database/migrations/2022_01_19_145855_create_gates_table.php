@@ -18,6 +18,7 @@ class CreateGatesTable extends Migration
             $table->id();
             $table->string('number')->comment('闸机编号');
             $table->string('type')->comment('闸机型号');
+            $table->ipAddress('ip')->nullable()->comment('ip地址');
             $table->string('location')->comment('闸机位置');
             $table->string('rule')->default(GateRule::IN->value)->comment('进出规则');
             $table->string('note', 256)->nullable()->comment('备注');

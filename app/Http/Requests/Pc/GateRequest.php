@@ -30,6 +30,7 @@ class GateRequest extends FormRequest
             'POST' => [
                 'number' => ['required', 'unique:gates', 'max:32'],
                 'type' => ['required', 'max:32'],
+                'ip' => ['nullable'],
                 'location' => ['required', 'max:128'],
                 'rule' => ['required', new EnumValue(GateRule::class)],
                 'note' => ['nullable', 'max:256']
@@ -38,6 +39,7 @@ class GateRequest extends FormRequest
                 'number' => ['required', 'max:32', Rule::unique('gates')->ignore($this->gate)],
                 'type' => ['required', 'max:32'],
                 'location' => ['required', 'max:128'],
+                'ip' => ['nullable'],
                 'rule' => ['required', new EnumValue(GateRule::class)],
                 'note' => ['nullable', 'max:256']
             ],
@@ -56,7 +58,8 @@ class GateRequest extends FormRequest
             'type' => '闸机型号',
             'location' => '闸机位置',
             'rule' => '进出规则',
-            'note' => '备注'
+            'note' => '备注',
+            'ip' => 'ip地址'
         ];
     }
 }
