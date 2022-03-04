@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AuditRequest;
 use App\Http\Resources\Api\AuditResource;
 use App\Models\Audit;
-use Illuminate\Http\Request;
 
 class AuditController extends Controller
 {

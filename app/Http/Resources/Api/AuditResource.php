@@ -2,9 +2,6 @@
 
 namespace App\Http\Resources\Api;
 
-use App\Http\Resources\Pc\UserResource;
-use App\Http\Resources\Pc\VisitorTypeResource;
-use App\Http\Resources\Pc\WayResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AuditResource extends JsonResource
