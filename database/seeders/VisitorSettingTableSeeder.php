@@ -23,8 +23,10 @@ class VisitorSettingTableSeeder extends Seeder
         ], [
             'apply_period' => 'year',
             'approver' => [
+                [
                 'type' => 'interviewee',
                 'order' => 1
+                ]
             ],
             'visitor_limiter' => 6,
             'visitor_relation' => true,
@@ -39,8 +41,10 @@ class VisitorSettingTableSeeder extends Seeder
         ], [
             'apply_period' => 'day',
             'approver' => [
+                [
                 'type' => 'interviewee',
                 'order' => 1
+                ],
             ],
             'visitor_limiter' => 1,
             'visitor_relation' => false,
