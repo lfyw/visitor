@@ -40,7 +40,7 @@ class GateController extends Controller
                 return error(sprintf("%s 通道关联此闸门，请先解除关联", implode(',', $$gate->passageways->pluck('name')->toArray())), Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
-        $gates->delete();
+        Gate::destroy($gateRequest->ids);
         return no_content();
     }
 
