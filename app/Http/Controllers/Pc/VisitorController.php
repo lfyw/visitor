@@ -22,7 +22,12 @@ class VisitorController extends Controller
             ->whenAgeTo(request('age_to'))
             ->whenAccessDateFrom(request('access_date_from'))
             ->whenAccessDateTo(request('access_date_to'))
-            ->with('ways', 'visitorType')
+            ->with([
+                'ways',
+                'visitorType',
+                'user:id,name,real_name,id_card,department_id',
+                'user.department.ancestors'
+            ])
             ->withFiles()
             ->latest('id')
             ->paginate(request('pageSize', 10))
@@ -40,12 +45,22 @@ class VisitorController extends Controller
             $visitor->ways()->attach($visitorRequest->way_ids);
             return $visitor;
         });
-        return send_data(new VisitorResource($visitor->load('ways', 'visitorType')->loadFiles()));
+        return send_data(new VisitorResource($visitor->load([
+            'ways',
+            'visitorType',
+            'user:id,name,real_name,id_card,department_id',
+            'user.department.ancestors'
+        ])->loadFiles()));
     }
 
     public function show(Visitor $visitor)
     {
-        return send_data(new VisitorResource($visitor->load('ways', 'visitorType')->loadFiles()));
+        return send_data(new VisitorResource($visitor->load([
+            'ways',
+            'visitorType',
+            'user:id,name,real_name,id_card,department_id',
+            'user.department.ancestors'
+        ])->loadFiles()));
     }
 
     public function update(VisitorRequest $visitorRequest, Visitor $visitor)
@@ -59,7 +74,12 @@ class VisitorController extends Controller
             $visitor->ways()->sync($visitorRequest->way_ids);
             return $visitor;
         });
-        return send_data(new VisitorResource($visitor->load('ways', 'visitorType')->loadFiles()));
+        return send_data(new VisitorResource($visitor->load([
+            'ways',
+            'visitorType',
+            'user:id,name,real_name,id_card,department_id',
+            'user.department.ancestors'
+        ])->loadFiles()));
     }
 
     public function destroy(VisitorRequest $visitorRequest)

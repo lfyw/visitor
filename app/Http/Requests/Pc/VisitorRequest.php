@@ -39,7 +39,7 @@ class VisitorRequest extends FormRequest
                 'unit' => ['required'],
                 'reason' => ['nullable'],
                 'relation' => ['nullable'],
-                'user_id' => ['required'],
+                'user_id' => ['required', 'exists:users,id'],
                 'limiter' => ['required', 'integer'],
                 'access_date_from' => ['required', 'date'],
                 'access_date_to' => ['required', 'date'],
