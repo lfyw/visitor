@@ -5,7 +5,9 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
+use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -54,17 +56,29 @@ class Handler extends ExceptionHandler
             status:Response::HTTP_NOT_FOUND
             )
         );
-
-        $this->renderable(fn(Exception $e) => error(
-            $e->getMessage(),
-            status:($e->getCode() && is_int($e->getCode())) ?: Response::HTTP_INTERNAL_SERVER_ERROR,
-            data:[
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'message' => $e->getMessage(),
-                'trace' => $e->getTrace()
-            ]
-            )
+        $this->renderable(fn(UnauthorizedException $e) => error(
+            '未登录',
+            status:Response::HTTP_UNAUTHORIZED
+        )
         );
+
+        $this->renderable(fn(AccessDeniedHttpException $e) => error(
+            '权限不足',
+            status:Response::HTTP_FORBIDDEN
+        ));
+
+        if (config('app.env') == 'production'){
+            $this->renderable(fn(Exception $e) => error(
+                $e->getMessage(),
+                status:($e->getCode() && is_int($e->getCode())) ?: Response::HTTP_INTERNAL_SERVER_ERROR,
+                data:[
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTrace()
+                ]
+            )
+            );
+        }
     }
 }

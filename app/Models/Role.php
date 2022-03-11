@@ -11,6 +11,8 @@ class Role extends Model
 {
     use HasFactory;
 
+    const SUPER_ADMIN = '超级管理员';
+
     protected $guarded = [];
 
     public $timestamps = false;

@@ -44,8 +44,8 @@ class UserFactory extends Factory
 
 
         return [
-            'name' => ($this->faker->unique->randomElement(array_keys($names))),
-            'real_name' => $this->faker->randomElement($names),
+            'name' => ($name = $this->faker->unique->randomElement(array_keys($names))),
+            'real_name' => $names[$name],
             'password' => bcrypt('1234567890'),
             'department_id' => $this->faker->randomElement(Department::pluck('id')->toArray()),
             'user_type_id' => $this->faker->randomElement(UserType::pluck('id')->toArray()),

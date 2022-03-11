@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use AlicFeng\IdentityCard\InfoHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AuditRequest;
 use App\Http\Resources\Api\AuditResource;
@@ -23,10 +24,13 @@ class AuditController extends Controller
     public function store(AuditRequest $auditRequest)
     {
         $audit = \DB::transaction(function () use ($auditRequest){
-            $audit = Audit::create(\Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']));
+            $validated = \Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
+            $validated['gender'] = InfoHelper::identityCard()->sex($auditRequest->id_card) == 'M' ? '男' : '女';
+            $validated['age'] = InfoHelper::identityCard()->age($auditRequest->id_card);
+            $audit = Audit::create($validated);
+
             $audit->ways()->attach($auditRequest->way_ids);
             $audit->attachFiles($auditRequest->face_picture_ids);
-
             $audit->auditors()->create([
                 'user_id' => $auditRequest->user_id,
             ]);

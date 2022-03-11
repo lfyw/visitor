@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Enums\AuditStatus;
 use App\Models\Audit;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -27,10 +28,12 @@ class AuditRequest extends FormRequest
         return [
             'name' => 'required',
             'id_card' => ['required', function($attribute, $value, $fail){
-            //todo 审核通过期无需重复审核
+            if (Audit::where('id_card', $value)->whereAuditStatus(AuditStatus::WAITING)->first()){
+                return $fail('正在审核中，请勿重新提交');
+            }
             }],
             'phone' => 'required',
-            'department' => 'required',
+            'unit' => 'required',
             'user_id' => ['required', 'exists:users,id'],
             'visitor_type_id' => ['required', 'exists:visitor_types,id'],
             'way_ids' => ['required', 'array'],
@@ -40,7 +43,7 @@ class AuditRequest extends FormRequest
             'reason' => 'nullable',
             'relation' => 'nullable',
             'face_picture_ids' => ['required', 'array'],
-            'face_picture_ids.*' => 'required'
+            'face_picture_ids.*' => ['required', 'exists:files,id']
         ];
     }
 
@@ -50,7 +53,7 @@ class AuditRequest extends FormRequest
             'name' => '姓名',
             'id_card' => '身份证号',
             'phone' => '手机号',
-            'department' => '单位',
+            'unit' => '单位',
             'user_id' => '被访问者id',
             'visitor_type_id' => '访客类型id',
             'way_ids' => '访问路线',

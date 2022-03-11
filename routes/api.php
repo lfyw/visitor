@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuditController;
 use App\Http\Controllers\Api\IdCardController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\Pc\AuthorizationController;
 use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
@@ -16,7 +17,6 @@ use App\Http\Controllers\Pc\VisitorController;
 use App\Http\Controllers\Pc\VisitorSettingController;
 use App\Http\Controllers\Pc\VisitorTypeController;
 use App\Http\Controllers\Pc\WayController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,11 +30,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('pc')->group(function (){
+    Route::post('authorizations', [AuthorizationController::class, 'login'])->name('authorizations.login');
 });
 
-Route::prefix('pc')->name('pc.')->group(function(){
+Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     //部门管理
     Route::apiResource('departments', DepartmentController::class);
 
@@ -89,6 +89,9 @@ Route::prefix('pc')->name('pc.')->group(function(){
 
     //规则管理
     Route::apiResource('rules', RuleController::class)->only(['update', 'index']);
+
+    //临时访客审核
+    Route::apiResource('audits', \App\Http\Controllers\Pc\AuditController::class)->only(['index', 'update', 'destroy', 'show']);
 });
 
 //身份证号是否合法

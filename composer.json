@@ -12,7 +12,7 @@
         "hhxsv5/laravel-s": "^3.7",
         "kalnoy/nestedset": "^6.0",
         "laravel/framework": "^8.75",
-        "laravel/sanctum": "^2.11",
+        "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.5",
         "lfyw/file-manager": "^4.0",
         "lfyw/lfyw-enum": "1.0.1",
