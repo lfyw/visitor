@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AuditRequest;
 use App\Http\Resources\Api\AuditResource;
 use App\Models\Audit;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Response;
 
 class AuditController extends Controller
 {
@@ -31,9 +33,12 @@ class AuditController extends Controller
 
             $audit->ways()->attach($auditRequest->way_ids);
             $audit->attachFiles($auditRequest->face_picture_ids);
-            $audit->auditors()->create([
-                'user_id' => $auditRequest->user_id,
-            ]);
+
+            // 添加审批人，根据配置文件寻找
+            $visitorSetting = $audit->visitorType->visitorSettings()->whereHas('ways',fn(Builder $builder) => $builder->whereIn('id', $auditRequest->way_ids))->first();
+            if (!$visitorSetting){
+                return error('请现在后台添加对应的访客设置', Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
             return $audit;
         });
         return send_data(new AuditResource($audit->fresh()->load([
