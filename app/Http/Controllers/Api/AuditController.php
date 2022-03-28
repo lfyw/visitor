@@ -3,12 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use AlicFeng\IdentityCard\InfoHelper;
+use App\Enums\ApproverType;
+use App\Exceptions\MissingVisitorSettingException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AuditRequest;
 use App\Http\Resources\Api\AuditResource;
 use App\Models\Audit;
+use App\Models\Auditor;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuditController extends Controller
 {
@@ -25,8 +33,8 @@ class AuditController extends Controller
 
     public function store(AuditRequest $auditRequest)
     {
-        $audit = \DB::transaction(function () use ($auditRequest){
-            $validated = \Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
+        $audit = DB::transaction(function () use ($auditRequest){
+            $validated = Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
             $validated['gender'] = InfoHelper::identityCard()->sex($auditRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($auditRequest->id_card);
             $audit = Audit::create($validated);
@@ -36,12 +44,24 @@ class AuditController extends Controller
 
             // 添加审批人，根据配置文件寻找
             $visitorSetting = $audit->visitorType->visitorSettings()->whereHas('ways',fn(Builder $builder) => $builder->whereIn('id', $auditRequest->way_ids))->first();
-            if (!$visitorSetting){
-                return error('请现在后台添加对应的访客设置', Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
+            throw_unless($visitorSetting, new MissingVisitorSettingException('请先在后台添加对应的访客设置', Response::HTTP_NOT_FOUND));
+
+            collect($visitorSetting->approver)->sortBy('order')->each(function ($approver) use ($audit){
+                if ($approver['type'] == ApproverType::INTERVIEWEE->getValue()){
+                    $audit->auditors()->create([
+                        'user_id' => $audit->user_id,
+                    ]);
+                }
+                if ($approver['type'] == ApproverType::ROLE->getValue()){
+                    $roler = User::whereRoleId($approver['role_id'])->first();
+                    $audit->auditors()->create([
+                        'user_id' => $roler->id,
+                    ]);
+                }
+            });
             return $audit;
         });
-        return send_data(new AuditResource($audit->fresh()->load([
+        return send_data(new AuditResource($audit->load([
             'user:id,name,department_id',
             'user.department.ancestors',
             'ways',

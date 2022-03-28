@@ -78,6 +78,7 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::apiResource('visitor-types', VisitorTypeController::class);
 
     //系统设置-访客设置
+    Route::get('visitor-settings/select', [VisitorSettingController::class, 'select'])->name('visitor-settings.select');
     Route::apiResource('visitor-settings', VisitorSettingController::class);
 
     //访客管理

@@ -67,6 +67,11 @@ class Handler extends ExceptionHandler
             status:Response::HTTP_FORBIDDEN
         ));
 
+        $this->renderable(fn(MissingVisitorSettingException $e) => error(
+            $e->getMessage(),
+            status:$e->getCode() ?? Response::HTTP_NOT_FOUND
+        ));
+
         if (config('app.env') == 'production'){
             $this->renderable(fn(Exception $e) => error(
                 $e->getMessage(),

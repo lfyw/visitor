@@ -2086,23 +2086,17 @@
         },
         {
             "name": "lfyw/file-manager",
-            "version": "4.0.8",
+            "version": "4.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lfyw/file-manager.git",
-                "reference": "b05260eb1b99ad07dbb94c082b2767536a8c9b06"
+                "reference": "6dfae74b4858f98cdfc4a34fa54d5b88d7fcd758"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lfyw/file-manager/zipball/b05260eb1b99ad07dbb94c082b2767536a8c9b06",
-                "reference": "b05260eb1b99ad07dbb94c082b2767536a8c9b06",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+                "url": "https://api.github.com/repos/lfyw/file-manager/zipball/6dfae74b4858f98cdfc4a34fa54d5b88d7fcd758",
+                "reference": "6dfae74b4858f98cdfc4a34fa54d5b88d7fcd758",
+                "shasum": ""
             },
             "require": {
                 "php": "^7.3|^8.0"
@@ -2138,9 +2132,9 @@
             "description": "A file manager",
             "support": {
                 "issues": "https://github.com/lfyw/file-manager/issues",
-                "source": "https://github.com/lfyw/file-manager/tree/4.0.8"
+                "source": "https://github.com/lfyw/file-manager/tree/4.0.11"
             },
-            "time": "2022-02-10T08:33:26+00:00"
+            "time": "2022-03-09T02:39:19+00:00"
         },
         {
             "name": "lfyw/lfyw-enum",
