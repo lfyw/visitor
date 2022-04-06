@@ -6,6 +6,7 @@ use App\Enums\AuditStatus;
 use App\Models\Audit;
 use App\Models\Gate;
 use App\Models\Passageway;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -13,7 +14,7 @@ class VisitorSynchronization
 {
     public static function add(Audit $audit)
     {
-        if ($audit->audit_status == AuditStatus::PASS){
+        if ($audit->audit_status == AuditStatus::PASS->getValue()){
             //开始下发
             $ways = $audit->ways;
             $passageways = Passageway::whereHas('ways', fn($way) => $way->whereIn('id', $ways->pluck('id')))->get();
@@ -29,12 +30,15 @@ class VisitorSynchronization
                 'limiter' => $audit->limiter,
                 'gate' => $gates,
             ];
-            $setUser = Http::post(Constant::getSetUserUrl(), $parameter);
-            if ($setUser->ok()){
-                Log::info('闸机下放成功:', ['response' => $setUser->json(), 'parameter' => $parameter]);
-            }
-            if ($setUser->failed()){
-                Log::error('闸机下放失败:', ['error' => $setUser->json(), 'message' => $parameter]);
+            try {
+                $setUser = Http::timeout(5)->post(Constant::getSetUserUrl(), $parameter);
+                if ($setUser->ok()){
+                    Log::info('闸机下放成功:', ['response' => $setUser->json(), 'parameter' => $parameter]);
+                }else if ($setUser->failed()){
+                    Log::error('闸机下放失败:', ['error' => $setUser->json(), 'parameter' => $parameter]);
+                }
+            }catch (ConnectionException $exception){
+                Log::error('闸机下放异常:', ['error' => $exception->getMessage(), 'parameter' => $parameter]);
             }
         }
     }

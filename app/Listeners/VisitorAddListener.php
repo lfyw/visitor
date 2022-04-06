@@ -25,6 +25,6 @@ class VisitorAddListener
      */
     public function handle(VisitorAudit $event)
     {
-        VisitorSynchronization::add($event->visitor);
+        VisitorSynchronization::add($event->audit);
     }
 }

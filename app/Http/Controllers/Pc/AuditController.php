@@ -47,7 +47,7 @@ class AuditController extends Controller
     {
         $this->authorize('update', $audit);
 
-        if ($audit->audit_status !== AuditStatus::WAITING){
+        if ($audit->audit_status !== AuditStatus::WAITING->value){
             return error('无法重复审批' ,Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
