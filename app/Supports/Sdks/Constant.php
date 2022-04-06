@@ -4,7 +4,7 @@ namespace App\Supports\Sdks;
 
 class Constant
 {
-    const HOST = '127.0.0.1';
+    const HOST = '192.168.1.119';
     const PORT = '9003';
     const SET_USER_PATH = '/setuser';
 

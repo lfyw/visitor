@@ -34,7 +34,7 @@ class VisitorSynchronization
                 Log::info('闸机下放成功:', ['response' => $setUser->json(), 'parameter' => $parameter]);
             }
             if ($setUser->failed()){
-                Log::error('闸机下方失败:', ['error' => $setUser->json(), 'message' => $parameter]);
+                Log::error('闸机下放失败:', ['error' => $setUser->json(), 'message' => $parameter]);
             }
         }
     }
