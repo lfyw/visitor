@@ -44,6 +44,7 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::get('me', [AuthorizationController::class, 'me'])->name('authorizations.me');
 
     //部门管理
+    Route::delete('departments/multi-destroy', [DepartmentController::class, 'multiDestroy'])->name('departments.multiDestroy');
     Route::apiResource('departments', DepartmentController::class);
 
     //闸机管理

@@ -37,9 +37,32 @@ class DepartmentController extends Controller
     {
         $descendantIds = Department::descendantsAndSelf($department->id)->pluck('id');
         if(User::whereIn('id', $descendantIds)->exists()){
-            return error("单位或其下级单位已关联人员，请先解除关联", Response::HTTP_UNPROCESSABLE_ENTITY);
+            return error("单位或其下级部门已关联人员，请先解除关联", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $department->delete();
         return no_content();
+    }
+
+    public function multiDestroy()
+    {
+        $this->validate(request()->input(), [
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'exists:departments,id']
+        ],[],[
+            'ids' => '单位id',
+            'ids.*' => '单位id'
+        ]);
+
+        $departmentNamesHasUser = [];
+        foreach (request('ids') as $id){
+            $department = Department::find($id);
+            $descendantIds = Department::descendantsAndSelf($id)->pluck('id');
+            if(User::whereIn('id', $descendantIds)->exists()){
+                array_push($departmentNamesHasUser, $department->name);
+                continue;
+            }
+            $department->delete();
+        }
+        return error(implode(',', $departmentNamesHasUser) . "或其下级部门已关联人员，请先解除关联", Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
