@@ -54,13 +54,20 @@ class ApiTest extends Command
     {
         $path = '/api/pc/files';
         $url = self::HOST . $path;
-        $response = Http::attach(
-            'file', file_get_contents(storage_path('test.jpg')), 'test.jpg'
-        )->post($url);
-        Log::debug('test-api:uploadFile', [
-            'response' => $response->json()
-        ]);
-        return $response->json();
+        try {
+            $response = Http::attach(
+                'file', file_get_contents(storage_path('test.jpg')), 'test.jpg'
+            )->post($url);
+            Log::debug('test-api:uploadFile', [
+                'response' => $response->json()
+            ]);
+            return $response->json();
+        }catch (\Exception $exception){
+            Log::debug('test-api:uploadFile', [
+                'error' => $exception->getMessage()
+            ]);
+        }
+
     }
 
     public function postAudit()
