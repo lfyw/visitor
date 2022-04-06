@@ -10,7 +10,7 @@ class Constant
 
     public static function getSetUserUrl()
     {
-        return self::HOST . '/' . self::PORT .self::SET_USER_PATH;
+        return self::HOST . ':' . self::PORT .self::SET_USER_PATH;
     }
 
 }
