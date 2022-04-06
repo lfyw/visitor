@@ -36,7 +36,7 @@ class DepartmentController extends Controller
     public function destroy(Department $department)
     {
         $descendantIds = Department::descendantsAndSelf($department->id)->pluck('id');
-        if(User::whereIn('id', $descendantIds)->exists()){
+        if(User::whereIn('department_id', $descendantIds)->exists()){
             return error("单位或其下级部门已关联人员，请先解除关联", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         $department->delete();
@@ -45,7 +45,7 @@ class DepartmentController extends Controller
 
     public function multiDestroy()
     {
-        $this->validate(request()->input(), [
+        $this->validate(request(), [
             'ids' => ['required', 'array'],
             'ids.*' => ['required', 'exists:departments,id']
         ],[],[
@@ -57,7 +57,7 @@ class DepartmentController extends Controller
         foreach (request('ids') as $id){
             $department = Department::find($id);
             $descendantIds = Department::descendantsAndSelf($id)->pluck('id');
-            if(User::whereIn('id', $descendantIds)->exists()){
+            if(User::whereIn('department_id', $descendantIds)->exists()){
                 array_push($departmentNamesHasUser, $department->name);
                 continue;
             }
