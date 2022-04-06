@@ -12,6 +12,11 @@ class VisitorSynchronization
 {
     public static function add(Audit $audit)
     {
+        if (config('app.env') !== 'production'){
+            //todo 非生产环境 直接增加下发日志
+            return true;
+        }
+
         if ($audit->audit_status == AuditStatus::PASS->getValue()) {
             //开始下发
             $ways = $audit->ways;

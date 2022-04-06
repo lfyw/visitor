@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pc;
 
+use AlicFeng\IdentityCard\InfoHelper;
 use App\Enums\AuditStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\AuditRequest;
@@ -11,6 +12,7 @@ use App\Models\Role;
 use App\Models\Visitor;
 use App\Supports\Sdks\VisitorSynchronization;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class AuditController extends Controller
@@ -67,13 +69,13 @@ class AuditController extends Controller
             ])->save();
         }
         //4.填充审批信息
-        $audit->fill([
-            'access_time_from' => $auditRequest->access_time_from,
-            'access_time_to' => $auditRequest->access_time_to,
-            'limiter' => $auditRequest->limiter,
-            'audit_status' => $auditRequest->audit_status,
-            'refused_reason' => $auditRequest->refused_reason
-        ])->save();
+        $validated = Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
+        $validated['gender'] = InfoHelper::identityCard()->sex($auditRequest->id_card) == 'M' ? '男' : '女';
+        $validated['age'] = InfoHelper::identityCard()->age($auditRequest->id_card);
+
+        $audit->fill($validated)->save();
+        $audit->ways()->sync($auditRequest->way_ids);
+        $audit->syncFiles($auditRequest->face_picture_ids);
 
         //5.更新或创建访客信息
         Visitor::updateOrCreate([

@@ -24,7 +24,6 @@ class AuditPolicy
 
     public function update(User $user, Audit $audit)
     {
-        dump($user->id);
         return in_array($user->id, $audit->auditors()->pluck('user_id')->toArray());
     }
 
