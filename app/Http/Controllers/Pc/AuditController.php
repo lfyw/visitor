@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Pc;
 
 use App\Enums\AuditStatus;
+use App\Events\VisitorAudit;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\AuditRequest;
 use App\Http\Resources\Pc\AuditResource;
 use App\Models\Audit;
 use App\Models\Role;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
 
 class AuditController extends Controller
 {
@@ -63,6 +65,8 @@ class AuditController extends Controller
             'audit_status' => $auditRequest->audit_status,
             'refused_reason' => $auditRequest->refused_reason
         ])->save();
+
+        Event::dispatch(new VisitorAudit($audit));
 
         return send_data(new AuditResource($audit->load([
             'visitorType:id,name',
