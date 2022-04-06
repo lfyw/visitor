@@ -17,13 +17,19 @@ class AuditController extends Controller
 {
     public function index()
     {
-        return AuditResource::collection(Audit::with([
-            'visitorType:id,name',
-            'user:id,name,real_name,department_id',
-            'user.department.ancestors',
-            'ways',
-            'auditors.user:id,name',
-        ])->latest('id')->orderBy('audit_status')->paginate(\request('pageSize', 10)));
+        return AuditResource::collection(Audit::name(request('name'))
+            ->idCard(request('id_card'))
+            ->auditStatus(request('audit_status'))
+            ->wayId(request('way_id'))
+            ->accessDateFrom(request('access_date_from'))
+            ->accessDateTo(request('access_date_to'))
+            ->with([
+                'visitorType:id,name',
+                'user:id,name,real_name,department_id',
+                'user.department.ancestors',
+                'ways',
+                'auditors.user:id,name',
+            ])->latest('id')->orderBy('audit_status')->paginate(\request('pageSize', 10)));
     }
 
     public function show(Audit $audit)
@@ -48,12 +54,12 @@ class AuditController extends Controller
         //1.确认审核权限
         $this->authorize('update', $audit);
         //2.确认审批状态
-        if ($audit->audit_status !== AuditStatus::WAITING->value){
-            return error('无法重复审批' ,Response::HTTP_UNPROCESSABLE_ENTITY);
+        if ($audit->audit_status !== AuditStatus::WAITING->value) {
+            return error('无法重复审批', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         //3.填充审核人信息
-        if (auth()->user()->role->name !== Role::SUPER_ADMIN){
+        if (auth()->user()->role->name !== Role::SUPER_ADMIN) {
             $auditor = $audit->auditors()->where('user_id', $audit->id)->first();
             $auditor->fill([
                 'suggestion' => $auditRequest->refused_reason,
@@ -72,7 +78,7 @@ class AuditController extends Controller
         //5.更新或创建访客信息
         Visitor::updateOrCreate([
             'id_card' => $audit->id_card
-        ],[
+        ], [
             'name' => $audit->name,
             'visitor_type_id' => $audit->visitor_type_id,
             'gender' => $audit->gender,
@@ -98,7 +104,7 @@ class AuditController extends Controller
                 'ways',
                 'auditors.user:id,name',
             ])->loadFiles()));
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             Log::error('下发异常:' . $exception->getMessage());
             return send_message('网络异常', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
