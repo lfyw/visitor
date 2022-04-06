@@ -37,6 +37,9 @@ Route::prefix('pc')->group(function (){
 });
 
 Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
+    //获取当前用户登陆信息
+    Route::get('me', [AuthorizationController::class, 'me'])->name('authorizations.me');
+
     //部门管理
     Route::apiResource('departments', DepartmentController::class);
 
@@ -99,3 +102,6 @@ Route::get('id-cards/valid', [IdCardController::class, 'valid'])->name('idCards.
 
 //临时审核
 Route::apiResource('audit', AuditController::class)->only(['index', 'store']);
+
+//通行记录
+Route::post('passing-log', [\App\Http\Controllers\Api\PassingLogController::class, 'store']);

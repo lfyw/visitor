@@ -30,4 +30,15 @@ class AuthorizationController extends Controller
             'token' => $token->plainTextToken
         ];
     }
+
+    public function me()
+    {
+        $user = auth()->user();
+        return new UserResource($user->loadMissing([
+            'department.ancestors',
+            'userType:id,name',
+            'role:id,name',
+            'ways'
+        ]));
+    }
 }
