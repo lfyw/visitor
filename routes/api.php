@@ -32,6 +32,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('pc')->group(function (){
     Route::post('authorizations', [AuthorizationController::class, 'login'])->name('authorizations.login');
+    //文件上传
+    Route::post('files', [FileController::class, 'store'])->name('files.store');
 });
 
 Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
@@ -69,9 +71,6 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::delete('users', [UserController::class, 'destroy'])->name('users.destroy');
     Route::patch('users/{user}/reset', [UserController::class, 'reset'])->name('users.reset');
     Route::apiResource('users', UserController::class);
-
-    //文件上传
-    Route::post('files', [FileController::class, 'store'])->name('files.store');
 
     //系统设置-访客设置-访客类型设置
     Route::get('visitor-types/select', [VisitorTypeController::class, 'select'])->name('visitor-types.select');
