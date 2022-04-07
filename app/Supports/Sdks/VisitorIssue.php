@@ -8,7 +8,7 @@ use App\Models\Gate;
 use App\Models\Passageway;
 use Illuminate\Support\Facades\Http;
 
-class VisitorSynchronization
+class VisitorIssue
 {
     public static function add(Audit $audit)
     {

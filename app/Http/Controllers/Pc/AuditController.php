@@ -10,7 +10,7 @@ use App\Http\Resources\Pc\AuditResource;
 use App\Models\Audit;
 use App\Models\Role;
 use App\Models\Visitor;
-use App\Supports\Sdks\VisitorSynchronization;
+use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -98,7 +98,7 @@ class AuditController extends Controller
         ]);
         //6.下发
         try {
-            VisitorSynchronization::add($audit);
+            VisitorIssue::add($audit);
             return send_data(new AuditResource($audit->load([
                 'visitorType:id,name',
                 'user:id,name,real_name,department_id',
