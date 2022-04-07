@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\AuditRequest;
 use App\Http\Resources\Pc\AuditResource;
 use App\Models\Audit;
+use App\Models\Gate;
+use App\Models\Passageway;
 use App\Models\Role;
 use App\Models\Visitor;
 use App\Supports\Sdks\VisitorIssue;
@@ -67,6 +69,13 @@ class AuditController extends Controller
                 'suggestion' => $auditRequest->refused_reason,
                 'audit_status' => $auditRequest->audit_status,
             ])->save();
+        } else {
+            $audit->auditors()->create([
+                'audit_id' => $audit->id,
+                'user_id' => auth()->id(),
+                'suggestion' => $auditRequest->refused_reason,
+                'audit_status' => $auditRequest->audit_status,
+            ]);
         }
         //4.填充审批信息
         $validated = Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
@@ -77,8 +86,19 @@ class AuditController extends Controller
         $audit->ways()->sync($auditRequest->way_ids);
         $audit->syncFiles($auditRequest->face_picture_ids);
 
-        //5.更新或创建访客信息
-        Visitor::updateOrCreate([
+        //5. 审批拒绝则直接中止下发
+        if ($audit->audit_status !== AuditStatus::PASS->getValue()) {
+            return send_data(new AuditResource($audit->load([
+                'visitorType:id,name',
+                'user:id,name,real_name,department_id',
+                'user.department.ancestors',
+                'ways',
+                'auditors.user:id,name',
+            ])->loadFiles()));
+        }
+
+        //6.更新或创建访客信息+路线+照片
+        $visitor = Visitor::updateOrCreate([
             'id_card' => $audit->id_card
         ], [
             'name' => $audit->name,
@@ -96,9 +116,17 @@ class AuditController extends Controller
             'access_time_from' => $audit->access_time_from,
             'access_time_to' => $audit->access_time_to,
         ]);
-        //6.下发
+        $visitor->ways()->sync($auditRequest->way_ids);
+        $visitor->syncFiles($auditRequest->face_picture_ids);
+
+        //7.下发
+        $passageways = Passageway::getByWays($audit->ways)->get();
+        $gates = Gate::getByPassageways($passageways)->get();
         try {
+            //下发请求
             VisitorIssue::add($audit);
+            //成功则记录下发成功记录
+            $gates->each->createIssue($visitor, true);
             return send_data(new AuditResource($audit->load([
                 'visitorType:id,name',
                 'user:id,name,real_name,department_id',
@@ -108,6 +136,8 @@ class AuditController extends Controller
             ])->loadFiles()));
         } catch (\Exception $exception) {
             Log::error('下发异常:' . $exception->getMessage());
+            //失败则记录下发失败记录
+            $gates->each->createIssue($visitor, false);
             return send_message('网络异常', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

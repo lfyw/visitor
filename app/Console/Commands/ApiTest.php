@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use App\Enums\AuditStatus;
 use App\Models\Audit;
 use App\Models\Auditor;
+use App\Models\Issue;
 use App\Models\User;
+use App\Models\Visitor;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -78,6 +80,9 @@ class ApiTest extends Command
         Audit::truncate();
         Auditor::truncate();
         \DB::table('audit_way')->truncate();
+        Visitor::truncate();
+        \DB::table('visitor_way')->truncate();
+        Issue::truncate();
 
 
         $fileId = ($file = File::first()) ? $file->id : $this->uploadFile()['id'];
@@ -107,8 +112,21 @@ class ApiTest extends Command
         $url = self::HOST . $path;
 
         $token = $this->login()['token'];
-
+        $audit = Audit::firstWhere(['id' => 1]);
         $param = [
+            'name' => $audit->name,
+            'id_card' => $audit->id_card,
+            'phone' => $audit->phone,
+            'unit' => $audit->unit,
+            'user_id' => $audit->user_id,
+            'visitor_type_id' => $audit->visitor_type_id,
+            'way_ids' => $audit->ways->pluck('id')->toArray(),
+            'access_date_from' => $audit->access_date_from,
+            'access_date_to' => $audit->access_date_to,
+            "reason" => $audit->reason,
+            'relation' => $audit->relation,
+            "face_picture_ids" => $audit->files->pluck('id')->toArray(),
+
             'audit_status' => AuditStatus::PASS->value,
             'access_time_from' => '9:00',
             'access_time_to' => '18:00',

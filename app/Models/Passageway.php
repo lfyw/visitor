@@ -39,4 +39,9 @@ class Passageway extends Model
     {
         return $builder->whereHas('gates', fn(Builder $gateBuilder) => $gateBuilder->whenNumber($gateNumber));
     }
+
+    public function scopeGetByWays(Builder $builder, $ways):Builder
+    {
+        return $builder->whereHas('ways', fn(Builder $way) => $way->whereIn('id', $ways->pluck('id')));
+    }
 }

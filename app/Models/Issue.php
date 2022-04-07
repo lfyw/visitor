@@ -11,8 +11,4 @@ class Issue extends Model
 
     protected $guarded = [];
 
-    public function test()
-    {
-        
-    }
 }

@@ -101,18 +101,16 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::apiResource('audits', AuditController::class)->only(['index', 'update', 'destroy', 'show']);
 });
 
-Route::namespace('api')->group(function (){
-    //身份证号是否合法
-    Route::get('id-cards/valid', [IdCardController::class, 'valid'])->name('idCards.valid');
+//身份证号是否合法
+Route::get('id-cards/valid', [IdCardController::class, 'valid'])->name('idCards.valid');
 
-    //临时审核
-    Route::apiResource('audit', ApiAuditController::class)->only(['index', 'store']);
+//临时审核
+Route::apiResource('audit', ApiAuditController::class)->only(['index', 'store']);
 
-    //通行记录
-    Route::post('passing-log', [ApiPassingLogController::class, 'store'])->name('passing-log.store');
+//通行记录
+Route::post('passing-log', [ApiPassingLogController::class, 'store'])->name('passing-log.store');
 
-    //人员列表
-    Route::get('users', [ApiUserController::class, 'index'])->name('users.index');
-});
+//人员列表
+Route::get('users', [ApiUserController::class, 'index'])->name('users.index');
 
 
