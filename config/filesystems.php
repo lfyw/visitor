@@ -58,8 +58,14 @@ return [
             'root' => storage_path('app/public/error_xlsx'),
             'url' => env('APP_URL').'/storage/error_xlsx',
             'visibility' => 'public',
-        ]
+        ],
 
+        'template' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/templates'),
+            'url' => env('APP_URL').'/storage/templates/',
+            'visibility' => 'public',
+        ]
     ],
 
     /*
