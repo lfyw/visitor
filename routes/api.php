@@ -10,6 +10,7 @@ use App\Http\Controllers\Pc\AuthorizationController;
 use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
+use App\Http\Controllers\Pc\ImportController;
 use App\Http\Controllers\Pc\PassagewayController;
 use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
@@ -99,6 +100,9 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
 
     //临时访客审核
     Route::apiResource('audits', AuditController::class)->only(['index', 'update', 'destroy', 'show']);
+
+    //导入部门
+    Route::post('import/departments', [ImportController::class, 'department'])->name('import.departments');
 });
 
 //身份证号是否合法

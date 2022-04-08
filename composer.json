@@ -16,6 +16,7 @@
         "laravel/tinker": "^2.5",
         "lfyw/file-manager": "^4.0",
         "lfyw/lfyw-enum": "1.0.1",
+        "maatwebsite/excel": "^3.1",
         "overtrue/laravel-lang": "~5.0"
     },
     "require-dev": {

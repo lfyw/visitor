@@ -53,6 +53,13 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
         ],
 
+        'error_xlsx' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/error_xlsx'),
+            'url' => env('APP_URL').'/storage/error_xlsx',
+            'visibility' => 'public',
+        ]
+
     ],
 
     /*
