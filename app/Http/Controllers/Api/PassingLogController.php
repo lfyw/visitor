@@ -7,19 +7,24 @@ use App\Http\Requests\Api\PassingLogRequest;
 use App\Http\Resources\Api\PassingLogResource;
 use App\Models\Gate;
 use App\Models\PassingLog;
-use App\Models\Visitor;
 
 class PassingLogController extends Controller
 {
     public function store(PassingLogRequest $request)
     {
-        $visitor = Visitor::firstWhere('id_card', $request->id_card);
-
         $gate = Gate::firstWhere(['ip' => $request->ip]);
-
+        //todo 测试逻辑，正式服测完要清掉
+        if (!$gate){
+            $gate = Gate::create([
+                'number' => '2022-04-08' . random_int(1000, 9999),
+                'type' => 'ZJXH' . random_int(10000, 99999),
+                'ip' => $request->ip,
+                'location' => '综合楼',
+                'rule' => '进'
+            ]);
+        }
         $passingLog = PassingLog::create([
-            'visitorable_type' => $visitor ? get_class($visitor) : Visitor::class,
-            'visitorable_id' => $visitor ? $visitor->id : 0,
+            'id_card' => $request->id_card,
             'gate_id' => $gate->id,
             'passed_at' => now(),
         ]);

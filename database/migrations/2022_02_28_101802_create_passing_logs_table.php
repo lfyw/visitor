@@ -15,7 +15,7 @@ class CreatePassingLogsTable extends Migration
     {
         Schema::create('passing_logs', function (Blueprint $table) {
             $table->id();
-            $table->morphs('visitorable');
+            $table->string('id_card')->comment('身份证号');
             $table->unsignedInteger('gate_id')->index()->comment('通行闸机id');
             $table->dateTime('passed_at')->comment('通过时间');
             $table->timestamps();
