@@ -15,6 +15,7 @@ use App\Http\Controllers\Pc\PassagewayController;
 use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
 use App\Http\Controllers\Pc\RuleController;
+use App\Http\Controllers\Pc\TemplateController;
 use App\Http\Controllers\Pc\UserController;
 use App\Http\Controllers\Pc\UserTypeController;
 use App\Http\Controllers\Pc\VisitorController;
@@ -101,7 +102,10 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     //临时访客审核
     Route::apiResource('audits', AuditController::class)->only(['index', 'update', 'destroy', 'show']);
 
-    //导入部门
+    //导入模板
+    Route::get('templates', TemplateController::class)->name('templates.invoke');
+
+    //导入
     Route::post('import/departments', [ImportController::class, 'department'])->name('import.departments');
 });
 
