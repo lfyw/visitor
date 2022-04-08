@@ -126,7 +126,7 @@ class AuditController extends Controller
             //下发请求
             VisitorIssue::add($audit);
             //成功则记录下发成功记录
-            $gates->each->createIssue($visitor, true);
+            $gates->each->createIssue($visitor->id_card, true);
             return send_data(new AuditResource($audit->load([
                 'visitorType:id,name',
                 'user:id,name,real_name,department_id',
@@ -137,7 +137,7 @@ class AuditController extends Controller
         } catch (\Exception $exception) {
             Log::error('下发异常:' . $exception->getMessage());
             //失败则记录下发失败记录
-            $gates->each->createIssue($visitor, false);
+            $gates->each->createIssue($visitor->id_card, false);
             return send_message('网络异常', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

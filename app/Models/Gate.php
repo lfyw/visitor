@@ -30,11 +30,10 @@ class Gate extends Model
         return $builder->whereHas('passageways', fn(Builder $passageway) => $passageway->whereIn('id', $passageways->pluck('id')));
     }
 
-    public function createIssue($visitorable, $issueStatus)
+    public function createIssue($idCard, $issueStatus)
     {
         return Issue::create([
-            'visitorable_type' => get_class($visitorable),
-            'visitorable_id' => $visitorable->id,
+            'id_card' => $idCard,
             'gate_id' => $this->id,
             'issue_status' => $issueStatus,
             'gate_number' => $this->number,

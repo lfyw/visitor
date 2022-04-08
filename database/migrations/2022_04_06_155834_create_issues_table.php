@@ -15,7 +15,7 @@ class CreateIssuesTable extends Migration
     {
         Schema::create('issues', function (Blueprint $table) {
             $table->id();
-            $table->morphs('visitorable');
+            $table->string('id_card')->comment('下放身份证号');
             $table->unsignedBigInteger('gate_id')->comment('下发闸机id');
             $table->boolean('issue_status')->default(true)->comment('下发状态');
             $table->string('gate_number')->comment('闸机编号');
