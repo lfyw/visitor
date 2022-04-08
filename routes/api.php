@@ -106,7 +106,7 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::get('templates', TemplateController::class)->name('templates.invoke');
 
     //导入
-    Route::post('import/departments', [ImportController::class, 'department'])->name('import.departments');
+    Route::post('import', ImportController::class)->name('import.invoke');
 });
 
 //身份证号是否合法

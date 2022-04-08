@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Pc;
 
+use App\Enums\Import;
 use Illuminate\Foundation\Http\FormRequest;
+use Lfyw\LfywEnum\Rules\EnumValue;
 
 class ImportRequest extends FormRequest
 {
@@ -24,14 +26,16 @@ class ImportRequest extends FormRequest
     public function rules()
     {
         return [
-            'excel' => ['required', 'file']
+            'excel' => ['required', 'file'],
+            'import' => ['required', new EnumValue(Import::class)]
         ];
     }
 
     public function attributes()
     {
         return [
-            'excel' => 'excel文件'
+            'excel' => 'excel文件',
+            'import' => '导入类型'
         ];
     }
 }
