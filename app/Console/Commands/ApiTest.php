@@ -15,7 +15,7 @@ use Lfyw\FileManager\Models\File;
 
 class ApiTest extends Command
 {
-    const HOST = '127.0.0.1';
+    protected $host;
 
     /**
      * The name and signature of the console command.
@@ -49,13 +49,14 @@ class ApiTest extends Command
     public function handle()
     {
         $method = $this->argument('method');
+        $this->host = config('app.url');
         return call_user_func_array([$this, $method], []);
     }
 
     public function uploadFile()
     {
         $path = '/api/pc/files';
-        $url = self::HOST . $path;
+        $url = $this->host . $path;
         try {
             $response = Http::attach(
                 'file', file_get_contents(storage_path('test.jpg')), 'test.jpg'
@@ -75,7 +76,7 @@ class ApiTest extends Command
     public function postAudit()
     {
         $path = '/api/audit';
-        $url = self::HOST . $path;
+        $url = $this->host . $path;
 
         Audit::truncate();
         Auditor::truncate();
@@ -109,7 +110,7 @@ class ApiTest extends Command
     public function auditPass()
     {
         $path = '/api/pc/audits/1';
-        $url = self::HOST . $path;
+        $url = $this->host . $path;
 
         $token = $this->login()['token'];
         $audit = Audit::firstWhere(['id' => 1]);
@@ -143,7 +144,7 @@ class ApiTest extends Command
     public function login()
     {
         $path = '/api/pc/authorizations';
-        $url = self::HOST . $path;
+        $url = $this->host . $path;
 
         $user = User::first();
         $param = [
