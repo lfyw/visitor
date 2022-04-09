@@ -64,8 +64,6 @@ class DepartmentController extends Controller
             $department->delete();
         }
 
-
-
         return $departmentNamesHasUser
             ? error(implode(',', $departmentNamesHasUser) . "或其下级部门已关联人员，请先解除关联", Response::HTTP_UNPROCESSABLE_ENTITY)
             : no_content();
