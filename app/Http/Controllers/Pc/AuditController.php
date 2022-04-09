@@ -33,7 +33,9 @@ class AuditController extends Controller
                 'user.department.ancestors',
                 'ways',
                 'auditors.user:id,name',
-            ])->latest('id')->orderBy('audit_status')->paginate(\request('pageSize', 10)));
+            ])
+            ->withFiles()
+            ->latest('id')->orderBy('audit_status')->paginate(\request('pageSize', 10)));
     }
 
     public function show(Audit $audit)
