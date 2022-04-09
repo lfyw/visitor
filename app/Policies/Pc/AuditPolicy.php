@@ -29,7 +29,7 @@ class AuditPolicy
 
     public function before(User $user)
     {
-        if ($user->role?->name == Role::SUPER_ADMIN){
+        if ($user->name == User::SUPER_ADMIN){
             return true;
         }
     }
