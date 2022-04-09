@@ -60,7 +60,10 @@ class UserController extends Controller
     {
         $user = DB::transaction(function() use ($user, $userRequest){
             $validated = $userRequest->only(['name', 'real_name', 'department_id', 'user_type_id', 'role_id', 'user_status', 'duty', 'id_card', 'phone_number', 'issue_status']);
-            $validated['password'] = bcrypt(Str::substr($validated['id_card'], -6, 6));
+
+            if ($userRequest->password){
+                $validated['password'] = bcrypt($userRequest->password);
+            }
             $user->fill($validated)->save();
             $user->syncFiles($userRequest->face_picture_ids);
             $user->ways()->sync($userRequest->way_ids);

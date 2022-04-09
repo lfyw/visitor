@@ -59,6 +59,7 @@ class UserRequest extends FormRequest
                 'face_picture_ids.*' => ['required', 'exists:files,id'],
                 'way_ids' => ['required', 'array'],
                 'way_ids.*' => ['required', 'exists:ways,id'],
+                'password' => ['nullable', 'min:6']
             ],
             'DELETE' => [
                 'ids' => ['required', 'array'],
