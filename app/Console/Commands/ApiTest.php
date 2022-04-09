@@ -83,7 +83,7 @@ class ApiTest extends Command
         \DB::table('audit_way')->truncate();
         Visitor::truncate();
         \DB::table('visitor_way')->truncate();
-        Issue::truncate();
+//        Issue::truncate();
 
 
         $fileId = ($file = File::first()) ? $file->id : $this->uploadFile()['id'];

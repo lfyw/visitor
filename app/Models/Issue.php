@@ -16,7 +16,7 @@ class Issue extends Model
     {
         $issues = Issue::whereIdCard($idCard)->get();
         //如果没有下发记录，不做任何变动调整
-        if ($issues->first()){
+        if (!$issues->first()){
             return ;
         }
         //如果没有下发错误，说明全部正确；如果没有下发正确，说明全部错误；否则部分成功
