@@ -25,28 +25,10 @@ class DepartmentRequest extends FormRequest
     public function rules()
     {
         return match($this->method()){
-            'POST' => [
+            'POST', 'PUT' => [
                 'name' => ['required'],
                 'address' => ['nullable', 'max:128'],
-                'parent_id' => ['required', function($attribute, $value, $fail){
-                    $parentDepartment = Department::find($value);
-                    if(!($parentDepartment || ($value == 0))){
-                        return $fail('上级id 不合法');
-                    }
-                }]
-            ],
-            'PUT' => [
-                'name' => ['required'],
-                'address' => ['nullable', 'max:128'],
-                'parent_id' => ['required', function($attribute, $value, $fail){
-                    if($this->parent_id == $this->department->id){
-                       return $fail('上级不能选择自身');
-                    }
-                    $parentDepartment = Department::find($value);
-                    if(!($parentDepartment || ($value == 0))){
-                        return $fail('上级id 不合法');
-                    }
-                }]
+                'parent_id' => ['nullable']
             ],
             default => [],
         };
