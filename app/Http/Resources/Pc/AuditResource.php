@@ -4,6 +4,7 @@ namespace App\Http\Resources\Pc;
 
 use App\Http\Resources\Api\AuditorResource;
 use App\Http\Resources\Api\WayResource;
+use App\Http\Resources\FileResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AuditResource extends JsonResource
@@ -37,6 +38,7 @@ class AuditResource extends JsonResource
             'auditors' => AuditorResource::collection($this->whenLoaded('auditors')),
             'visitor_type' => new VisitorTypeResource($this->whenLoaded('visitorType')),
             'ways' => WayResource::collection($this->whenLoaded('ways')),
+            'face_pictures' => FileResource::collection($this->whenLoaded('files')),
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
