@@ -14,8 +14,7 @@ class UserController extends Controller
         return UserResource::collection(User::whenRealName(request('real_name'))
             ->adminAlwaysBeHidden()
             ->with([
-                'department:id,name',
-                'department.ancestors:id,name',
+                'department.ancestors',
             ])
             ->get());
     }
