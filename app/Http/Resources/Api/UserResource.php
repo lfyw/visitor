@@ -20,17 +20,6 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'real_name' => $this->real_name,
             'department' => new DepartmentResource($this->whenLoaded('department')),
-            'user_type' => $this->whenLoaded('userType'),
-            'ways' => WayResource::collection($this->whenLoaded('ways')),
-            'role' => $this->role,
-            'user_status' => $this->user_status,
-            'duty' => $this->duty,
-            'id_card' => $this->id_card,
-            'phone_number' => $this->phone_number,
-            'issue_status' => $this->issue_status,
-            'created_at' => (string)$this->created_at,
-            'updated_at' => (string)$this->updated_at,
-            'face_pictures' => FileResource::collection($this->whenLoaded('files'))
         ];
     }
 }
