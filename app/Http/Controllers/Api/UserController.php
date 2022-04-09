@@ -12,6 +12,7 @@ class UserController extends Controller
     public function index()
     {
         return UserResource::collection(User::whenRealName(request('real_name'))
+            ->adminAlwaysBeHidden()
             ->with([
                 'department.ancestors',
                 'userType:id,name',

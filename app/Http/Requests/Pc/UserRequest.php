@@ -45,7 +45,6 @@ class UserRequest extends FormRequest
                 'way_ids.*' => ['required', 'exists:ways,id'],
             ],
             'PUT' => [
-                'name' => ['required', 'string', 'max:32', Rule::unique('users', 'name')->ignore($this->user)],
                 'real_name' => ['required', 'string', 'max:16'],
                 'department_id' => ['nullable', 'exists:departments,id'],
                 'user_type_id' => ['nullable', 'exists:user_types,id'],

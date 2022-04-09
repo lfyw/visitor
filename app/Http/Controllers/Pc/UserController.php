@@ -19,6 +19,7 @@ class UserController extends Controller
             ->whenRoleId(request('role_id'))
             ->whenUserStatus(request('user_status'))
             ->whenDepartmentId(request('department_id'))
+            ->adminShouldBeHidden(auth()->user())
             ->with([
                 'department.ancestors',
                 'userType:id,name',
@@ -59,11 +60,12 @@ class UserController extends Controller
     public function update(UserRequest $userRequest, User $user)
     {
         $user = DB::transaction(function() use ($user, $userRequest){
-            $validated = $userRequest->only(['name', 'real_name', 'department_id', 'user_type_id', 'role_id', 'user_status', 'duty', 'id_card', 'phone_number', 'issue_status']);
+            $validated = $userRequest->only(['real_name', 'department_id', 'user_type_id', 'role_id', 'user_status', 'duty', 'id_card', 'phone_number', 'issue_status']);
 
-            if ($userRequest->password){
-                $validated['password'] = bcrypt($userRequest->password);
+            if ($user->name == User::SUPER_ADMIN){
+                unset($validated['role_id']);
             }
+
             $user->fill($validated)->save();
             $user->syncFiles($userRequest->face_picture_ids);
             $user->ways()->sync($userRequest->way_ids);
@@ -80,9 +82,11 @@ class UserController extends Controller
     public function destroy(UserRequest $userRequest)
     {
         User::findMany($userRequest->ids)->each(function(User $user){
-            $user->detachFiles();
-            $user->ways()->detach();
-            $user->delete();
+            if ($user->name !== User::SUPER_ADMIN){
+                $user->detachFiles();
+                $user->ways()->detach();
+                $user->delete();
+            }
         });
         return no_content();
     }
