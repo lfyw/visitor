@@ -9,6 +9,7 @@ use App\Http\Requests\Pc\AuditRequest;
 use App\Http\Resources\Pc\AuditResource;
 use App\Models\Audit;
 use App\Models\Gate;
+use App\Models\Issue;
 use App\Models\Passageway;
 use App\Models\Role;
 use App\Models\Visitor;
@@ -130,6 +131,7 @@ class AuditController extends Controller
             VisitorIssue::add($audit);
             //成功则记录下发成功记录
             $gates->each->createIssue($visitor->id_card, true);
+            Issue::syncIssue($visitor->id_card);
             return send_data(new AuditResource($audit->load([
                 'visitorType:id,name',
                 'user:id,name,real_name,department_id',
@@ -141,6 +143,7 @@ class AuditController extends Controller
             Log::error('下发异常:' . $exception->getMessage());
             //失败则记录下发失败记录
             $gates->each->createIssue($visitor->id_card, false);
+            Issue::syncIssue($visitor->id_card);
             return send_message('网络异常', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
