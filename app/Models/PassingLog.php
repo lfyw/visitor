@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\PassingLogObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,10 +16,12 @@ class PassingLog extends Model
 
     protected static function booted()
     {
-        static::creating(function ($passingLog){
-            $passingLogCount = PassingLog::whereIdCard($passingLog->id_card)->count();
-            Visitor::whereIdCard($passingLog->id_card)->first()?->fill(['access_count' => $passingLogCount])->save();
-        });
+        static::observe(PassingLogObserver::class);
+    }
+
+    public function visitor(): BelongsTo
+    {
+        return $this->belongsTo(Visitor::class, 'id_card', 'id_card');
     }
 
     public function gate(): BelongsTo
@@ -26,8 +29,9 @@ class PassingLog extends Model
         return $this->belongsTo(Gate::class);
     }
 
-    public function scopeFilterByIdCard(Builder $builder, $idCard):Builder
+    public function scopeWhenIdCard(Builder $builder, $idCard): Builder
     {
-        return $builder->where('id_card', $idCard);
+        return $builder->when($idCard, fn(Builder $log) => $log->where('id_card', $idCard));
     }
+
 }

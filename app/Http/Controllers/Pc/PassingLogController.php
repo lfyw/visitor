@@ -11,6 +11,14 @@ class PassingLogController extends Controller
 {
     public function index()
     {
-        return PassingLogResource::collection(PassingLog::filterByIdCard(\request('id_card'))->with(['gate.passageways'])->latest('id')->paginate(\request('pageSize', 10)));
+        return PassingLogResource::collection(PassingLog::whenIdCard(\request('id_card'))
+            ->with([
+                'gate.passageways',
+                'visitor.visitorType',
+                'visitor.user.userType',
+            ])
+            ->latest('id')
+            ->paginate(\request('pageSize', 10))
+        );
     }
 }

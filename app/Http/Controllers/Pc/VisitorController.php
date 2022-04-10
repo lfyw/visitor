@@ -22,13 +22,13 @@ class VisitorController extends Controller
             ->whenAgeTo(request('age_to'))
             ->whenAccessDateFrom(request('access_date_from'))
             ->whenAccessDateTo(request('access_date_to'))
-            ->fromTemporary()
             ->with([
                 'ways',
                 'visitorType',
                 'user:id,name,real_name,id_card,department_id',
                 'user.department.ancestors'
             ])
+            ->fromTemporary()
             ->withFiles()
             ->latest('id')
             ->paginate(request('pageSize', 10))

@@ -25,7 +25,7 @@ class CreateVisitorsTable extends Migration
             $table->string('reason')->nullable()->comment('访问事由');
             $table->string('relation')->nullable()->comment('访客关系');
 
-            $table->unsignedInteger('user_id')->comment('被访问者id');
+            $table->unsignedInteger('user_id')->nullable()->comment('被访问者id');
 
             $table->unsignedInteger('limiter')->default(0)->comment('访问次数');
             $table->date('access_date_from')->nullable()->comment('起始访问期限');
