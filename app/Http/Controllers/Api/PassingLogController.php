@@ -28,6 +28,7 @@ class PassingLogController extends Controller
             'gate_id' => $gate->id,
             'passed_at' => now(),
         ]);
+
         return send_data(new PassingLogResource($passingLog->load('gate')));
     }
 }

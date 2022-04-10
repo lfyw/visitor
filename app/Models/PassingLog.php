@@ -13,6 +13,14 @@ class PassingLog extends Model
 
     protected $guarded = [];
 
+    protected static function booted()
+    {
+        static::creating(function ($passingLog){
+            $passingLogCount = PassingLog::whereIdCard($passingLog->id_card)->count();
+            Visitor::whereIdCard($passingLog->id_card)?->fill(['access_count' => $passingLogCount])->save();
+        });
+    }
+
     public function gate(): BelongsTo
     {
         return $this->belongsTo(Gate::class);
