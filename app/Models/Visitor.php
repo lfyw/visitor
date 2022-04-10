@@ -13,6 +13,9 @@ class Visitor extends Model
 {
     use HasFactory, HasFiles;
 
+    const USER = 1;
+    const TEMPORARY = 2;
+
     protected $guarded = [];
 
     protected $casts = [
@@ -32,6 +35,16 @@ class Visitor extends Model
     public function user():BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeFromUser(Builder $builder): Builder
+    {
+        return $builder->where('type', Visitor::USER);
+    }
+
+    public function scopeFromTemporary(Builder $builder):Builder
+    {
+        return $builder->where('type', Visitor::USER);
     }
 
     public function scopeWhenName(Builder $builder, $name):Builder
