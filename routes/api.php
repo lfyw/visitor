@@ -13,6 +13,7 @@ use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\ImportController;
 use App\Http\Controllers\Pc\IssueController;
 use App\Http\Controllers\Pc\PassagewayController;
+use App\Http\Controllers\Pc\PassingLogController;
 use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
 use App\Http\Controllers\Pc\RuleController;
@@ -111,8 +112,11 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
 
     //下发记录
     Route::get('issue', [IssueController::class, 'index'])->name('issue.index');
-    //重新下放
+    //重新下发
     Route::put('issue/{issue}', [IssueController::class, 'update'])->name('issue.update');
+
+    //访问记录
+    Route::get('passing-log', [PassingLogController::class, 'index'])->name('passing-log.index');
 });
 
 //身份证号是否合法
