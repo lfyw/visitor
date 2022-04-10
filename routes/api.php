@@ -111,6 +111,8 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
 
     //下发记录
     Route::get('issue', [IssueController::class, 'index'])->name('issue.index');
+    //重新下放
+    Route::put('issue/{issue}', [IssueController::class, 'update'])->name('issue.update');
 });
 
 //身份证号是否合法
