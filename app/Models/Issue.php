@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\IssueStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,11 @@ class Issue extends Model
     public function gate():BelongsTo
     {
         return $this->belongsTo(Gate::class);
+    }
+
+    public function scopeFilterByIdCard(Builder $builder, $idCard): Builder
+    {
+        return $builder->where('id_card', $idCard);
     }
 
     public static function syncIssue($idCard):void

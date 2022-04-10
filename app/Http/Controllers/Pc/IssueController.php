@@ -13,7 +13,7 @@ class IssueController extends Controller
 {
     public function index()
     {
-        return IssueResource::collection(Issue::with(['gate.passageways'])->latest('id')->paginate(\request('pageSize', 10)));
+        return IssueResource::collection(Issue::filterByIdCard(\request('id_card'))->with(['gate.passageways'])->latest('id')->paginate(\request('pageSize', 10)));
     }
 
     public function update(Issue $issue)
