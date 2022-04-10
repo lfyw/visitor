@@ -11,6 +11,7 @@ use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\ImportController;
+use App\Http\Controllers\Pc\IssueController;
 use App\Http\Controllers\Pc\PassagewayController;
 use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
@@ -107,6 +108,9 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
 
     //导入
     Route::post('import', ImportController::class)->name('import.invoke');
+
+    //下发记录
+    Route::get('issue', [IssueController::class, 'index'])->name('issue.index');
 });
 
 //身份证号是否合法

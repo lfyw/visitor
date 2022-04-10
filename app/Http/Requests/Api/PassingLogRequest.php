@@ -25,7 +25,8 @@ class PassingLogRequest extends FormRequest
     {
         return [
             'id_card' => ['required'],
-            'ip' => ['required']
+            'ip' => ['required'],
+            'passed_at' => ['required']
         ];
     }
 
@@ -33,7 +34,8 @@ class PassingLogRequest extends FormRequest
     {
         return [
             'id_card' => '身份证号',
-            'ip' => 'ip地址'
+            'ip' => 'ip地址',
+            'passed_at' => '通行时间'
         ];
     }
 }
