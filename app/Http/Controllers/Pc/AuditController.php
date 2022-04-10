@@ -84,7 +84,7 @@ class AuditController extends Controller
         $validated = Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
         $validated['gender'] = InfoHelper::identityCard()->sex($auditRequest->id_card) == 'M' ? '男' : '女';
         $validated['age'] = InfoHelper::identityCard()->age($auditRequest->id_card);
-
+        $validated['audit_at'] = now();
         $audit->fill($validated)->save();
         $audit->ways()->sync($auditRequest->way_ids);
         $audit->syncFiles($auditRequest->face_picture_ids);

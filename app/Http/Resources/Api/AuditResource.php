@@ -28,6 +28,7 @@ class AuditResource extends JsonResource
             'auditors' => AuditorResource::collection($this->whenLoaded('auditors')),
             'visitor_type' => new VisitorTypeResource($this->whenLoaded('visitorType')),
             'ways' => WayResource::collection($this->whenLoaded('ways')),
+            'audit_at' => (string)$this->audit_at,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
