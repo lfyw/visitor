@@ -17,7 +17,7 @@ class PassingLog extends Model
     {
         static::creating(function ($passingLog){
             $passingLogCount = PassingLog::whereIdCard($passingLog->id_card)->count();
-            Visitor::whereIdCard($passingLog->id_card)?->fill(['access_count' => $passingLogCount])->save();
+            Visitor::whereIdCard($passingLog->id_card)->first()?->fill(['access_count' => $passingLogCount])->save();
         });
     }
 
