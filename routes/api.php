@@ -17,7 +17,6 @@ use App\Http\Controllers\Pc\PassingLogController;
 use App\Http\Controllers\Pc\PermissionController;
 use App\Http\Controllers\Pc\RoleController;
 use App\Http\Controllers\Pc\RuleController;
-use App\Http\Controllers\Pc\SearchController;
 use App\Http\Controllers\Pc\TemplateController;
 use App\Http\Controllers\Pc\UserController;
 use App\Http\Controllers\Pc\UserTypeController;
@@ -119,7 +118,6 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     //访问记录
     Route::get('passing-log', [PassingLogController::class, 'index'])->name('passing-log.index');
 
-    Route::get('search', SearchController::class)->name('search.invoke');
 });
 
 //身份证号是否合法
