@@ -44,7 +44,7 @@ class Visitor extends Model
 
     public function scopeFromTemporary(Builder $builder):Builder
     {
-        return $builder->where('type', Visitor::USER);
+        return $builder->where('type', Visitor::TEMPORARY);
     }
 
     public function scopeWhenName(Builder $builder, $name):Builder
