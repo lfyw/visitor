@@ -33,6 +33,7 @@ class UserController extends Controller
     {
         $user = DB::transaction(function() use ($userRequest){
             $validated = $userRequest->only(['name', 'real_name', 'department_id', 'user_type_id', 'role_id', 'user_status', 'duty', 'id_card', 'phone_number', 'issue_status']);
+            $validated['id_card'] = Str::upper($validated['id_card']);
             $validated['password'] = bcrypt(Str::substr($validated['id_card'], -6, 6));
             $user = User::create($validated);
             $user->attachFiles($userRequest->face_picture_ids);

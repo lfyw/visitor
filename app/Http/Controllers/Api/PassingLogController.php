@@ -7,12 +7,14 @@ use App\Http\Requests\Api\PassingLogRequest;
 use App\Http\Resources\Api\PassingLogResource;
 use App\Models\Gate;
 use App\Models\PassingLog;
+use Illuminate\Support\Str;
 
 class PassingLogController extends Controller
 {
     public function store(PassingLogRequest $request)
     {
         $gate = Gate::firstWhere(['ip' => $request->ip]);
+        $idCard = Str::upper($request->id_card);
         //todo 测试逻辑，正式服测完要清掉
         if (!$gate){
             $gate = Gate::create([
@@ -24,7 +26,7 @@ class PassingLogController extends Controller
             ]);
         }
         $passingLog = PassingLog::create([
-            'id_card' => $request->id_card,
+            'id_card' => $idCard,
             'gate_id' => $gate->id,
             'passed_at' => now(),
         ]);

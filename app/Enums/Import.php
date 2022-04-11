@@ -10,4 +10,5 @@ enum Import:string implements Enumable
     use HasEnum;
 
     case DEPARTMENT = 'department';
+    case USER = 'user';
 }

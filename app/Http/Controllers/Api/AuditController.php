@@ -35,6 +35,7 @@ class AuditController extends Controller
     {
         $audit = DB::transaction(function () use ($auditRequest) {
             $validated = Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
+            $validated['id_card'] = \Str::upper($validated['id_card']);
             $validated['gender'] = InfoHelper::identityCard()->sex($auditRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($auditRequest->id_card);
             $audit = Audit::create($validated);

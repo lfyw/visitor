@@ -10,4 +10,5 @@ enum Template:string implements Enumable
     use HasEnum;
 
     case DEPARTMENT = '部门导入模板';
+    case USER = '人员导入模板';
 }
