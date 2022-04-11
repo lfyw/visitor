@@ -87,6 +87,7 @@ class AuditController extends Controller
         $validated['audit_at'] = now();
         $audit->fill($validated)->save();
         $audit->ways()->sync($auditRequest->way_ids);
+        $audit->syncFiles($auditRequest->face_picture_ids);
 
         //5. 审批拒绝则直接中止下发
         if ($audit->audit_status !== AuditStatus::PASS->getValue()) {
@@ -119,7 +120,7 @@ class AuditController extends Controller
             'access_time_to' => $audit->access_time_to,
         ]);
         $visitor->ways()->sync($auditRequest->way_ids);
-        $visitor->syncFiles($audit->files->pluck('id')->toArray());
+        $visitor->syncFiles($auditRequest->face_picture_ids);
 
         //7.下发
         $passageways = Passageway::getByWays($audit->ways)->get();
