@@ -118,6 +118,8 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     //访问记录
     Route::get('passing-log', [PassingLogController::class, 'index'])->name('passing-log.index');
 
+    //访问记录下拉框
+    Route::get('passing-log/type-select', [PassingLogController::class, 'select'])->name('passing-log.select');
 });
 
 //身份证号是否合法

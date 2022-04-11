@@ -34,4 +34,42 @@ class PassingLog extends Model
         return $builder->when($idCard, fn(Builder $log) => $log->where('id_card', $idCard));
     }
 
+    public function scopeWhenName(Builder $builder, $name): Builder
+    {
+        return $builder->when($name, fn(Builder $log) => $log->where('name', 'like', "{$name}"));
+    }
+
+    public function scopeWhenType(Builder $builder, $type): Builder
+    {
+        return $builder->when($type, fn(Builder $log) => $log->where('type', $type));
+    }
+
+    public function scopeWhenPassagewayId(Builder $builder, $passagewayId): Builder
+    {
+        return $builder->when($passagewayId, function (Builder $log) use ($passagewayId) {
+            $log->whereHas('gate', function (Builder $gate) use ($passagewayId) {
+                $gate->whereHas('passageways', fn(Builder $passageway) => $passageway->where('id', $passagewayId));
+            });
+        });
+    }
+
+    public function scopeWhenGateId(Builder $builder, $gateId): Builder
+    {
+        return $builder->when($gateId, fn(Builder $log) => $log->where('gate_id', $gateId));
+    }
+
+    public function scopeWhenRule(Builder $builder, $rule): Builder
+    {
+        return $builder->when($rule, fn(Builder $log) => $log->whereHas('gate', fn(Builder $log) => $log->where('rule', $rule)));
+    }
+
+    public function scopeWhenPassedAtFrom(Builder $builder, $passedAtFrom): Builder
+    {
+        return $builder->when($passedAtFrom, fn(Builder $log) => $log->where('passed_at', '>=', $passedAtFrom));
+    }
+
+    public function scopeWhenPassedAtTo(Builder $builder, $passedAtTo): Builder
+    {
+        return $builder->when($passedAtTo, fn(Builder $log) => $log->where('passed_at', '<=', $passedAtTo));
+    }
 }
