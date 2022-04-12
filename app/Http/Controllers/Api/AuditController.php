@@ -27,7 +27,7 @@ class AuditController extends Controller
                 'user.department.ancestors',
                 'ways',
                 'visitorType',
-                'auditors.user:id,name',
+                'auditors.user:id,name,real_name',
             ])->latest()->paginate(\request('pageSize', 10)));
     }
 
