@@ -23,7 +23,7 @@ class AuditController extends Controller
             ->accessDateTo(request('access_date_to'))
             ->whereIdCard(\request('id_card'))
             ->with([
-                'user:id,name,department_id',
+                'user:id,name,real_name,department_id',
                 'user.department.ancestors',
                 'ways',
                 'visitorType',
