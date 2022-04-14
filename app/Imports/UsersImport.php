@@ -35,11 +35,11 @@ class UsersImport implements ToCollection
                 $user = User::create($format['formatRow']);
                 $user->ways()->sync($format['wayIds']);
             } catch (ImportValidateException $exception) {
-                $row[8] = "'" . $row[8];
+                $this->formatNumberToString($row);
                 $this->pushError($row, $exception->getMessage());
                 return;
             } catch (\Exception $exception) {
-                $row[8] = "'" . $row[8];
+                $this->formatNumberToString($row);
                 \Log::error('导入人员异常:' . $exception->getMessage());
                 $this->pushError($row, '导入异常，请联系系统管理员处理');
                 return;

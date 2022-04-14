@@ -18,10 +18,6 @@ class Visitor extends Model
 
     protected $guarded = [];
 
-    protected $casts = [
-        'access_time' => 'array'
-    ];
-
     public function ways():BelongsToMany
     {
         return $this->belongsToMany(Way::class);
