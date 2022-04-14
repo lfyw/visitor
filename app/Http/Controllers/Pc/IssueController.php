@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Pc\IssueResource;
 use App\Models\Issue;
 use App\Supports\Sdks\VisitorIssue;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class IssueController extends Controller
@@ -28,6 +27,22 @@ class IssueController extends Controller
         } catch (\Exception $exception) {
             \Log::error('下发异常:' . $exception->getMessage());
             Issue::syncIssue($issue->id_card);
+            return send_message('网络异常，请稍后重试', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function deleteUser()
+    {
+        $this->validate(\request()->input(), [
+            'id_card' => 'required', 'exists:visitors,id_card'
+        ], [], [
+            'id_card' => '身份证号'
+        ]);
+        try {
+            VisitorIssue::delete(\request('id_card'));
+            return no_content();
+        } catch (\Exception $exception) {
+            \Log::error('删除下发异常:' . $exception->getMessage());
             return send_message('网络异常，请稍后重试', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

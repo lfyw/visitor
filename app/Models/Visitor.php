@@ -82,4 +82,9 @@ class Visitor extends Model
     {
         return $builder->when(filled($accessDateTo), fn(Builder $visitor) => $visitor->whereDate('access_date_to', '<=', $accessDateTo));
     }
+
+    public function getGates()
+    {
+        $passageways = Passageway::getByWays($this->ways->pluck('id')->toArray())->get();
+    }
 }

@@ -116,6 +116,8 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::get('issue', [IssueController::class, 'index'])->name('issue.index');
     //重新下发
     Route::put('issue/{issue}', [IssueController::class, 'update'])->name('issue.update');
+    //删除下发
+    Route::delete('issue/delete-user', [IssueController::class, 'deleteUser'])->name('issue.deleteUser');
 
     //访问记录
     Route::get('passing-log', [PassingLogController::class, 'index'])->name('passing-log.index');
