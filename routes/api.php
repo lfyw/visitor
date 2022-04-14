@@ -41,6 +41,10 @@ Route::prefix('pc')->group(function (){
     Route::post('authorizations', [AuthorizationController::class, 'login'])->name('authorizations.login');
     //文件上传
     Route::post('files', [FileController::class, 'store'])->name('files.store');
+    //访客设置下拉框
+    Route::get('visitor-settings/select', [VisitorSettingController::class, 'select'])->name('visitor-settings.select');
+    //路线下拉框
+    Route::get('ways/select', [WayController::class, 'select'])->name('ways.select');
 });
 
 Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
@@ -62,7 +66,6 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::apiResource('passageways', PassagewayController::class)->except('destroy');
 
     //路线管理
-    Route::get('ways/select', [WayController::class, 'select'])->name('ways.select');
     Route::delete('ways', [WayController::class, 'destroy'])->name('ways.destroy');
     Route::apiResource('ways', WayController::class)->except('destroy');
 
@@ -88,7 +91,6 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::apiResource('visitor-types', VisitorTypeController::class);
 
     //系统设置-访客设置
-    Route::get('visitor-settings/select', [VisitorSettingController::class, 'select'])->name('visitor-settings.select');
     Route::apiResource('visitor-settings', VisitorSettingController::class);
 
     //访客管理
@@ -133,5 +135,3 @@ Route::post('passing-log', [ApiPassingLogController::class, 'store'])->name('pas
 
 //人员列表
 Route::get('users', [ApiUserController::class, 'index'])->name('users.index');
-
-
