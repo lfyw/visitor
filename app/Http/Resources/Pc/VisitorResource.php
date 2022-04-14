@@ -24,6 +24,7 @@ class VisitorResource extends JsonResource
             'unit' => $this->unit,
             'reason' => $this->reason,
             'limiter' => $this->limiter,
+            'access_count' => $this->access_count,
             'user' => $this->whenLoaded('user'),
             'access_date_from' => $this->access_date_from,
             'access_date_to' => $this->access_date_to,
