@@ -25,7 +25,7 @@ class VisitorIssue
         $facePicture = $audit->files()->first();
         $parameter = [
             'id_card' => $audit->id_card,
-            'real_name' => $audit->real_name,
+            'real_name' => $audit->name,
             'face_picture' => config('app.url') . $facePicture->url,
             'access_date_from' => $audit->access_date_from,
             'access_date_to' => $audit->access_date_to,
