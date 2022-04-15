@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\UserRequest;
 use App\Http\Resources\Pc\UserResource;
 use App\Models\User;
+use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -86,6 +87,7 @@ class UserController extends Controller
             if ($user->name !== User::SUPER_ADMIN){
                 $user->detachFiles();
                 $user->ways()->detach();
+                VisitorIssue::delete($user->id_card);
                 $user->delete();
             }
         });

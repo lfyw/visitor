@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\VisitorRequest;
 use App\Http\Resources\Pc\VisitorResource;
 use App\Models\Visitor;
+use App\Supports\Sdks\VisitorIssue;
 use DB;
 use Illuminate\Support\Arr;
 
@@ -88,6 +89,7 @@ class VisitorController extends Controller
         DB::transaction(function() use ($visitorRequest){
             $visitors = Visitor::findMany($visitorRequest->ids);
             foreach($visitors as $visitor){
+                VisitorIssue::delete($visitor->id_card);
                 $visitor->detachFiles();
                 $visitor->ways()->detach();
                 $visitor->delete();
