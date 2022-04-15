@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Pc;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class PassingLogResource extends JsonResource
 {
@@ -34,7 +35,8 @@ class PassingLogResource extends JsonResource
                 'rule' => $this->gate->rule,
                 'passageway' => $this->gate->passageways
             ],
-            'passed_at' => (string)$this->passed_at
+            'passed_at' => (string)$this->passed_at,
+            'snapshot' => Storage::disk('snapshot')->url($this->snapshot)
         ];
     }
 
