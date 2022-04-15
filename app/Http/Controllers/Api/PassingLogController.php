@@ -25,14 +25,14 @@ class PassingLogController extends Controller
                 'rule' => '进'
             ]);
         }
-        if ($request->file('snapshot')) {
-            $path = $request->file('snapshot')->store(now()->format('Y-m') . '/' . now()->format('d'), 'snapshot');
-        }
+//        if ($request->file('snapshot')) {
+//            $path = $request->file('snapshot')->store(now()->format('Y-m') . '/' . now()->format('d'), 'snapshot');
+//        }
         $passingLog = PassingLog::create([
             'id_card' => $idCard,
             'gate_id' => $gate->id,
             'passed_at' => now(),
-            'snapshot' => $path ?? null
+//            'snapshot' => $path ?? null
         ]);
 
         return send_data(new PassingLogResource($passingLog->load('gate')));
@@ -52,14 +52,14 @@ class PassingLogController extends Controller
                 'rule' => '进'
             ]);
         }
-//        if ($request->file('snapshot')) {
-//            $path = $request->file('snapshot')->store(now()->format('Y-m') . '/' . now()->format('d'), 'snapshot');
-//        }
+        if ($request->file('snapshot')) {
+            $path = $request->file('snapshot')->store(now()->format('Y-m') . '/' . now()->format('d'), 'snapshot');
+        }
         $passingLog = PassingLog::create([
             'id_card' => $idCard,
             'gate_id' => $gate->id,
             'passed_at' => now(),
-//            'snapshot' => $path ?? null
+            'snapshot' => $path ?? null
         ]);
 
         return send_data(new PassingLogResource($passingLog->load('gate')));
