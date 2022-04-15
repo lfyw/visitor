@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\UserRequest;
 use App\Http\Resources\Pc\UserResource;
+use App\Models\OperationLog;
 use App\Models\User;
 use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
@@ -41,6 +43,9 @@ class UserController extends Controller
             $user->ways()->attach($userRequest->way_ids);
             return $user;
         });
+        event(new OperationDone(OperationLog::USER,
+            sprintf("新增人员【%s】", $userRequest->real_name),
+            auth()->id()));
         return send_data(new UserResource($user->load([
             'department.ancestors',
             'userType:id,name',
@@ -73,6 +78,9 @@ class UserController extends Controller
             $user->ways()->sync($userRequest->way_ids);
             return $user;
         });
+        event(new OperationDone(OperationLog::USER,
+            sprintf("编辑人员【%s】", $userRequest->real_name),
+            auth()->id()));
         return send_data(new UserResource($user->load([
             'department.ancestors',
             'userType:id,name',
@@ -91,6 +99,9 @@ class UserController extends Controller
                 $user->delete();
             }
         });
+        event(new OperationDone(OperationLog::USER,
+            sprintf("删除人员"),
+            auth()->id()));
         return no_content();
     }
 
@@ -102,6 +113,9 @@ class UserController extends Controller
             'password' => '密码'
         ]);
         $user->fill(['password' => bcrypt(request('password'))])->save();
+        event(new OperationDone(OperationLog::USER,
+            sprintf("重置【%s】密码", $user->real_name),
+            auth()->id()));
         return no_content(Response::HTTP_OK);
     }
 }

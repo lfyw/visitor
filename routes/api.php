@@ -12,6 +12,7 @@ use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\ImportController;
 use App\Http\Controllers\Pc\IssueController;
+use App\Http\Controllers\Pc\OperationLogController;
 use App\Http\Controllers\Pc\PassagewayController;
 use App\Http\Controllers\Pc\PassingLogController;
 use App\Http\Controllers\Pc\PermissionController;
@@ -118,12 +119,23 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::put('issue/{issue}', [IssueController::class, 'update'])->name('issue.update');
     //删除下发
     Route::delete('issue/delete-user', [IssueController::class, 'deleteUser'])->name('issue.deleteUser');
+    //多个访客下发
+    Route::post('issue/multi-visitor', [IssueController::class, 'multiVisitor'])->name('issue.multiVisitor');
+    //多个人员下发
+    Route::post('issue/multi-user', [IssueController::class, 'multiUser'])->name('issue.multiUser');
+    //全部访客下发
+    Route::post('issue/all-visitor', [IssueController::class, 'allVisitor'])->name('issue.allVisitor');
+    //全部人员下发
+    Route::post('issue/all-user', [IssueController::class, 'allUser'])->name('issue.allUser');
 
     //访问记录
     Route::get('passing-log', [PassingLogController::class, 'index'])->name('passing-log.index');
 
     //访问记录下拉框
     Route::get('passing-log/type-select', [PassingLogController::class, 'select'])->name('passing-log.select');
+
+    //操作日志
+    Route::get('operation-logs', [OperationLogController::class, 'index'])->name('operations-logs.index');
 });
 
 //身份证号是否合法

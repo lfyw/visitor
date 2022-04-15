@@ -23,6 +23,7 @@ class CreateIssuesTable extends Migration
             $table->string('rule')->comment('闸机方向');
             $table->timestamps();
         });
+        DB::statement("COMMENT ON TABLE issues is '下发记录表'");
     }
 
     /**

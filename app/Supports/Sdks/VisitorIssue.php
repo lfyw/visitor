@@ -103,4 +103,5 @@ class VisitorIssue
 
         return true;
     }
+
 }
