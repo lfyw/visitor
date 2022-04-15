@@ -134,6 +134,7 @@ Route::apiResource('audit', ApiAuditController::class)->only(['index', 'store'])
 
 //通行记录
 Route::post('passing-log', [ApiPassingLogController::class, 'store'])->name('passing-log.store');
+Route::post('passing-log-with-snapshot', [ApiPassingLogController::class, 'withSnapShot'])->name('passing-log.withSnapShot');
 
 //人员列表
 Route::get('users', [ApiUserController::class, 'index'])->name('users.index');
