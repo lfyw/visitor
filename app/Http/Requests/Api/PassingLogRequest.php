@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Api;
 
+use AlicFeng\IdentityCard\Application\IdentityCard;
+use App\Models\Issue;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PassingLogRequest extends FormRequest
@@ -24,7 +26,14 @@ class PassingLogRequest extends FormRequest
     public function rules()
     {
         return [
-            'id_card' => ['required'],
+            'id_card' => ['required', function($attribute, $value, $fail){
+                if (!(new IdentityCard())->validate($value)){
+                    return $fail('身份证号格式错误');
+                }
+                if (!Issue::where('id_card', $value)->doesntExist()){
+                    return $fail('当前身份证尚未下发');
+                }
+            }],
             'ip' => ['required'],
             'passed_at' => ['required'],
             'snapshot' => ['nullable']
