@@ -33,7 +33,7 @@ class IssueController extends Controller
 
     public function deleteUser()
     {
-        $this->validate(\request()->input(), [
+        $this->validate(\request(), [
             'id_card' => 'required', 'exists:visitors,id_card'
         ], [], [
             'id_card' => '身份证号'
