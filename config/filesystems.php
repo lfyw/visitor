@@ -65,6 +65,13 @@ return [
             'root' => storage_path('app/public/templates'),
             'url' => env('APP_URL').'/storage/templates/',
             'visibility' => 'public',
+        ],
+
+        'snapshot' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/snapshots'),
+            'url' => env('APP_URL').'/storage/snapshots/',
+            'visibility' => 'public',
         ]
     ],
 

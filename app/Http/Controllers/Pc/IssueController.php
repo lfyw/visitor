@@ -46,4 +46,6 @@ class IssueController extends Controller
             return send_message('网络异常，请稍后重试', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+
 }
