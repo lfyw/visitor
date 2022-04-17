@@ -91,7 +91,7 @@ class VisitorsImport implements ToCollection
     {
         throw_unless($accessDateTo, new ImportValidateException('截止访问日期不能为空'));
         try {
-            $parseFromAccessDateTo = Carbon::parse($accessDateFrom);
+            $parseFromAccessDateTo = Carbon::parse($accessDateTo);
         } catch (\Exception $exception) {
             throw new ImportValidateException('截止访问日期格式需要按照以下格式：2022-4-14');
         }
