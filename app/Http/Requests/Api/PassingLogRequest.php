@@ -30,7 +30,7 @@ class PassingLogRequest extends FormRequest
                 if (!(new IdentityCard())->validate($value)){
                     return $fail('身份证号格式错误');
                 }
-                if (!Issue::where('id_card', $value)->doesntExist()){
+                if (Issue::where('id_card', $value)->doesntExist()){
                     return $fail('当前身份证尚未下发');
                 }
             }],

@@ -28,7 +28,6 @@ class VisitorsImport implements ToCollection
     {
         $rows = $collection->skip(3);
         $this->setRowsCount($rows->count());
-
         $rows->each(function ($row) {
             try {
                 $format = $this->format($row);
