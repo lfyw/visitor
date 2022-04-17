@@ -14,7 +14,7 @@ class UserType extends Model
 
     public $timestamps = false;
 
-    public function users():HasMany
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }

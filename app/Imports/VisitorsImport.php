@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Visitor;
 use App\Models\VisitorType;
 use App\Models\Way;
+use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -57,7 +58,7 @@ class VisitorsImport implements ToCollection
         $formatRow['unit'] = $row[4];
         $formatRow['reason'] = $row[5];
         $formatRow['user_id'] = $this->validateUserId($row[6]);
-        $formatRow['relation'] = $row[7];
+        $formatRow['relation'] = $this->validateRelation($row[7], $row[1]);
         $formatRow['limiter'] = $this->validateLimiter($row[8]);
         $formatRow['access_date_from'] = $this->validateAccessDateFrom($row[9]);
         $formatRow['access_date_to'] = $this->validateAccessDateTo($row[10], $formatRow['access_date_from']);
@@ -92,7 +93,7 @@ class VisitorsImport implements ToCollection
         throw_unless($accessDateTo, new ImportValidateException('截止访问日期不能为空'));
         try {
             $parseFromAccessDateTo = Carbon::parse($accessDateTo);
-        } catch (\Exception $exception) {
+        } catch (InvalidFormatException $exception) {
             throw new ImportValidateException('截止访问日期格式需要按照以下格式：2022-4-14');
         }
         return $parseFromAccessDateTo;
@@ -103,10 +104,15 @@ class VisitorsImport implements ToCollection
         throw_unless($accessDateFrom, new ImportValidateException('起始访问日期不能为空'));
         try {
             $parse = Carbon::parse($accessDateFrom);
-        } catch (\Exception $exception) {
+        } catch (InvalidFormatException $exception) {
             throw new ImportValidateException('起始访问日期格式需要按照以下格式：2022-4-14');
         }
         return $parse;
+    }
+
+    protected function validateRelation($relation, $visitorType)
+    {
+        return $visitorType == VisitorType::FAMILY ? $relation : null;
     }
 
     protected function validateLimiter($limiter)
