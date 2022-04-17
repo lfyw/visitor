@@ -9,6 +9,7 @@ use App\Http\Controllers\Pc\AuditController;
 use App\Http\Controllers\Pc\AuthorizationController;
 use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
+use App\Http\Controllers\Pc\FacePictureController;
 use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\ImportController;
 use App\Http\Controllers\Pc\IssueController;
@@ -136,6 +137,9 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
 
     //操作日志
     Route::get('operation-logs', [OperationLogController::class, 'index'])->name('operations-logs.index');
+
+    //批量添加多个照片
+    Route::post('face-pictures', [FacePictureController::class, 'store'])->name('face-pictures.store');
 });
 
 //身份证号是否合法
