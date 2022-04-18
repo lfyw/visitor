@@ -7,6 +7,8 @@ use App\Http\Requests\Api\PassingLogRequest;
 use App\Http\Resources\Api\PassingLogResource;
 use App\Models\Gate;
 use App\Models\PassingLog;
+use App\Models\Visitor;
+use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Support\Str;
 
 class PassingLogController extends Controller
@@ -61,6 +63,13 @@ class PassingLogController extends Controller
             'passed_at' => now(),
             'snapshot' => $path ?? null
         ]);
+
+        //通行一次，对应访客数量累加一次通行记录
+        $visitor = Visitor::firstWhere('id_card', $idCard);
+        $visitor->increment('actual_pass_count');
+        if ($visitor->actual_pass_count >= $visitor->limiter){
+            VisitorIssue::delete($visitor->id_card);
+        }
 
         return send_data(new PassingLogResource($passingLog->load('gate')));
     }

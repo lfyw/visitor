@@ -131,6 +131,7 @@ class AuditController extends Controller
             //成功则记录下发成功记录
             $gates->each->createIssue($visitor->id_card, true);
             Issue::syncIssue($visitor->id_card);
+            $visitor->fill(['actual_pass_count' => 0])->save();
             return send_data(new AuditResource($audit->load([
                 'visitorType:id,name',
                 'user:id,name,real_name,department_id',
