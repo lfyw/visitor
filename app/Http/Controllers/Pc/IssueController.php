@@ -89,7 +89,7 @@ class IssueController extends Controller
                 request('access_time_from'),
                 request('access_time_to'),
                 request('limiter')
-            );
+            )->onQueue('issue');
         }
         event(new OperationDone(OperationLog::VISITOR,
             sprintf(sprintf("批量下发访客")),
@@ -126,7 +126,7 @@ class IssueController extends Controller
                 request('access_time_from'),
                 request('access_time_to'),
                 request('limiter')
-            );
+            )->onQueue('issue');
         }
         event(new OperationDone(OperationLog::VISITOR,
             sprintf(sprintf("批量下发员工")),
@@ -157,7 +157,7 @@ class IssueController extends Controller
                 request('access_time_from'),
                 request('access_time_to'),
                 request('limiter')
-            );
+            )->onQueue('issue');
         }
         event(new OperationDone(OperationLog::VISITOR,
             sprintf(sprintf("访客全部下发")),
@@ -189,7 +189,7 @@ class IssueController extends Controller
                 request('access_time_from'),
                 request('access_time_to'),
                 request('limiter')
-            );
+            )->onQueue('issue');
         }
         event(new OperationDone(OperationLog::VISITOR,
             sprintf(sprintf("员工全部下发")),
