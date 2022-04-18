@@ -76,7 +76,14 @@ class PushVisitor implements ShouldQueue
                 $response->throw();
                 $gates->each->createIssue($visitor->id_card, true);
                 Issue::syncIssue($visitor->id_card);
-                $visitor->fill(['actual_pass_count' => 0, 'limiter' => $this->limiter])->save();
+                $visitor->fill([
+                    'actual_pass_count' => 0,
+                    'limiter' => $this->limiter,
+                    'access_date_from' => $this->accessDateFrom,
+                    'access_date_to' => $this->accessDateTo,
+                    'access_time_from' => $this->accessTimeFrom,
+                    'access_time_to' => $this->accessTimeTo
+                ])->save();
                 Log::info('【生产环境】访客下发成功:', ['body' => $response->body(), 'json' => $response->json(), 'visitor' => $visitor, 'id_card' => $this->idCard]);
             } catch (\Exception $exception) {
                 Log::error('【生产环境】下发异常:' . $exception->getMessage());
