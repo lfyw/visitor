@@ -83,7 +83,13 @@ class IssueController extends Controller
         ]);
         $idCards = Visitor::whereIn('id', request('ids'))->pluck('id_card')->toArray();
         foreach ($idCards as $idCard){
-            PushVisitor::dispatch($idCard);
+            PushVisitor::dispatch($idCard,
+                request('access_date_from'),
+                request('access_date_to'),
+                request('access_time_from'),
+                request('access_time_to'),
+                request('limiter')
+            );
         }
         event(new OperationDone(OperationLog::VISITOR,
             sprintf(sprintf("批量下发访客")),
@@ -145,7 +151,13 @@ class IssueController extends Controller
         ]);
         $visitors = Visitor::all();
         foreach ($visitors->pluck('id_card')->toArray() as $idCard){
-            PushVisitor::dispatch($idCard);
+            PushVisitor::dispatch($idCard,
+                request('access_date_from'),
+                request('access_date_to'),
+                request('access_time_from'),
+                request('access_time_to'),
+                request('limiter')
+            );
         }
         event(new OperationDone(OperationLog::VISITOR,
             sprintf(sprintf("访客全部下发")),
