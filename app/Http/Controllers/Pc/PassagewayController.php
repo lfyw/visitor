@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\PassagewayRequest;
 use App\Http\Resources\Pc\PassagewayResource;
+use App\Models\OperationLog;
 use App\Models\Passageway;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
@@ -29,6 +31,9 @@ class PassagewayController extends Controller
             $passageway->gates()->attach($passagewayRequest->gate_ids);
             return $passageway;
         });
+        event(new OperationDone(OperationLog::PASSAGEWAY,
+            sprintf(sprintf("新增通道【%s】", $passagewayRequest->name)),
+            auth()->id()));
         return send_data(new PassagewayResource($passageway->load('gates')));
     }
 
@@ -44,6 +49,9 @@ class PassagewayController extends Controller
             $passageway->gates()->sync($passagewayRequest->gate_ids);
             return $passageway;
         });
+        event(new OperationDone(OperationLog::PASSAGEWAY,
+            sprintf(sprintf("编辑通道【%s】", $passagewayRequest->name)),
+            auth()->id()));
         return send_data(new PassagewayResource($passageway->load('gates')));
     }
 
@@ -57,7 +65,9 @@ class PassagewayController extends Controller
             }
             $passageway->delete();
         }
-
+        event(new OperationDone(OperationLog::PASSAGEWAY,
+            sprintf(sprintf("删除通道")),
+            auth()->id()));
         return no_content();
     }
 

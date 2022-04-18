@@ -16,6 +16,16 @@ class OperationLog extends Model
     protected $guarded = [];
 
     const USER = '人员管理';
+    const LOGIN = '登录';
+    const DEPARTMENT = '部门管理';
+    const BLACKLIST = '黑名单管理';
+    const VISITOR = '访客管理';
+    const GATE = '闸机管理';
+    const PASSAGEWAY = '通道管理';
+    const PERMISSION = '权限管理';
+    const ROLE = '角色管理';
+    const SETTING = '系统设置';
+    const WAY = '路线管理';
 
     public function user(): BelongsTo
     {

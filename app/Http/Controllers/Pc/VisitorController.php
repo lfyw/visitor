@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Pc;
 
 use AlicFeng\IdentityCard\InfoHelper;
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\VisitorRequest;
 use App\Http\Resources\Pc\VisitorResource;
+use App\Models\OperationLog;
 use App\Models\Visitor;
 use App\Supports\Sdks\VisitorIssue;
 use DB;
@@ -47,6 +49,9 @@ class VisitorController extends Controller
             $visitor->ways()->attach($visitorRequest->way_ids);
             return $visitor;
         });
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf("新增访客【%s】", $visitorRequest->name),
+            auth()->id()));
         return send_data(new VisitorResource($visitor->load([
             'ways',
             'visitorType',
@@ -76,6 +81,9 @@ class VisitorController extends Controller
             $visitor->ways()->sync($visitorRequest->way_ids);
             return $visitor;
         });
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf("编辑访客【%s】", $visitorRequest->name),
+            auth()->id()));
         return send_data(new VisitorResource($visitor->load([
             'ways',
             'visitorType',
@@ -95,6 +103,9 @@ class VisitorController extends Controller
                 $visitor->delete();
             }
         });
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf("删除访客"),
+            auth()->id()));
         return no_content();
     }
 }

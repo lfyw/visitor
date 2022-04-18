@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Exports\DepartmentsExport;
 use App\Exports\UsersExport;
 use App\Exports\VisitorsExport;
@@ -10,6 +11,7 @@ use App\Http\Requests\Pc\ImportRequest;
 use App\Imports\DepartmentsImport;
 use App\Imports\UsersImport;
 use App\Imports\VisitorsImport;
+use App\Models\OperationLog;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 
@@ -34,6 +36,10 @@ class ImportController extends Controller
             $export->setErrors($import->getErrorsWithHeader())->store($errorFilename, 'error_xlsx');
             $errorXlsx = Storage::disk('error_xlsx')->url($errorFilename);
         }
+
+        event(new OperationDone(OperationLog::DEPARTMENT,
+            sprintf(sprintf("批量导入部门")),
+            auth()->id()));
         return [
             'total_count' => $import->getRowsCount(),
             'error_count' => $import->getErrorsCount(),
@@ -54,6 +60,9 @@ class ImportController extends Controller
             $export->setErrors($import->getErrorsWithHeader())->store($errorFilename, 'error_xlsx');
             $errorXlsx = Storage::disk('error_xlsx')->url($errorFilename);
         }
+        event(new OperationDone(OperationLog::DEPARTMENT,
+            sprintf(sprintf("批量导入员工")),
+            auth()->id()));
         return [
             'total_count' => $import->getRowsCount(),
             'error_count' => $import->getErrorsCount(),
@@ -74,6 +83,9 @@ class ImportController extends Controller
             $export->setErrors($import->getErrorsWithHeader())->store($errorFilename, 'error_xlsx');
             $errorXlsx = Storage::disk('error_xlsx')->url($errorFilename);
         }
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf(sprintf("批量导入访客")),
+            auth()->id()));
         return [
             'total_count' => $import->getRowsCount(),
             'error_count' => $import->getErrorsCount(),

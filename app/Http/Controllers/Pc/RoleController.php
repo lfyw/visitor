@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\RoleRequest;
 use App\Http\Resources\Pc\RoleResource;
+use App\Models\OperationLog;
 use App\Models\Role;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -23,6 +25,9 @@ class RoleController extends Controller
             $role->permissions()->attach($roleRequest->permission_ids);
             return $role;
         });
+        event(new OperationDone(OperationLog::ROLE,
+            sprintf(sprintf("新增角色【%s】", $roleRequest->name)),
+            auth()->id()));
         return send_data(new RoleResource($role->load('permissions')));
     }
 
@@ -38,6 +43,9 @@ class RoleController extends Controller
             $role->permissions()->sync($roleRequest->permission_ids);
             return $role;
         });
+        event(new OperationDone(OperationLog::ROLE,
+            sprintf(sprintf("编辑角色【%s】", $roleRequest->name)),
+            auth()->id()));
         return send_data(new RoleResource($role->load('permissions')));
     }
 
@@ -54,6 +62,10 @@ class RoleController extends Controller
         }
 
         Role::whereIn('id', $roleRequest->ids)->whereNotIn('id', $invalidRoleIds)->get()->each->delete();
+
+        event(new OperationDone(OperationLog::ROLE,
+            sprintf(sprintf("删除角色【%s】")),
+            auth()->id()));
 
         return $invalidRoleIds
             ? send_message(sprintf("角色 %s 已关联人员，请先解除对应关联", implode(',', $invalidRoleNames)), Response::HTTP_OK)

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\FacePictureRequest;
+use App\Models\OperationLog;
 use App\Models\User;
 use App\Models\Visitor;
 
@@ -22,6 +24,11 @@ class FacePictureController extends Controller
                 }
             }
         }
+
+        event(new OperationDone(request('type') == 'user' ? OperationLog::USER : OperationLog::VISITOR,
+            sprintf(sprintf("更新%s面容照片", request('type') == 'user' ? '员工' : '访客')),
+            auth()->id()));
+
         return no_content();
     }
 }

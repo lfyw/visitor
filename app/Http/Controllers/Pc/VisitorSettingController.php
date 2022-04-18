@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\VisitorSettingRequest;
 use App\Http\Resources\Pc\VisitorSettingResource;
+use App\Models\OperationLog;
 use App\Models\VisitorSetting;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +25,9 @@ class VisitorSettingController extends Controller
             return $visitorSetting;
         });
 
+        event(new OperationDone(OperationLog::SETTING,
+            sprintf("新增访客设置"),
+            auth()->id()));
         return send_data(new VisitorSettingResource($visitorSetting->load('ways', 'visitorType')));
     }
 
@@ -38,7 +43,9 @@ class VisitorSettingController extends Controller
             $visitorSetting->ways()->sync($visitorSettingRequest->way_ids);
             return $visitorSetting;
         });
-
+        event(new OperationDone(OperationLog::SETTING,
+            sprintf("编辑访客设置"),
+            auth()->id()));
         return send_data(new VisitorSettingResource($visitorSetting->load('ways', 'visitorType')));
     }
 
@@ -46,6 +53,9 @@ class VisitorSettingController extends Controller
     {
         $visitorSetting->ways()->detach();
         $visitorSetting->delete();
+        event(new OperationDone(OperationLog::SETTING,
+            sprintf("删除访客设置"),
+            auth()->id()));
         return no_content();
     }
 

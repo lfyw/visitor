@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Pc\IssueResource;
 use App\Jobs\PushUser;
 use App\Jobs\PushVisitor;
 use App\Models\Issue;
+use App\Models\OperationLog;
 use App\Models\User;
 use App\Models\Visitor;
 use App\Supports\Sdks\VisitorIssue;
@@ -27,6 +29,9 @@ class IssueController extends Controller
             //成功则记录下发成功记录
             $issue->fill(['issue_status' => true])->save();
             Issue::syncIssue($issue->id_card);
+            event(new OperationDone(OperationLog::VISITOR,
+                sprintf(sprintf("重新下发")),
+                auth()->id()));
             return no_content();
         } catch (\Exception $exception) {
             \Log::error('下发异常:' . $exception->getMessage());
@@ -44,6 +49,9 @@ class IssueController extends Controller
         ]);
         try {
             VisitorIssue::delete(\request('id_card'));
+            event(new OperationDone(OperationLog::VISITOR,
+                sprintf(sprintf("删除下发")),
+                auth()->id()));
             return no_content();
         } catch (\Exception $exception) {
             \Log::error('删除下发异常:' . $exception->getMessage());
@@ -74,6 +82,9 @@ class IssueController extends Controller
         foreach ($idCards as $idCard){
             PushVisitor::dispatch($idCard);
         }
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf(sprintf("批量下发访客")),
+            auth()->id()));
         return send_message('后台下发中...', Response::HTTP_OK);
     }
 
@@ -108,6 +119,9 @@ class IssueController extends Controller
                 request('limiter')
             );
         }
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf(sprintf("批量下发员工")),
+            auth()->id()));
         return send_message('后台下发中...', Response::HTTP_OK);
     }
 
@@ -130,6 +144,9 @@ class IssueController extends Controller
         foreach ($visitors->pluck('id_card')->toArray() as $idCard){
             PushVisitor::dispatch($idCard);
         }
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf(sprintf("访客全部下发")),
+            auth()->id()));
         return send_message('后台下发中...', Response::HTTP_OK);
     }
 
@@ -159,6 +176,9 @@ class IssueController extends Controller
                 request('limiter')
             );
         }
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf(sprintf("员工全部下发")),
+            auth()->id()));
         return send_message('后台下发中...', Response::HTTP_OK);
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\WayRequest;
 use App\Http\Resources\Pc\WayResource;
+use App\Models\OperationLog;
 use App\Models\Way;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
@@ -30,6 +32,9 @@ class WayController extends Controller
             $way->passageways()->attach($wayRequest->passageway_ids);
             return $way;
         });
+        event(new OperationDone(OperationLog::WAY,
+            sprintf("新增路线【%s】", $wayRequest->name),
+            auth()->id()));
         return send_data(new WayResource($way->load('passageways')));
     }
 
@@ -45,12 +50,18 @@ class WayController extends Controller
             $way->passageways()->sync($wayRequest->passageway_ids);
             return $way;
         });
+        event(new OperationDone(OperationLog::WAY,
+            sprintf("编辑路线【%s】", $wayRequest->name),
+            auth()->id()));
         return send_data(new WayResource($way->load('passageways')));
     }
 
     public function destroy(WayRequest $wayRequest)
     {
         Way::destroy($wayRequest->ids);
+        event(new OperationDone(OperationLog::WAY,
+            sprintf("删除路线"),
+            auth()->id()));
         return no_content();
     }
 

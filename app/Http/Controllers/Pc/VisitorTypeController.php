@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\VisitorTypeRequest;
 use App\Http\Resources\Pc\VisitorTypeResource;
+use App\Models\OperationLog;
 use App\Models\Visitor;
 use App\Models\VisitorType;
 use Illuminate\Http\Response;
@@ -19,6 +21,9 @@ class VisitorTypeController extends Controller
     public function store(VisitorTypeRequest $visitorTypeRequest)
     {
         $visitorType = VisitorType::create($visitorTypeRequest->validated());
+        event(new OperationDone(OperationLog::SETTING,
+            sprintf("新增访客类型【%s】", $visitorTypeRequest->name),
+            auth()->id()));
         return send_data(new VisitorTypeResource($visitorType));
     }
 
@@ -30,6 +35,9 @@ class VisitorTypeController extends Controller
     public function update(VisitorType $visitorType, VisitorTypeRequest $visitorTypeRequest)
     {
         $visitorType->fill($visitorTypeRequest->validated())->save();
+        event(new OperationDone(OperationLog::SETTING,
+            sprintf("编辑访客类型【%s】", $visitorTypeRequest->name),
+            auth()->id()));
         return send_data(new VisitorTypeResource($visitorType));
     }
 
@@ -44,6 +52,9 @@ class VisitorTypeController extends Controller
         }
 
         $visitorType->delete();
+        event(new OperationDone(OperationLog::SETTING,
+            sprintf("删除访客类型"),
+            auth()->id()));
         return no_content();
     }
 

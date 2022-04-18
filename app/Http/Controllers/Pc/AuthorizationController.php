@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Pc;
 
+use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\AuthorizationRequest;
 use App\Http\Resources\Pc\UserResource;
+use App\Models\OperationLog;
 use App\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -19,6 +21,9 @@ class AuthorizationController extends Controller
         }
 
         $token = $user->createToken('sanctum');
+        event(new OperationDone(OperationLog::LOGIN,
+            sprintf("登录系统"),
+            $user->id));
         return [
             'user' => new UserResource($user->loadMissing([
                 'department.ancestors',
