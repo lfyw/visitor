@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Pc;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Pc\IssueResource;
-use App\Jobs\Push;
+use App\Jobs\PushUser;
+use App\Jobs\PushVisitor;
 use App\Models\Issue;
 use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
@@ -52,15 +53,32 @@ class IssueController extends Controller
     {
         $this->validate(request(), [
             'id_cards' => ['required', 'array'],
-            'id_cards.*' => ['required', 'exists:visitors,id_card']
+            'id_cards.*' => ['required', 'exists:visitors,id_card'],
+            ''
         ], [], [
             'id_cards' => '身份证号',
             'id_cards.*' => '身份证号',
         ]);
         foreach (request('id_cards') as $idCard){
-            Push::dispatch($idCard);
+            PushVisitor::dispatch($idCard);
         }
         return send_message('后台下发中...', Response::HTTP_OK);
     }
 
+
+    public function multiUser()
+    {
+        $this->validate(request(), [
+            'id_cards' => ['required', 'array'],
+            'id_cards.*' => ['required', 'exists:visitors,id_card'],
+            ''
+        ], [], [
+            'id_cards' => '身份证号',
+            'id_cards.*' => '身份证号',
+        ]);
+        foreach (request('id_cards') as $idCard){
+            PushUser::dispatch($idCard);
+        }
+        return send_message('后台下发中...', Response::HTTP_OK);
+    }
 }
