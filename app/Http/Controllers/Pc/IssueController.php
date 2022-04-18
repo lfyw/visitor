@@ -25,7 +25,7 @@ class IssueController extends Controller
     {
         try {
             //下发请求
-            VisitorIssue::addByIdCard($issue->id_card, $issue->gate->toArray());
+            VisitorIssue::addByIdCard($issue->id_card, $issue->gate()->pluck('ip', 'number')->toArray());
             //成功则记录下发成功记录
             $issue->fill(['issue_status' => true])->save();
             Issue::syncIssue($issue->id_card);
