@@ -61,8 +61,8 @@ class VisitorsImport implements ToCollection
         $formatRow['limiter'] = $this->validateLimiter($row[8]);
         $formatRow['access_date_from'] = $this->validateAccessDateFrom($row[9]);
         $formatRow['access_date_to'] = $this->validateAccessDateTo($row[10], $formatRow['access_date_from']);
-        $formatRow['access_time_from'] = $row[11];
-        $formatRow['access_time_to'] = $row[12];
+        $formatRow['access_time_from'] = $this->validateAccessTimeFrom($row[11]);
+        $formatRow['access_time_to'] = $this->validateAccessTimeTo($row[12]);
         $formatRow['type'] = Visitor::TEMPORARY;
         $wayIds = $this->validateWayIds($row[13]);
         return compact('formatRow', 'wayIds');
@@ -74,6 +74,20 @@ class VisitorsImport implements ToCollection
         $row[3] = "'" . $row[3];
         $row[6] = "'" . $row[6];
         return $row;
+    }
+
+    protected function validateAccessTimeFrom($accessTimeFrom)
+    {
+        throw_unless($accessTimeFrom, new ImportValidateException('起始访问时间不能为空'));
+        throw_unless(preg_match("/0[0-9]:[0-5][0-9]|1[0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]/", $accessTimeFrom));
+        return $accessTimeFrom;
+    }
+
+    protected function validateAccessTimeTo($accessTimeTo)
+    {
+        throw_unless($accessTimeTo, new ImportValidateException('截止访问时间不能为空'));
+        throw_unless(preg_match("/0[0-9]:[0-5][0-9]|1[0-9]:[0-5][0-9]|2[0-3]:[0-5][0-9]/", $accessTimeTo));
+        return $accessTimeTo;
     }
 
     protected function validateWayIds($ways)
