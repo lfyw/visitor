@@ -45,6 +45,7 @@ class PushVisitor implements ShouldQueue
         $facePicture = $visitor->files()->first();
         if (!$facePicture) {
             Log::info(sprintf('访客【%s】面容照片不存在，停止下发!', $this->idCard), ['id_card', $this->idCard, 'visitor' => $visitor]);
+            return ;
         }
 
         if (config('app.env') !== 'production') {

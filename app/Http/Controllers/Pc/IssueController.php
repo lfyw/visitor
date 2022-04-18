@@ -70,14 +70,30 @@ class IssueController extends Controller
     {
         $this->validate(request(), [
             'id_cards' => ['required', 'array'],
-            'id_cards.*' => ['required', 'exists:visitors,id_card'],
-            ''
+            'id_cards.*' => ['required', 'exists:users,id_card'],
+            'access_date_from' => ['required'],
+            'access_date_to' => ['required'],
+            'access_time_from' => ['required'],
+            'access_time_to' => ['required'],
+            'limiter' => ['required'],
         ], [], [
             'id_cards' => '身份证号',
             'id_cards.*' => '身份证号',
+            'access_date_from' => '起始访问日期',
+            'access_date_to' => '截止访问日期',
+            'access_time_from' => '起始访问时间',
+            'access_time_to' => '截止访问时间',
+            'limiter' => '访问次数限制'
         ]);
         foreach (request('id_cards') as $idCard){
-            PushUser::dispatch($idCard);
+            PushUser::dispatch(
+                $idCard,
+                request('access_date_from'),
+                request('access_date_to'),
+                request('access_time_from'),
+                request('access_time_to'),
+                request('limiter')
+            );
         }
         return send_message('后台下发中...', Response::HTTP_OK);
     }
