@@ -47,11 +47,11 @@ class VisitorIssue
         $visitor = Visitor::firstWhere('id_card', $idCard)->loadFiles();
 
         if (config('app.env') !== 'production') {
-            Log::info('【测试环境】临时访客下放直接通过', ['id_card' => $idCard, 'visitor' => $visitor]);
+            Log::info('【测试环境】重新下放直接通过', ['id_card' => $idCard, 'visitor' => $visitor]);
             return true;
         }
 
-        Log::info('【生产环境】临时访客审批通过=>下放', ['id_card' => $idCard, 'visitor' => $visitor]);
+        Log::info('【生产环境】重新下放', ['id_card' => $idCard, 'visitor' => $visitor]);
 
         $parameter = [
             'id_card' => $visitor->id_card,
