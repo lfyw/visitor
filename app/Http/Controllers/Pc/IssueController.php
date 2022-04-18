@@ -56,9 +56,19 @@ class IssueController extends Controller
         $this->validate(request(), [
             'ids' => ['required', 'array'],
             'ids.*' => ['required', 'exists:visitors,id_card'],
+            'access_date_from' => ['required'],
+            'access_date_to' => ['required'],
+            'access_time_from' => ['required'],
+            'access_time_to' => ['required'],
+            'limiter' => ['required'],
         ], [], [
             'ids' => '身份证号',
             'ids.*' => '身份证号',
+            'access_date_from' => '起始访问日期',
+            'access_date_to' => '截止访问日期',
+            'access_time_from' => '起始访问时间',
+            'access_time_to' => '截止访问时间',
+            'limiter' => '访问次数限制'
         ]);
         $idCards = Visitor::whereIn('id', request('ids'))->pluck('id_card')->toArray();
         foreach ($idCards as $idCard){
@@ -103,6 +113,19 @@ class IssueController extends Controller
 
     public function allVisitor()
     {
+        $this->validate(request(), [
+            'access_date_from' => ['required'],
+            'access_date_to' => ['required'],
+            'access_time_from' => ['required'],
+            'access_time_to' => ['required'],
+            'limiter' => ['required'],
+        ], [], [
+            'access_date_from' => '起始访问日期',
+            'access_date_to' => '截止访问日期',
+            'access_time_from' => '起始访问时间',
+            'access_time_to' => '截止访问时间',
+            'limiter' => '访问次数限制'
+        ]);
         $visitors = Visitor::all();
         foreach ($visitors->pluck('id_card')->toArray() as $idCard){
             PushVisitor::dispatch($idCard);

@@ -24,7 +24,14 @@ class PushVisitor implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public $idCard)
+    public function __construct(
+        public $idCard,
+        public $accessDateFrom,
+        public $accessDateTo,
+        public $accessTimeFrom,
+        public $accessTimeTo,
+        public $limiter
+    )
     {
 
     }
@@ -58,11 +65,11 @@ class PushVisitor implements ShouldQueue
                     'id_card' => $visitor->id_card,
                     'real_name' => $visitor->name,
                     'face_picture' => config('app.url') . $facePicture->url,
-                    'access_date_from' => $visitor->access_date_from,
-                    'access_date_to' => $visitor->access_date_to,
-                    'access_time_from' => $visitor->access_time_from,
-                    'access_time_to' => $visitor->access_time_to,
-                    'limiter' => $visitor->limiter,
+                    'access_date_from' => $this->accessDateFrom,
+                    'access_date_to' => $this->accessDateTo,
+                    'access_time_from' => $this->accessTimeFrom,
+                    'access_time_to' => $this->accessTimeTo,
+                    'limiter' => $this->limiter,
                     'gate' => $gatesFormat,
                 ];
                 $response = Http::timeout(5)->post(Constant::getSetUserUrl(), $parameter);
