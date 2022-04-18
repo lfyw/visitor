@@ -29,6 +29,9 @@ class IssueController extends Controller
             //成功则记录下发成功记录
             $issue->fill(['issue_status' => true])->save();
             Issue::syncIssue($issue->id_card);
+
+            $visitor = Visitor::firstWhere('id_card', $issue->id_card);
+            $visitor->fill(['actual_pass_count' => 0])->save();
             event(new OperationDone(OperationLog::VISITOR,
                 sprintf(sprintf("重新下发")),
                 auth()->id()));
@@ -63,7 +66,7 @@ class IssueController extends Controller
     {
         $this->validate(request(), [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'exists:visitors,id_card'],
+            'ids.*' => ['required', 'exists:visitors,id'],
             'access_date_from' => ['required'],
             'access_date_to' => ['required'],
             'access_time_from' => ['required'],
@@ -93,7 +96,7 @@ class IssueController extends Controller
     {
         $this->validate(request(), [
             'ids' => ['required', 'array'],
-            'ids.*' => ['required', 'exists:users,id_card'],
+            'ids.*' => ['required', 'exists:users,id'],
             'access_date_from' => ['required'],
             'access_date_to' => ['required'],
             'access_time_from' => ['required'],
