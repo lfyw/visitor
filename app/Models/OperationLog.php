@@ -26,6 +26,7 @@ class OperationLog extends Model
     const ROLE = '角色管理';
     const SETTING = '系统设置';
     const WAY = '路线管理';
+    const BACKUP = '备份管理';
 
     public function user(): BelongsTo
     {

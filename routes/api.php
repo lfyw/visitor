@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\IdCardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\Pc\AuditController;
 use App\Http\Controllers\Pc\AuthorizationController;
+use App\Http\Controllers\Pc\BackupController;
 use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\FacePictureController;
@@ -140,6 +141,9 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
 
     //批量添加多个照片
     Route::post('face-pictures', [FacePictureController::class, 'store'])->name('face-pictures.store');
+
+    //数据备份
+    Route::apiResource('backup', BackupController::class);
 });
 
 //身份证号是否合法

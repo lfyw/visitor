@@ -72,7 +72,8 @@ return [
             'root' => storage_path('app/public/snapshots'),
             'url' => env('APP_URL').'/storage/snapshots/',
             'visibility' => 'public',
-        ]
+        ],
+
     ],
 
     /*
