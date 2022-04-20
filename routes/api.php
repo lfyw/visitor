@@ -143,7 +143,8 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::post('face-pictures', [FacePictureController::class, 'store'])->name('face-pictures.store');
 
     //数据备份
-    Route::apiResource('backup', BackupController::class);
+    Route::get('backup/{backup}/download', [BackupController::class, 'download'])->name('backup.download');
+    Route::apiResource('backup', BackupController::class)->only(['index', 'store', 'destroy']);
 });
 
 //身份证号是否合法
