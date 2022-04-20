@@ -48,7 +48,7 @@ class PushVisitor implements ShouldQueue
 
         $passageways = Passageway::getByWays($visitor->ways)->get();
         $gates = Gate::getByPassageways($passageways)->get();
-        $gatesFormat = Gate::getByPassageways($passageways)->get(['ip', 'number'])->toArray();
+        $gatesFormat = Gate::getByPassageways($passageways)->get(['ip'])->toArray();
         $facePicture = $visitor->files()->first();
         if (!$facePicture) {
             Log::info(sprintf('访客【%s】面容照片不存在，停止下发!', $this->idCard), ['id_card', $this->idCard, 'visitor' => $visitor]);

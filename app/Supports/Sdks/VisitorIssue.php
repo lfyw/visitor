@@ -20,7 +20,7 @@ class VisitorIssue
 
         Log::info('【生产环境】临时访客审批通过 => 启动下放', ['audit' => $audit]);
         $passageways = Passageway::getByWays($audit->ways)->get();
-        $gates = Gate::getByPassageways($passageways)->get(['ip', 'number'])->toArray();
+        $gates = Gate::getByPassageways($passageways)->get(['ip'])->toArray();
 
         $facePicture = $audit->files()->first();
         $parameter = [

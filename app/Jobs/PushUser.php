@@ -78,7 +78,7 @@ class PushUser implements ShouldQueue
 
         $passageways = Passageway::getByWays($visitor->ways)->get();
         $gates = Gate::getByPassageways($passageways)->get();
-        $gatesFormat = Gate::getByPassageways($passageways)->get(['ip', 'number'])->toArray();
+        $gatesFormat = Gate::getByPassageways($passageways)->get(['ip'])->toArray();
 
         if (config('app.env') !== 'production') {
             Log::info('【测试环境】员工下放直接通过', ['id_card' => $this->idCard, 'visitor' => $visitor]);
