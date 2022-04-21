@@ -6,6 +6,7 @@ use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\UserRequest;
 use App\Http\Resources\Pc\UserResource;
+use App\Models\Auditor;
 use App\Models\OperationLog;
 use App\Models\User;
 use App\Supports\Sdks\VisitorIssue;
@@ -76,6 +77,8 @@ class UserController extends Controller
             $user->fill($validated)->save();
             $user->syncFiles($userRequest->face_picture_ids);
             $user->ways()->sync($userRequest->way_ids);
+
+            Auditor::whereUserId($user->id)->first()?->fill(['user_real_name' => $userRequest->real_name])->save();
             return $user;
         });
         event(new OperationDone(OperationLog::USER,
