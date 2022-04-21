@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUserToAuditorsTable extends Migration
+class AddUserRealNameToAuditorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddUserToAuditorsTable extends Migration
     public function up()
     {
         Schema::table('auditors', function (Blueprint $table) {
-            $table->string('user')->nullable()->comment('审核人信息');
+            $table->string('user_real_name')->nullable()->comment('审核人信息');
         });
     }
 
@@ -26,7 +26,7 @@ class AddUserToAuditorsTable extends Migration
     public function down()
     {
         Schema::table('auditors', function (Blueprint $table) {
-            $table->dropColumn('user');
+            $table->dropColumn('user_real_name');
         });
     }
 }

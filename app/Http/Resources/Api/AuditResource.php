@@ -28,7 +28,6 @@ class AuditResource extends JsonResource
             'audit_status' => $this->audit_status,
             'user' => $this->whenLoaded('user'),
             'auditors' => AuditorResource::collection($this->whenLoaded('auditors')),
-            'auditor_names' => implode('、', $this->auditors?->pluck('user')->toArray() ?: []),
             'visitor_type' => new VisitorTypeResource($this->whenLoaded('visitorType')),
             'ways' => WayResource::collection($this->whenLoaded('ways')),
             'audit_at' => (string)$this->audit_at,

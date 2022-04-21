@@ -16,7 +16,7 @@ class AuditorResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user' => $this->whenLoaded('user'),
+            'user_real_name' => $this->user_real_name,
             'audit' => $this->whenLoaded('audit'),
             'audit_status' => $this->audit_status,
             'created_at' => (string)$this->created_at,
