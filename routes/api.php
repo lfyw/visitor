@@ -12,6 +12,7 @@ use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
 use App\Http\Controllers\Pc\FacePictureController;
 use App\Http\Controllers\Pc\GateController;
+use App\Http\Controllers\Pc\BoardController;
 use App\Http\Controllers\Pc\ImportController;
 use App\Http\Controllers\Pc\IssueController;
 use App\Http\Controllers\Pc\OperationLogController;
@@ -145,6 +146,15 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     //数据备份
     Route::get('backup/{backup}/download', [BackupController::class, 'download'])->name('backup.download');
     Route::apiResource('backup', BackupController::class)->only(['index', 'store', 'destroy']);
+
+    //数据看板-进出人数/人次统计
+    Route::get('board/passing-log-chart', [BoardController::class, 'passingLogChart'])->name('board.passingLogChart');
+    //数据看板-通行时间统计
+    Route::get('board/passing-time-chart', [BoardController::class, 'passingTimeChart'])->name('board.passingTimeChart');
+    //数据看板-通道通行人次统计
+    Route::get('board/passageway-passing-chart', [BoardController::class, 'passagewayPassingChart'])->name('board.passagewayPassingChart');
+
+    Route::get('board', [BoardController::class, 'index'])->name('board.index');
 });
 
 //身份证号是否合法
