@@ -71,7 +71,7 @@ class VisitorIssue
 
     public static function delete($idCard, $gates = null)
     {
-        $visitor = Visitor::firstWhere('id_card', $idCard)->loadFiles();
+        $visitor = Visitor::firstWhere('id_card', $idCard)?->loadFiles();
 
         if (config('app.env') !== 'production') {
             Log::info('【测试环境】临时访客删除下放直接通过', ['id_card' => $idCard, 'visitor' => $visitor]);
