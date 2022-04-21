@@ -4,18 +4,16 @@ namespace App\Supports\Sdks;
 
 class Constant
 {
-    const HOST = '192.168.1.119';
-    const PORT = '9003';
     const SET_USER_PATH = '/setuser';
     const DEL_USER_PATH = '/deluser';
 
     public static function getSetUserUrl()
     {
-        return self::HOST . ':' . self::PORT . self::SET_USER_PATH;
+        return config('services.issue.host') . ':' .  config('services.issue.port') . self::SET_USER_PATH;
     }
 
     public static function getDelUserUrl()
     {
-        return self::HOST . ':' . self::PORT . self::DEL_USER_PATH;
+        return  config('services.issue.host') . ':' . config('services.issue.port') . self::DEL_USER_PATH;
     }
 }

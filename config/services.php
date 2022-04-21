@@ -30,4 +30,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'issue' => [
+        'host' => env('ISSUE_HOST', '192.168.1.119'),
+        'port' => env('ISSUE_PORT', '9003')
+    ],
 ];
