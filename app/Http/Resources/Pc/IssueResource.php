@@ -14,7 +14,7 @@ class IssueResource extends JsonResource
      */
     public function toArray($request)
     {
-        $passageway = $this->gate->passageways()->first();
+        $passageway = $this->gate?->passageways()->first();
         return [
             'id' => $this->id,
             'gate' => [

@@ -45,7 +45,7 @@ class GateController extends Controller
         $gates = Gate::findMany($gateRequest->ids);
         foreach($gates as $gate){
             if($gate->passageways?->first()){
-                return error(sprintf("%s 通道关联此闸门，请先解除关联", implode(',', $$gate->passageways->pluck('name')->toArray())), Response::HTTP_UNPROCESSABLE_ENTITY);
+                return error(sprintf("%s 通道关联此闸门，请先解除关联", implode(',', $gate->passageways->pluck('name')->toArray())), Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
         Gate::destroy($gateRequest->ids);
