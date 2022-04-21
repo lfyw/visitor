@@ -51,12 +51,14 @@ class AuditController extends Controller
                 if ($approver['type'] == ApproverType::INTERVIEWEE->getValue()) {
                     $audit->auditors()->create([
                         'user_id' => $audit->user_id,
+                        'user' => User::find($audit->user_id)->real_name
                     ]);
                 }
                 if ($approver['type'] == ApproverType::ROLE->getValue()) {
                     $roler = User::whereRoleId($approver['role_id'])->first();
                     $audit->auditors()->create([
                         'user_id' => $roler->id,
+                        'user' => $roler->real_name
                     ]);
                 }
             });

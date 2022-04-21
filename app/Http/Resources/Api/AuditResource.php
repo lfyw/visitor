@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Api;
 
+use App\Models\Auditor;
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AuditResource extends JsonResource
@@ -9,7 +11,7 @@ class AuditResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
@@ -26,6 +28,7 @@ class AuditResource extends JsonResource
             'audit_status' => $this->audit_status,
             'user' => $this->whenLoaded('user'),
             'auditors' => AuditorResource::collection($this->whenLoaded('auditors')),
+            'auditor_names' => implode('、', $this->auditors?->pluck('user')->toArray() ?: []),
             'visitor_type' => new VisitorTypeResource($this->whenLoaded('visitorType')),
             'ways' => WayResource::collection($this->whenLoaded('ways')),
             'audit_at' => (string)$this->audit_at,

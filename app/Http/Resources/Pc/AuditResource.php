@@ -36,6 +36,7 @@ class AuditResource extends JsonResource
             'limiter' => $this->limiter,
             'user' => $this->whenLoaded('user'),
             'auditors' => AuditorResource::collection($this->whenLoaded('auditors')),
+            'auditor_names' => implode('、', $this->auditors?->pluck('user')->toArray() ?: []),
             'visitor_type' => new VisitorTypeResource($this->whenLoaded('visitorType')),
             'ways' => WayResource::collection($this->whenLoaded('ways')),
             'face_pictures' => FileResource::collection($this->whenLoaded('files')),

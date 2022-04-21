@@ -76,6 +76,7 @@ class AuditController extends Controller
             $audit->auditors()->create([
                 'audit_id' => $audit->id,
                 'user_id' => auth()->id(),
+                'real_name' => auth()->user()->real_name,
                 'suggestion' => $auditRequest->refused_reason,
                 'audit_status' => $auditRequest->audit_status,
             ]);
