@@ -99,7 +99,7 @@ class VisitorIssue
             'gate' => $gates,
         ];
 
-        Http::timeout(5)->post(Constant::getDelUserUrl(), $parameter);
+        Http::timeout(15)->post(Constant::getDelUserUrl(), $parameter);
 
         return true;
     }
