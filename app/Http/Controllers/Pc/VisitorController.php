@@ -10,8 +10,8 @@ use App\Http\Resources\Pc\VisitorResource;
 use App\Models\OperationLog;
 use App\Models\Visitor;
 use App\Supports\Sdks\VisitorIssue;
-use DB;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class VisitorController extends Controller
 {
