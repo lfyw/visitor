@@ -97,7 +97,7 @@ class PushUser implements ShouldQueue
                     'limiter' => $visitor->limiter,
                     'gate' => $gatesFormat,
                 ];
-                $response = Http::timeout(5)->post(Constant::getSetUserUrl(), $parameter);
+                $response = Http::timeout(150)->post(Constant::getSetUserUrl(), $parameter);
                 $response->throw();
                 $gates->each->createIssue($visitor->id_card, true);
                 Issue::syncIssue($visitor->id_card);
