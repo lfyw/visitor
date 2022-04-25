@@ -28,6 +28,7 @@ class UserController extends Controller
                 'department.ancestors',
                 'userType:id,name',
                 'role:id,name',
+                'files'
             ])
             ->paginate(request('pageSize', 10))
         );
@@ -51,7 +52,8 @@ class UserController extends Controller
             'department.ancestors',
             'userType:id,name',
             'role:id,name',
-            'ways'
+            'ways',
+            'files'
         ])->loadFiles()));
     }
 
@@ -61,7 +63,8 @@ class UserController extends Controller
             'department.ancestors',
             'userType:id,name',
             'role:id,name',
-            'ways'
+            'ways',
+            'files'
         ])->loadFiles()));
     }
 

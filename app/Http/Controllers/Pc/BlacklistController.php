@@ -10,7 +10,6 @@ use App\Http\Resources\Pc\BlacklistResource;
 use App\Jobs\PullIssue;
 use App\Models\Blacklist;
 use App\Models\OperationLog;
-use App\Supports\Sdks\VisitorIssue;
 
 class BlacklistController extends Controller
 {
