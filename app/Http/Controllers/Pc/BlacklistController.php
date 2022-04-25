@@ -7,8 +7,10 @@ use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\BlacklistRequest;
 use App\Http\Resources\Pc\BlacklistResource;
+use App\Jobs\PullIssue;
 use App\Models\Blacklist;
 use App\Models\OperationLog;
+use App\Supports\Sdks\VisitorIssue;
 
 class BlacklistController extends Controller
 {
@@ -22,6 +24,7 @@ class BlacklistController extends Controller
         $validated = $blacklistRequest->validated();
         $validated['gender'] = InfoHelper::identityCard()->sex($validated['id_card']) == 'M' ? '男' : '女';
         $blacklist = Blacklist::create($validated);
+        PullIssue::dispatch($blacklist->id_card)->onQueue('issue');
         event(new OperationDone(OperationLog::BLACKLIST,
             sprintf(sprintf("将【%s】加入黑名单", $blacklistRequest->name)),
             auth()->id()));
