@@ -25,11 +25,11 @@ class Backup extends Model
 
     public function scopeCreatedAtFrom(Builder $builder, $createdAtFrom): Builder
     {
-        return $builder->when(filled($createdAtFrom), fn(Builder $backup) => $backup->where('created_at_from', '>=', $createdAtFrom));
+        return $builder->when(filled($createdAtFrom), fn(Builder $backup) => $backup->where('created_at', '>=', $createdAtFrom));
     }
 
     public function scopeCreatedAtTo(Builder $builder, $createdAtTo): Builder
     {
-        return $builder->when(filled($createdAtTo), fn(Builder $backup) => $backup->where('created_at_to', '<=', $createdAtTo));
+        return $builder->when(filled($createdAtTo), fn(Builder $backup) => $backup->where('created_at', '<=', $createdAtTo));
     }
 }
