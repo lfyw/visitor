@@ -76,6 +76,10 @@ class BlacklistController extends Controller
                 'phone' => $visitor->phone,
                 'reason' => request('blanklist_reason'),
             ]);
+            PullIssue::dispatch($visitor->id_card);
+            $visitor->detachFiles();
+            $visitor->ways()->detach();
+            $visitor->delete();
         });
         return no_content();
     }
