@@ -75,4 +75,17 @@ class AuditController extends Controller
         ])));
     }
 
+    public function history()
+    {
+        if (!$audit = Audit::latest()->firstWhere('id_card', request('id_card'))){
+            return error('未查询到历史信息', Response::HTTP_NOT_FOUND);
+        }
+        return send_data(new AuditResource($audit->load([
+            'user:id,name,department_id',
+            'user.department.ancestors',
+            'ways',
+            'visitorType',
+            'auditors.user:id,name',
+        ])));
+    }
 }

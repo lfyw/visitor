@@ -15,7 +15,7 @@ class UserTableSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
+        User::updateOrCreate(['name' => 'admin'],[
             'name' => 'admin',
             'password' => bcrypt('admin123456'),
             'role_id' => Role::whereName(Role::SUPER_ADMIN)->value('id'),

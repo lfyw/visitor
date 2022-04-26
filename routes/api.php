@@ -171,3 +171,6 @@ Route::post('passing-log-with-snapshot', [ApiPassingLogController::class, 'withS
 
 //人员列表
 Route::get('users', [ApiUserController::class, 'index'])->name('users.index');
+
+//根据身份证号查询历史申请临时访问记录
+Route::get('audit/history', [ApiAuditController::class, 'history'])->name('audit.history');
