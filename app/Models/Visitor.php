@@ -90,11 +90,11 @@ class Visitor extends Model
 
     public function blockBlacklist()
     {
-        return $this->fill(['is_in_black_list' => true])->save();
+        return $this->fill(['is_in_blacklist' => true])->save();
     }
 
     public function cancelBlacklist()
     {
-        return $this->fill(['is_in_black_list' => false])->save();
+        return $this->fill(['is_in_blacklist' => false])->save();
     }
 }
