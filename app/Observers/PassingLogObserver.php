@@ -2,7 +2,9 @@
 
 namespace App\Observers;
 
+use App\Enums\GateRule;
 use App\Models\PassingLog;
+use App\Models\Scene;
 use App\Models\Visitor;
 
 class PassingLogObserver
@@ -24,7 +26,22 @@ class PassingLogObserver
     public function created(PassingLog $passingLog)
     {
         $passingLogCount = PassingLog::whereIdCard($passingLog->id_card)->count();
-        Visitor::whereIdCard($passingLog->id_card)->first()?->fill(['access_count' => $passingLogCount])->save();
+
+        $visitor = Visitor::whereIdCard($passingLog->id_card)->first();
+        //更新访客访问次数
+        $visitor->fill(['access_count' => $passingLogCount])->save();
+        //记录现场人员
+        $gate = $passingLog->gate;
+        $passageway = $passingLog->gate->passageways()->first();
+        $way = $passageway->ways()->first();
+
+        if ($way->name == '生产区'){
+            if ($gate->rule == GateRule::IN->value) {
+                Scene::in($visitor->id, $way->id, $passingLog->gate_id, $passageway->id);
+            } else {
+                Scene::out($visitor->id, $passageway->id);
+            }
+        }
     }
 
 
