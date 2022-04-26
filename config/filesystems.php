@@ -74,6 +74,12 @@ return [
             'visibility' => 'public',
         ],
 
+        'output' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/output'),
+            'url' => env('APP_URL').'/storage/output',
+            'visibility' => 'public',
+        ],
     ],
 
     /*

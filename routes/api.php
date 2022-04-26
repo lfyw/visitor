@@ -10,6 +10,7 @@ use App\Http\Controllers\Pc\AuthorizationController;
 use App\Http\Controllers\Pc\BackupController;
 use App\Http\Controllers\Pc\BlacklistController;
 use App\Http\Controllers\Pc\DepartmentController;
+use App\Http\Controllers\Pc\ExportController;
 use App\Http\Controllers\Pc\FacePictureController;
 use App\Http\Controllers\Pc\GateController;
 use App\Http\Controllers\Pc\BoardController;
@@ -117,6 +118,8 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
 
     //导入
     Route::post('import', ImportController::class)->name('import.invoke');
+    //导出
+    Route::get('export', ExportController::class)->name('export.invoke');
 
     //下发记录
     Route::get('issue', [IssueController::class, 'index'])->name('issue.index');

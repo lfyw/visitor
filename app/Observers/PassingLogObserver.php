@@ -33,10 +33,10 @@ class PassingLogObserver
         $userDepartment = '';
         if ($this->isTemporary($passingLog)) {
             $department = $passingLog->visitor->user->department;
-            if ($parent = $department->ancestors->first()) {
+            if ($parent = $department?->ancestors->first()) {
                 $userDepartment = $parent->name . '-' . $department->name;
             } else {
-                $userDepartment = $department->name;
+                $userDepartment = $department?->name;
             }
         }
         return $userDepartment;

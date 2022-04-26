@@ -5,10 +5,8 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithColumnFormatting;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class BlacklistsExport implements FromArray, ShouldAutoSize, WithColumnFormatting
+class BlacklistsExport implements FromArray, ShouldAutoSize
 {
     use Exportable;
 
