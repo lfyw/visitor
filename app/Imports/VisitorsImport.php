@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use AlicFeng\IdentityCard\Application\IdentityCard;
 use App\Exceptions\ImportValidateException;
+use App\Models\Blacklist;
 use App\Models\User;
 use App\Models\Visitor;
 use App\Models\VisitorType;
@@ -15,7 +16,7 @@ use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
-class VisitorsImport implements ToCollection
+class   VisitorsImport implements ToCollection
 {
     use Importable;
 
@@ -158,6 +159,7 @@ class VisitorsImport implements ToCollection
         throw_unless((new IdentityCard())->validate($idCard), new ImportValidateException('身份证号规则错误'));
         $idCard = Str::upper($idCard);
         throw_if(Visitor::firstWhere('id_card', $idCard), new ImportValidateException('身份证号已存在系统中'));
+        throw_if(Blacklist::firstWhere('id_card', $idCard), new ImportValidateException('该人员处于黑名单中'));
         return $idCard;
     }
 
