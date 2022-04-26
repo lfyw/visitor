@@ -44,8 +44,10 @@ class AuditController extends Controller
             $audit->attachFiles($auditRequest->face_picture_ids);
 
             // 添加审批人，根据配置文件寻找
-            $visitorSetting = $audit->visitorType->visitorSettings()->whereHas('ways', fn(Builder $builder) => $builder->whereIn('id', $auditRequest->way_ids))->first();
+            $visitorSetting = $audit->visitorType->visitorSettings()->first();
             throw_unless($visitorSetting, new MissingVisitorSettingException('请先在后台添加对应的访客设置', Response::HTTP_NOT_FOUND));
+            $visitorSetting = $audit->visitorType->visitorSettings()->whereHas('ways', fn(Builder $builder) => $builder->whereIn('id', $auditRequest->way_ids))->first();
+            throw_unless($visitorSetting, new MissingVisitorSettingException('该类型访客不允许通行您申请访问的路线，请联系后台管理员添加', Response::HTTP_NOT_FOUND));
 
             collect($visitorSetting->approver)->sortBy('order')->each(function ($approver) use ($audit) {
                 if ($approver['type'] == ApproverType::INTERVIEWEE->getValue()) {
