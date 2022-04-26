@@ -99,12 +99,12 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::apiResource('visitor-settings', VisitorSettingController::class);
 
     //访客管理
-    Route::patch('visitors/blanklist/cancel', [VisitorController::class, 'cancel'])->name('visitors.cancel');//取消拉黑
-    Route::patch('visitors/blanklist/block', [VisitorController::class, 'block'])->name('visitors.block');//批量拉黑
     Route::delete('visitors', [VisitorController::class, 'destroy'])->name('visitors.destroy');
     Route::apiResource('visitors', VisitorController::class)->except('destroy');
 
     //黑名单管理
+    Route::patch('visitors/blanklist/cancel', [BlacklistController::class, 'cancel'])->name('visitors.cancel');//取消拉黑
+    Route::patch('visitors/blanklist/block', [BlacklistController::class, 'block'])->name('visitors.block');//批量拉黑
     Route::apiResource('blacklists', BlacklistController::class);
 
     //规则管理
@@ -158,7 +158,7 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::get('board/passing-time-chart', [BoardController::class, 'passingTimeChart'])->name('board.passingTimeChart');
     //数据看板-通道通行人次统计
     Route::get('board/passageway-passing-chart', [BoardController::class, 'passagewayPassingChart'])->name('board.passagewayPassingChart');
-
+    //当前办公区人员统计
     Route::get('board', [BoardController::class, 'index'])->name('board.index');
 });
 
