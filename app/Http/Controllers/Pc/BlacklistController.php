@@ -24,6 +24,8 @@ class BlacklistController extends Controller
         $validated = $blacklistRequest->validated();
         $validated['gender'] = InfoHelper::identityCard()->sex($validated['id_card']) == 'M' ? '男' : '女';
         $blacklist = Blacklist::create($validated);
+
+        Visitor::firstWhere('id_card', $blacklist->id_card)->blockBlacklist();
         PullIssue::dispatch($blacklist->id_card)->onQueue('issue');
         event(new OperationDone(OperationLog::BLACKLIST,
             sprintf(sprintf("将【%s】加入黑名单", $blacklistRequest->name)),
@@ -49,6 +51,7 @@ class BlacklistController extends Controller
 
     public function destroy(Blacklist $blacklist)
     {
+        Visitor::firstWhere('id_card', $blacklist->id_card)->cancelBlacklist();
         $blacklist->delete();
         event(new OperationDone(OperationLog::BLACKLIST,
             sprintf(sprintf("移除黑名单【%s】", $blacklist->name)),
@@ -77,9 +80,7 @@ class BlacklistController extends Controller
                 'reason' => request('blanklist_reason'),
             ]);
             PullIssue::dispatch($visitor->id_card)->onQueue('issue');
-            $visitor->detachFiles();
-            $visitor->ways()->detach();
-            $visitor->delete();
+            $visitor->blockBlacklist();
         });
         return no_content();
     }
@@ -93,6 +94,9 @@ class BlacklistController extends Controller
             'ids' => '拉黑人员',
             'ids.*' => '拉黑人员',
         ]);
+        Blacklist::findMany(request('ids'))->each(function (Blacklist $blacklist){
+            Visitor::firstWhere('id_card', $blacklist->id_card)->cancelBlacklist();
+        });
         Blacklist::destroy(request('ids'));
         return no_content();
     }

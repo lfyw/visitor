@@ -30,7 +30,7 @@ class Visitor extends Model
 
     public function user():BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'id_card', 'id_card');
     }
 
     public function scopeFromUser(Builder $builder): Builder
@@ -83,8 +83,18 @@ class Visitor extends Model
         return $builder->when(filled($accessDateTo), fn(Builder $visitor) => $visitor->whereDate('access_date_to', '<=', $accessDateTo));
     }
 
-    public function getGates()
+    public function scopeNotInBlacklist(Builder $builder)
     {
-        $passageways = Passageway::getByWays($this->ways->pluck('id')->toArray())->get();
+        return $builder->where('is_in_blacklist', false);
+    }
+
+    public function blockBlacklist()
+    {
+        return $this->fill(['is_in_black_list' => true])->save();
+    }
+
+    public function cancelBlacklist()
+    {
+        return $this->fill(['is_in_black_list' => false])->save();
     }
 }

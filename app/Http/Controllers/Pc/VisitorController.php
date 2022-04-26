@@ -25,6 +25,7 @@ class VisitorController extends Controller
             ->whenAgeTo(request('age_to'))
             ->whenAccessDateFrom(request('access_date_from'))
             ->whenAccessDateTo(request('access_date_to'))
+            ->notInBlacklist()
             ->with([
                 'ways',
                 'visitorType',
