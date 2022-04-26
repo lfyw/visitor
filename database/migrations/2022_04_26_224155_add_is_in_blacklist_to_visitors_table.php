@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsInBlacklistToVisitor extends Migration
+class AddIsInBlacklistToVisitorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class AddIsInBlacklistToVisitor extends Migration
      */
     public function up()
     {
-        Schema::table('visitor', function (Blueprint $table) {
+        Schema::table('visitors', function (Blueprint $table) {
             $table->boolean('is_in_blacklist');
         });
     }
@@ -25,7 +25,7 @@ class AddIsInBlacklistToVisitor extends Migration
      */
     public function down()
     {
-        Schema::table('visitor', function (Blueprint $table) {
+        Schema::table('visitors', function (Blueprint $table) {
             $table->dropColumn('is_in_blacklist');
         });
     }
