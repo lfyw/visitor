@@ -14,7 +14,7 @@ class AddIsInBlacklistToVisitorsTable extends Migration
     public function up()
     {
         Schema::table('visitors', function (Blueprint $table) {
-            $table->boolean('is_in_blacklist');
+            $table->boolean('is_in_blacklist')->default(false);
         });
     }
 
