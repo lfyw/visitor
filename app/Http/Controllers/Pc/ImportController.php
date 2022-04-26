@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Pc;
 
 use App\Events\OperationDone;
+use App\Exports\BlacklistsExport;
 use App\Exports\DepartmentsExport;
 use App\Exports\UsersExport;
 use App\Exports\VisitorsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\ImportRequest;
+use App\Imports\BlacklistsImport;
 use App\Imports\DepartmentsImport;
 use App\Imports\UsersImport;
 use App\Imports\VisitorsImport;
@@ -22,6 +24,29 @@ class ImportController extends Controller
         return send_data($this->{$request->import}(), Response::HTTP_OK);
     }
 
+    protected function blacklist()
+    {
+        $import = new BlacklistsImport();
+        $import->import(request()->file('excel'));
+
+        $hasError = (bool)($import->getErrorsCount() > 0);
+
+        if ($hasError) {
+            $export = new BlacklistsExport();
+            $errorFilename = '黑名单错误数据' . time() . '.xlsx';
+            $export->setErrors($import->getErrorsWithHeader())->store($errorFilename, 'error_xlsx');
+            $errorXlsx = Storage::disk('error_xlsx')->url($errorFilename);
+        }
+
+        event(new OperationDone(OperationLog::DEPARTMENT,
+            sprintf(sprintf("批量导入黑名单")),
+            auth()->id()));
+        return [
+            'total_count' => $import->getRowsCount(),
+            'error_count' => $import->getErrorsCount(),
+            'error_xlsx' => $errorXlsx ?? null
+        ];
+    }
 
     protected function department()
     {

@@ -12,4 +12,5 @@ enum Import: string implements Enumable
     case DEPARTMENT = 'department';
     case USER = 'user';
     case VISITOR = 'visitor';
+    case BLACKLIST = 'blacklist';
 }

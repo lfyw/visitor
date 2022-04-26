@@ -12,4 +12,5 @@ enum Template:string implements Enumable
     case DEPARTMENT = '部门导入模板';
     case USER = '人员导入模板';
     case VISITOR = '访客导入模板';
+    case BLACKLIST = '黑名单导入模板';
 }
