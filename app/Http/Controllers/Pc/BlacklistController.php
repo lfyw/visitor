@@ -58,7 +58,7 @@ class BlacklistController extends Controller
 
     public function block()
     {
-        $this->validate(request()->input(), [
+        $this->validate(request(), [
             'ids' => ['required', 'array'],
             'ids.*' => ['required', 'exists:visitors,id'],
             'blanklist_reason' => ['required']
@@ -82,7 +82,7 @@ class BlacklistController extends Controller
 
     public function cancel()
     {
-        $this->validate(request()->input(), [
+        $this->validate(request(), [
             'ids' => ['required', 'array'],
             'ids.*' => ['required', 'exists:blacklists,id'],
         ], [], [
