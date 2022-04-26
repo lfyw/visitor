@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use AlicFeng\IdentityCard\Application\IdentityCard;
 use App\Enums\GateRule;
 use App\Models\PassingLog;
 use App\Models\Scene;
@@ -79,7 +80,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $age = $passingLog->visitor->age;
         } else {
-            $age = $passingLog->visitor->user->age;
+            $age = (new IdentityCard())->age($passingLog->visitor->user->id_card);
         }
         return $age;
     }
@@ -89,7 +90,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $gender = $passingLog->visitor->gender;
         } else {
-            $gender = $passingLog->visitor->user->gender;
+            $gender = (new IdentityCard())->sex($passingLog->visitor->user->id_card) == 'M' ? '男' : '女';
         }
         return $gender;
     }

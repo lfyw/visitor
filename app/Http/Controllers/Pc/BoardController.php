@@ -7,25 +7,57 @@ use App\Http\Controllers\Controller;
 use App\Models\Passageway;
 use App\Models\PassingLog;
 use App\Models\Rule;
+use App\Models\Scene;
+use App\Models\User;
+use App\Models\UserType;
+use App\Models\Visitor;
 use Illuminate\Support\Facades\DB;
 
 class BoardController extends Controller
 {
     public function index()
     {
+        $totalPersonCount = Scene::onlyToday()
+            ->distinct()
+            ->select('visitor_id')
+            ->count();
 
+        $visitors = Visitor::whereIn('id', Scene::onlyToday()->pluck('visitor_id'))->get();
+        $visitorsFromUser = $visitors->where('type', Visitor::USER);
+        $visitorsFromTemporary = $visitors->where('type', Visitor::TEMPORARY);
+        $temporaryVisitorCount = $visitorsFromTemporary->count();
+        $users = User::whereIn('id_card', $visitorsFromUser->pluck('id_card'))
+            ->groupBy('user_type_id')
+            ->selectRaw('user_type_id, count(id) as type_person_count')
+            ->get();
+        $userTypes = UserType::pluck('name', 'id')->toArray();
+        $typePersonCount[] = [
+            'type' => '临时访客',
+            'person_count' => $temporaryVisitorCount
+        ];
+        $users->each(function (User $user) use ($userTypes, &$typePersonCount){
+            $typePersonCount[] = [
+                'type' => $userTypes[$user->user_type_id],
+                'person_count' => $user->type_person_count
+            ];
+        });
+
+        return send_data([
+            'total_person_count' => $totalPersonCount,
+            'type_person_count' => $typePersonCount
+        ]);
     }
 
     public function passagewayPassingChart()
     {
         $rule = Rule::first();
         //没有规则 => 退出
-        if (!$rule){
+        if (!$rule) {
             return [];
         }
         //没有看板规则 => 退出
         $boardRule = $rule->value['board'] ?? null;
-        if (!$boardRule){
+        if (!$boardRule) {
             return [];
         }
 
@@ -39,10 +71,10 @@ class BoardController extends Controller
         Passageway::with('gates')
             ->whereIn('id', $boardRule)
             ->get()
-            ->each(function ($passageway) use (&$chart, $gatePassing){
+            ->each(function ($passageway) use (&$chart, $gatePassing) {
                 $gatesIn = $passageway->gates->where('rule', GateRule::IN->getValue());
                 $gatesInCount = $gatePassing->whereIn('gate_id', $gatesIn->pluck('id'))->sum('passing_count');
-                $gatesOut =  $passageway->gates->where('rule', GateRule::OUT->getValue());
+                $gatesOut = $passageway->gates->where('rule', GateRule::OUT->getValue());
                 $gatesOutCount = $gatePassing->whereIn('gate_id', $gatesOut->pluck('id'))->sum('passing_count');
                 $chart[] = [
                     'passageway' => $passageway->name,
