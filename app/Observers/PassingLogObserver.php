@@ -70,7 +70,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $phone = $passingLog->visitor->phone;
         } else {
-            $phone = $passingLog->visitor->user->phone_number;
+            $phone = $passingLog->visitor->userAsVisitor->phone_number;
         }
         return $phone;
     }
@@ -80,7 +80,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $age = $passingLog->visitor->age;
         } else {
-            $age = (new IdentityCard())->age($passingLog->visitor->user->id_card);
+            $age = (new IdentityCard())->age($passingLog->visitor->userAsVisitor->id_card);
         }
         return $age;
     }
@@ -90,7 +90,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $gender = $passingLog->visitor->gender;
         } else {
-            $gender = (new IdentityCard())->sex($passingLog->visitor->user->id_card) == 'M' ? '男' : '女';
+            $gender = (new IdentityCard())->sex($passingLog->visitor->userAsVisitor->id_card) == 'M' ? '男' : '女';
         }
         return $gender;
     }
@@ -100,7 +100,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $type = $passingLog->visitor->visitorType->name;
         } else {
-            $type = $passingLog->visitor->user->userType->name;
+            $type = $passingLog->visitor->userAsVisitor->userType->name;
         }
         return $type;
     }
@@ -110,7 +110,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             return $passingLog->visitor->name;
         }
-        return $passingLog->visitor->user->real_name;
+        return $passingLog->visitor->userAsVisitor->real_name;
     }
 
     protected function isTemporary($passingLog)

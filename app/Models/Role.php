@@ -12,6 +12,8 @@ class Role extends Model
     use HasFactory;
 
     const SUPER_ADMIN = '超级管理员';
+    const SYSTEM_ADMIN = '系统管理员';
+//    const DEPART
 
     protected $guarded = [];
 

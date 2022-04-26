@@ -30,6 +30,11 @@ class Visitor extends Model
 
     public function user():BelongsTo
     {
+        return $this->belongsTo(User::class);
+    }
+
+    public function userAsVisitor():BelongsTo
+    {
         return $this->belongsTo(User::class, 'id_card', 'id_card');
     }
 
