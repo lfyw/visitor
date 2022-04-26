@@ -10,6 +10,7 @@ use App\Http\Resources\Pc\BlacklistResource;
 use App\Jobs\PullIssue;
 use App\Models\Blacklist;
 use App\Models\OperationLog;
+use App\Models\Visitor;
 
 class BlacklistController extends Controller
 {
@@ -52,6 +53,43 @@ class BlacklistController extends Controller
         event(new OperationDone(OperationLog::BLACKLIST,
             sprintf(sprintf("移除黑名单【%s】", $blacklist->name)),
             auth()->id()));
+        return no_content();
+    }
+
+    public function block()
+    {
+        $this->validate(request()->input(), [
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'exists:visitors,id'],
+            'blanklist_reason' => ['required']
+        ], [], [
+            'ids' => '拉黑人员',
+            'ids.*' => '拉黑人员',
+            'blanklist_reason' => '拉黑理由'
+        ]);
+        Visitor::findMany(request('ids'))->each(function (Visitor $visitor){
+            Blacklist::updateOrCreate([
+                'id_card' => $visitor->id_card
+            ],[
+                'name' => $visitor->name,
+                'gender' => $visitor->gender,
+                'phone' => $visitor->phone,
+                'reason' => request('blanklist_reason'),
+            ]);
+        });
+        return no_content();
+    }
+
+    public function cancel()
+    {
+        $this->validate(request()->input(), [
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'exists:blacklists,id'],
+        ], [], [
+            'ids' => '拉黑人员',
+            'ids.*' => '拉黑人员',
+        ]);
+        Blacklist::destroy(request('ids'));
         return no_content();
     }
 }

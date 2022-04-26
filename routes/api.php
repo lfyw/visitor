@@ -98,6 +98,8 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::apiResource('visitor-settings', VisitorSettingController::class);
 
     //访客管理
+    Route::patch('visitors/blanklist/cancel', [VisitorController::class, 'cancel'])->name('visitors.cancel');//取消拉黑
+    Route::patch('visitors/blanklist/block', [VisitorController::class, 'block'])->name('visitors.block');//批量拉黑
     Route::delete('visitors', [VisitorController::class, 'destroy'])->name('visitors.destroy');
     Route::apiResource('visitors', VisitorController::class)->except('destroy');
 
