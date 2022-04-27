@@ -28,6 +28,7 @@ use App\Http\Controllers\Pc\UserTypeController;
 use App\Http\Controllers\Pc\VisitorController;
 use App\Http\Controllers\Pc\VisitorSettingController;
 use App\Http\Controllers\Pc\VisitorTypeController;
+use App\Http\Controllers\Pc\WarningController;
 use App\Http\Controllers\Pc\WayController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,7 +43,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('pc')->group(function (){
+Route::prefix('pc')->group(function () {
     Route::post('authorizations', [AuthorizationController::class, 'login'])->name('authorizations.login');
     //文件上传
     Route::post('files', [FileController::class, 'store'])->name('files.store');
@@ -52,7 +53,7 @@ Route::prefix('pc')->group(function (){
     Route::get('ways/select', [WayController::class, 'select'])->name('ways.select');
 });
 
-Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
+Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function () {
     //获取当前用户登陆信息
     Route::get('me', [AuthorizationController::class, 'me'])->name('authorizations.me');
 
@@ -162,6 +163,11 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::get('board', [BoardController::class, 'index'])->name('board.index');
     //数据看板-超时未出预警统计
     Route::get('board/warning', [BoardController::class, 'warning'])->name('board.warning');
+
+    //预警列表
+    Route::get('warnings', [WarningController::class, 'index'])->name('warnings.index');
+    //预警处理
+    Route::patch('warnings', [WarningController::class, 'update'])->name('warnings.update');
 });
 
 //身份证号是否合法
