@@ -158,8 +158,10 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function(){
     Route::get('board/passing-time-chart', [BoardController::class, 'passingTimeChart'])->name('board.passingTimeChart');
     //数据看板-通道通行人次统计
     Route::get('board/passageway-passing-chart', [BoardController::class, 'passagewayPassingChart'])->name('board.passagewayPassingChart');
-    //当前办公区人员统计
+    //数据看板当前办公区人员统计
     Route::get('board', [BoardController::class, 'index'])->name('board.index');
+    //数据看板-超时未出预警统计
+    Route::get('board/warning', [BoardController::class, 'warning'])->name('board.warning');
 });
 
 //身份证号是否合法

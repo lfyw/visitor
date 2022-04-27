@@ -11,6 +11,7 @@ use App\Models\Scene;
 use App\Models\User;
 use App\Models\UserType;
 use App\Models\Visitor;
+use App\Models\Warning;
 use Illuminate\Support\Facades\DB;
 
 class BoardController extends Controller
@@ -35,7 +36,7 @@ class BoardController extends Controller
             'type' => '临时访客',
             'person_count' => $temporaryVisitorCount
         ];
-        $users->each(function (User $user) use ($userTypes, &$typePersonCount){
+        $users->each(function (User $user) use ($userTypes, &$typePersonCount) {
             $typePersonCount[] = [
                 'type' => $userTypes[$user->user_type_id],
                 'person_count' => $user->type_person_count
@@ -124,5 +125,19 @@ class BoardController extends Controller
         $personChart['total_count'] = collect($person)->sum('type_count');
         $personChart['detail'] = $person;
         return send_data(['person_time_chart' => $personTimeChart, 'person_chart' => $personChart]);
+    }
+
+    public function warning()
+    {
+        $warnings = Warning::warningAtFrom(request('warning_at_from'))
+            ->warningAtTo(request('warning_at_to'))
+            ->groupBy('status')
+            ->selectRaw('status, count(id) as warning_count')
+            ->get()
+            ->map(function (Warning $warning) {
+                $warning->status = ($warning->status == null ? '未处置' : '已处置');
+                return $warning;
+            });
+        return $warnings;
     }
 }
