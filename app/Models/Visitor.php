@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use AlicFeng\IdentityCard\Application\IdentityCard;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -101,5 +102,31 @@ class Visitor extends Model
     public function cancelBlacklist()
     {
         return $this->fill(['is_in_blacklist' => false])->save();
+    }
+
+    public function getType()
+    {
+        return $this->type == Visitor::TEMPORARY
+            ? $this->visitorType->name
+            : $this->userAsVisitor->userType->name;
+    }
+
+    public function getUserDepartment()
+    {
+        $userDepartment = '';
+        if ($this->type == Visitor::TEMPORARY) {
+            $department = $this->user->department;
+            if ($parent = $department?->ancestors->first()) {
+                $userDepartment = $parent->name . '-' . $department->name;
+            } else {
+                $userDepartment = $department?->name;
+            }
+        }
+        return $userDepartment;
+    }
+
+    public function getUserName()
+    {
+        return $this->type == Visitor::TEMPORARY ? $this->user->real_name : null;
     }
 }
