@@ -43,9 +43,12 @@ class BoardController extends Controller
             ];
         });
 
+        $atDisposalWarningCount = Warning::whereNull('status')->count();
+
         return send_data([
             'total_person_count' => $totalPersonCount,
-            'type_person_count' => $typePersonCount
+            'type_person_count' => $typePersonCount,
+            'at_disposal_warning_count' => $atDisposalWarningCount ?: 0,
         ]);
     }
 
