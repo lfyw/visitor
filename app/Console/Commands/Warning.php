@@ -62,7 +62,6 @@ class Warning extends Command
             $diffInHour = now()->diffInHours($scene->passed_at);
             if($diffInHour >= $duration){
                 //与当前时差超过规则，添加到预警库
-                //todo 无进有出只能在通行日志那里判断
                 info(sprintf("超时未出预警 => 检测到符合条件的预警 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
                     $userType,
                     $scene->visitor->id_card,
