@@ -103,7 +103,8 @@ class Warning extends Command
                     'limiter' => $scene->visitor->limiter,
                     'relation' => $scene->visitor->relation,
                     'warning_type' => '超时未出',
-                    'warning_at' => now()
+                    'warning_at' => now(),
+                    'visitor_id' => $scene->visitor->id
                 ]);
             }
         });

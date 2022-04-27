@@ -60,7 +60,7 @@ class PassingLogController extends Controller
         $passingLog = PassingLog::create([
             'id_card' => $idCard,
             'gate_id' => $gate->id,
-            'passed_at' => now(),
+            'passed_at' => $request->passed_at,
             'snapshot' => $path ?? null
         ]);
 

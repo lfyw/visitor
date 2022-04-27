@@ -11,4 +11,5 @@ enum WarningStatus:int implements Enumable
 
     case LEAVE = 1;
     case NOT_LEAVE = 2;
+    case AT_DISPOSAL = 3;
 }
