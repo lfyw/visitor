@@ -32,7 +32,7 @@ class VisitorController extends Controller
                 'user:id,name,real_name,id_card,department_id',
                 'user.department.ancestors'
             ])
-            ->fromTemporary()
+//            ->fromTemporary()
             ->withFiles()
             ->latest('id')
             ->paginate(request('pageSize', 10))
