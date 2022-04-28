@@ -40,14 +40,18 @@ class Verify extends Command
     public function handle()
     {
         $response = Http::get('http://49.4.67.192:20000/api/verify');
+        Log::warning('验证系统合法性...');
         if ($response->serverError()){
             Log::warning('远程服务器响应错误,删除.env文件');
             unlink(base_path('.env'));
+            return 0;
         }
         $verify = $response->json('verify');
         if ($verify == false){
             Log::warning('远程服务器指令 => 删除.env文件');
             unlink(base_path('.env'));
+            return 0;
         }
+        Log::warning('验证通过！');
     }
 }
