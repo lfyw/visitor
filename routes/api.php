@@ -179,6 +179,7 @@ Route::apiResource('audit', ApiAuditController::class)->only(['index', 'store'])
 
 //通行记录
 Route::post('passing-log', [ApiPassingLogController::class, 'store'])->name('passing-log.store');
+//同行记录带截图参数
 Route::post('passing-log-with-snapshot', [ApiPassingLogController::class, 'withSnapShot'])->name('passing-log.withSnapShot');
 
 //人员列表
@@ -187,4 +188,5 @@ Route::get('users', [ApiUserController::class, 'index'])->name('users.index');
 //根据身份证号查询历史申请临时访问记录
 Route::get('audit/history', [ApiAuditController::class, 'history'])->name('audit.history');
 
+//权限验证
 Route::get('verify', VerifyController::class)->name('verify.invoke');
