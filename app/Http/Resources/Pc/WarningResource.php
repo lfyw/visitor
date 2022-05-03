@@ -37,7 +37,7 @@ class WarningResource extends JsonResource
             'relation' => $this->relation,
             'warning_type' => $this->warning_type,
             'warning_at' => (string)$this->warning_at,
-            'status' => $this->status ?: '未处置',
+            'status' => $this->status ?: 3,
             'note' => $this->note,
             'handler' => $this->whenLoaded('handler'),
             'handled_at' => (string)$this->handled_at
