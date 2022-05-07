@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pc;
 use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Pc\IssueResource;
+use App\Jobs\PullIssue;
 use App\Jobs\PushUser;
 use App\Jobs\PushVisitor;
 use App\Models\Issue;
@@ -51,7 +52,7 @@ class IssueController extends Controller
             'id_card' => '身份证号'
         ]);
         try {
-            VisitorIssue::delete(\request('id_card'));
+            PullIssue::dispatch(request('id_card'))->onQueue('issue');
             event(new OperationDone(OperationLog::VISITOR,
                 sprintf(sprintf("删除下发")),
                 auth()->id()));
