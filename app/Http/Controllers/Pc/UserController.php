@@ -10,6 +10,7 @@ use App\Jobs\PullIssue;
 use App\Models\Auditor;
 use App\Models\OperationLog;
 use App\Models\User;
+use App\Models\Visitor;
 use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -102,7 +103,19 @@ class UserController extends Controller
             if ($user->name !== User::SUPER_ADMIN){
                 $user->detachFiles();
                 $user->ways()->detach();
-                PullIssue::dispatch($user->id_card)->onQueue('issue');
+                if ($visitor = Visitor::firstWhere('id_card', $user->id_card)){
+                    PullIssue::dispatch(
+                        $visitor->id_card,
+                        $visitor->name,
+                        $visitor->files->first()?->url,
+                        $visitor->access_date_from,
+                        $visitor->access_date_to,
+                        $visitor->access_time_from,
+                        $visitor->access_time_to.
+                        $visitor->limiter,
+                        $visitor->ways
+                    )->onQueue('issue');
+                }
                 $user->delete();
             }
         });

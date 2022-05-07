@@ -23,7 +23,18 @@ class PullIssue implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(public $idCard, public ?array $gates = null)
+    public function __construct(
+        public $idCard,
+        public $name,
+        public $facePicture,
+        public $accessDateFrom,
+        public $accessDateTo,
+        public $accessTimeFrom,
+        public $accessTimeTo,
+        public $limiter,
+        public $ways,
+        public ?array $gates = null
+    )
     {
         //
     }
@@ -35,31 +46,48 @@ class PullIssue implements ShouldQueue
      */
     public function handle()
     {
-        $visitor = Visitor::firstWhere('id_card', $this->idCard)?->loadFiles();
-
         if (config('app.env') !== 'production') {
-            Log::info('【测试环境】临时访客删除下放直接通过', ['id_card' => $this->idCard, 'visitor' => $visitor]);
-            return;
-        }
-        if (!$visitor) {
+            Log::info('【测试环境】临时访客删除下放直接通过', [
+                'id_card' => $this->idCard,
+                'name' => $this->name,
+                'face_picture' => $this->facePicture,
+                'access_date_from' => $this->accessDateFrom,
+                'access_date_to' => $this->accessDateTo,
+                'access_time_from' => $this->accessTimeFrom,
+                'access_time_to' => $this->accessTimeTo,
+                'limiter' => $this->limiter,
+                'ways' => $this->ways,
+                'gates' => $this->gates
+            ]);
             return;
         }
 
-        Log::info('【生产环境】访客删除下发', ['id_card' => $this->idCard, 'visitor' => $visitor]);
+        Log::info('【生产环境】访客删除下发', [
+            'id_card' => $this->idCard,
+            'name' => $this->name,
+            'face_picture' => $this->facePicture,
+            'access_date_from' => $this->accessDateFrom,
+            'access_date_to' => $this->accessDateTo,
+            'access_time_from' => $this->accessTimeFrom,
+            'access_time_to' => $this->accessTimeTo,
+            'limiter' => $this->limiter,
+            'ways' => $this->ways,
+            'gates' => $this->gates
+        ]);
 
         if (!$this->gates) {
-            $gates = Gate::getByWaysThroughPassageway($visitor->ways)->get(['ip', 'number'])->toArray();
+            $gates = Gate::getByWaysThroughPassageway($this->ways)->get(['ip', 'number'])->toArray();
         }
 
         $parameter = [
-            'id_card' => $visitor->id_card,
-            'real_name' => $visitor->name,
-            'face_picture' => config('app.url') . $visitor->files()->first()?->url,
-            'access_date_from' => $visitor->access_date_from,
-            'access_date_to' => $visitor->access_date_to,
-            'access_time_from' => $visitor->access_time_from,
-            'access_time_to' => $visitor->access_time_to,
-            'limiter' => $visitor->limiter,
+            'id_card' => $this->idCard,
+            'real_name' => $this->name,
+            'face_picture' => config('app.url') . $this->facePicture,
+            'access_date_from' => $this->accessDateFrom,
+            'access_date_to' => $this->accessDateTo,
+            'access_time_from' => $this->accessTimeFrom,
+            'access_time_to' => $this->accessTimeTo,
+            'limiter' => $this->limiter,
             'gate' => $gates,
         ];
 

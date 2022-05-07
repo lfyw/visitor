@@ -52,7 +52,18 @@ class IssueController extends Controller
             'id_card' => '身份证号'
         ]);
         try {
-            PullIssue::dispatch(request('id_card'))->onQueue('issue');
+            $visitor = Visitor::firstWhere('id_card', request('id_card'));
+            PullIssue::dispatch(
+                $visitor->id_card,
+                $visitor->name,
+                $visitor->files->first()?->url,
+                $visitor->access_date_from,
+                $visitor->access_date_to,
+                $visitor->access_time_from,
+                $visitor->access_time_to.
+                $visitor->limiter,
+                $visitor->ways
+            )->onQueue('issue');
             event(new OperationDone(OperationLog::VISITOR,
                 sprintf(sprintf("删除下发")),
                 auth()->id()));

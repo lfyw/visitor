@@ -25,8 +25,19 @@ class BlacklistController extends Controller
         $validated['gender'] = InfoHelper::identityCard()->sex($validated['id_card']) == 'M' ? '男' : '女';
         $blacklist = Blacklist::create($validated);
 
-        Visitor::firstWhere('id_card', $blacklist->id_card)->blockBlacklist();
-        PullIssue::dispatch($blacklist->id_card)->onQueue('issue');
+        $visitor = Visitor::firstWhere('id_card', $blacklist->id_card)->loadFiles();
+        $visitor->blockBlacklist();
+        PullIssue::dispatch(
+            $visitor->id_card,
+            $visitor->name,
+            $visitor->files->first()?->url,
+            $visitor->access_date_from,
+            $visitor->access_date_to,
+            $visitor->access_time_from,
+            $visitor->access_time_to.
+            $visitor->limiter,
+            $visitor->ways
+        )->onQueue('issue');
         event(new OperationDone(OperationLog::BLACKLIST,
             sprintf(sprintf("将【%s】加入黑名单", $blacklistRequest->name)),
             auth()->id()));
@@ -79,8 +90,18 @@ class BlacklistController extends Controller
                 'phone' => $visitor->phone,
                 'reason' => request('blanklist_reason'),
             ]);
-            PullIssue::dispatch($visitor->id_card)->onQueue('issue');
             $visitor->blockBlacklist();
+            PullIssue::dispatch(
+                $visitor->id_card,
+                $visitor->name,
+                $visitor->files->first()?->url,
+                $visitor->access_date_from,
+                $visitor->access_date_to,
+                $visitor->access_time_from,
+                $visitor->access_time_to.
+                $visitor->limiter,
+                $visitor->ways
+            )->onQueue('issue');
         });
         return no_content();
     }

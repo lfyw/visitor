@@ -96,7 +96,17 @@ class VisitorController extends Controller
     {
         $visitors = Visitor::findMany($visitorRequest->ids);
         foreach ($visitors as $visitor) {
-            PullIssue::dispatch($visitor->id_card)->onQueue('issue');
+            PullIssue::dispatch(
+                $visitor->id_card,
+                $visitor->name,
+                $visitor->files->first()?->url,
+                $visitor->access_date_from,
+                $visitor->access_date_to,
+                $visitor->access_time_from,
+                $visitor->access_time_to.
+                $visitor->limiter,
+                $visitor->ways
+            )->onQueue('issue');
             $visitor->detachFiles();
             $visitor->ways()->detach();
             $visitor->delete();
