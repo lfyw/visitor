@@ -103,7 +103,7 @@ class VisitorController extends Controller
                 $visitor->access_date_from,
                 $visitor->access_date_to,
                 $visitor->access_time_from,
-                $visitor->access_time_to.
+                $visitor->access_time_to,
                 $visitor->limiter,
                 $visitor->ways
             )->onQueue('issue');
