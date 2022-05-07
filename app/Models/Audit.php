@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RoleEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -65,5 +66,20 @@ class Audit extends Model
     public function scopeAccessDateTo(Builder $builder, $accessDateTo): Builder
     {
         return $builder->when($accessDateTo, fn(Builder $audit) => $audit->where('access_date_to', '<=', $accessDateTo));
+    }
+
+    public function scopeCanSee(Builder $builder)
+    {
+        /**@var User $user * */
+        $user = auth()->user();
+        if ($user->hasRoles([RoleEnum::ADMIN, RoleEnum::SYSTEM_ADMIN])) {
+            return $builder;
+        } elseif ($user->hasRole(RoleEnum::EMPLOYEE)) {
+            return $builder->whereIn('user_id', $user->id);
+        }elseif ($user->hasRole(RoleEnum::DEPARTMENT_ADMIN)){
+            //当是部门管理员时，以该人员所属部门为权限，可以查看该部门下所有人的临时访客申请记录
+            return $builder->whereHas('user',fn(Builder $builder) => $builder->where('department_id', $user->department_id));
+        }
+        return $builder->where('user_id', 0);
     }
 }

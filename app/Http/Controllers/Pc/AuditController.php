@@ -28,6 +28,7 @@ class AuditController extends Controller
             ->wayId(request('way_id'))
             ->accessDateFrom(request('access_date_from'))
             ->accessDateTo(request('access_date_to'))
+            ->canSee()
             ->with([
                 'visitorType:id,name',
                 'user:id,name,real_name,department_id',

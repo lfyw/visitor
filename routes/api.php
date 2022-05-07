@@ -25,7 +25,6 @@ use App\Http\Controllers\Pc\RuleController;
 use App\Http\Controllers\Pc\TemplateController;
 use App\Http\Controllers\Pc\UserController;
 use App\Http\Controllers\Pc\UserTypeController;
-use App\Http\Controllers\Pc\VerifyController;
 use App\Http\Controllers\Pc\VisitorController;
 use App\Http\Controllers\Pc\VisitorSettingController;
 use App\Http\Controllers\Pc\VisitorTypeController;
@@ -187,6 +186,3 @@ Route::get('users', [ApiUserController::class, 'index'])->name('users.index');
 
 //根据身份证号查询历史申请临时访问记录
 Route::get('audit/history', [ApiAuditController::class, 'history'])->name('audit.history');
-
-//权限验证
-Route::get('verify', VerifyController::class)->name('verify.invoke');

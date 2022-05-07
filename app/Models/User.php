@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasAuth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Lfyw\FileManager\Traits\HasFiles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasFiles;
+    use HasApiTokens, HasFactory, Notifiable, HasFiles, HasAuth;
 
     const SUPER_ADMIN = 'admin';
 
