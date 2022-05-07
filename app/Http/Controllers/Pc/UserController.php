@@ -6,6 +6,7 @@ use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\UserRequest;
 use App\Http\Resources\Pc\UserResource;
+use App\Jobs\PullIssue;
 use App\Models\Auditor;
 use App\Models\OperationLog;
 use App\Models\User;
@@ -101,7 +102,7 @@ class UserController extends Controller
             if ($user->name !== User::SUPER_ADMIN){
                 $user->detachFiles();
                 $user->ways()->detach();
-                VisitorIssue::delete($user->id_card);
+                PullIssue::dispatch($user->id_card)->onQueue('issue');
                 $user->delete();
             }
         });

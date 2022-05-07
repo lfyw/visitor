@@ -34,7 +34,7 @@ class VisitorIssue
             'limiter' => $audit->limiter,
             'gate' => $gates,
         ];
-        $response = Http::timeout(5)->post(Constant::getSetUserUrl(), $parameter);
+        $response = Http::timeout(60)->post(Constant::getSetUserUrl(), $parameter);
 
         $response->throw();
         Log::info('【生产环境】临时访客下发情况', ['body' => $response->body(), 'json' => $response->json(), 'audit' => $audit]);
@@ -64,7 +64,7 @@ class VisitorIssue
             'limiter' => $visitor->limiter,
             'gate' => $gates,
         ];
-        Http::timeout(5)->post(Constant::getSetUserUrl(), $parameter);
+        Http::timeout(60)->post(Constant::getSetUserUrl(), $parameter);
 
         return true;
     }
@@ -99,7 +99,7 @@ class VisitorIssue
             'gate' => $gates,
         ];
 
-        Http::timeout(15)->post(Constant::getDelUserUrl(), $parameter);
+        Http::timeout(60)->post(Constant::getDelUserUrl(), $parameter);
 
         return true;
     }

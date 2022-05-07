@@ -7,6 +7,7 @@ use App\Events\OperationDone;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\VisitorRequest;
 use App\Http\Resources\Pc\VisitorResource;
+use App\Jobs\PullIssue;
 use App\Models\OperationLog;
 use App\Models\Visitor;
 use App\Supports\Sdks\VisitorIssue;
@@ -98,7 +99,7 @@ class VisitorController extends Controller
         DB::transaction(function() use ($visitorRequest){
             $visitors = Visitor::findMany($visitorRequest->ids);
             foreach($visitors as $visitor){
-                VisitorIssue::delete($visitor->id_card);
+                PullIssue::dispatch($visitor->id_card)->onQueue('issue');
                 $visitor->detachFiles();
                 $visitor->ways()->detach();
                 $visitor->delete();

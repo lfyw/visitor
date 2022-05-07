@@ -63,6 +63,6 @@ class PullIssue implements ShouldQueue
             'gate' => $gates,
         ];
 
-        Http::timeout(15)->post(Constant::getDelUserUrl(), $parameter);
+        Http::timeout(60)->post(Constant::getDelUserUrl(), $parameter);
     }
 }
