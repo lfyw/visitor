@@ -99,7 +99,7 @@ class VisitorController extends Controller
         DB::transaction(function() use ($visitorRequest){
             $visitors = Visitor::findMany($visitorRequest->ids);
             foreach($visitors as $visitor){
-                PullIssue::dispatch($visitor->id_card)->onQueue('issue');
+                PullIssue::dispatch($visitor->id_card)->onQueue('issue')->afterCommit();
                 $visitor->detachFiles();
                 $visitor->ways()->detach();
                 $visitor->delete();
