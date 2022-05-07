@@ -10,9 +10,7 @@ use App\Http\Resources\Pc\VisitorResource;
 use App\Jobs\PullIssue;
 use App\Models\OperationLog;
 use App\Models\Visitor;
-use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 class VisitorController extends Controller
 {
@@ -42,7 +40,7 @@ class VisitorController extends Controller
 
     public function store(VisitorRequest $visitorRequest)
     {
-        $visitor = \DB::transaction(function() use ($visitorRequest){
+        $visitor = \DB::transaction(function () use ($visitorRequest) {
             $validated = Arr::except($visitorRequest->validated(), ['face_picture_ids', 'way_ids']);
             $validated['gender'] = InfoHelper::identityCard()->sex($visitorRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($visitorRequest->id_card);
@@ -74,7 +72,7 @@ class VisitorController extends Controller
 
     public function update(VisitorRequest $visitorRequest, Visitor $visitor)
     {
-        $visitor = \DB::transaction(function() use ($visitorRequest, $visitor){
+        $visitor = \DB::transaction(function () use ($visitorRequest, $visitor) {
             $validated = Arr::except($visitorRequest->validated(), ['face_picture_ids', 'way_ids']);
             $validated['gender'] = InfoHelper::identityCard()->sex($visitorRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($visitorRequest->id_card);
@@ -96,15 +94,13 @@ class VisitorController extends Controller
 
     public function destroy(VisitorRequest $visitorRequest)
     {
-        DB::transaction(function() use ($visitorRequest){
-            $visitors = Visitor::findMany($visitorRequest->ids);
-            foreach($visitors as $visitor){
-                PullIssue::dispatch($visitor->id_card)->onQueue('issue')->afterCommit();
-                $visitor->detachFiles();
-                $visitor->ways()->detach();
-                $visitor->delete();
-            }
-        });
+        $visitors = Visitor::findMany($visitorRequest->ids);
+        foreach ($visitors as $visitor) {
+            PullIssue::dispatch($visitor->id_card)->onQueue('issue');
+            $visitor->detachFiles();
+            $visitor->ways()->detach();
+            $visitor->delete();
+        }
         event(new OperationDone(OperationLog::VISITOR,
             sprintf("删除访客"),
             auth()->id()));

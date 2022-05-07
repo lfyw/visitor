@@ -102,7 +102,7 @@ class UserController extends Controller
             if ($user->name !== User::SUPER_ADMIN){
                 $user->detachFiles();
                 $user->ways()->detach();
-                PullIssue::dispatch($user->id_card)->onQueue('issue')->afterCommit();
+                PullIssue::dispatch($user->id_card)->onQueue('issue');
                 $user->delete();
             }
         });
