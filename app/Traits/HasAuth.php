@@ -10,11 +10,11 @@ trait HasAuth
     public function hasRoles(array $roles): bool
     {
         foreach ($roles as $role) {
-            if (!$this->hasRole($role)) {
-                return false;
+            if ($this->hasRole($role)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public function hasRole($role): bool
