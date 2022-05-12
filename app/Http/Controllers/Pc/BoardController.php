@@ -49,6 +49,7 @@ class BoardController extends Controller
             'total_person_count' => $totalPersonCount,
             'type_person_count' => $typePersonCount,
             'at_disposal_warning_count' => $atDisposalWarningCount ?: 0,
+            'inner_person_count' => $totalPersonCount - (collect($typePersonCount)->sum('person_count') ?: 0)
         ]);
     }
 
