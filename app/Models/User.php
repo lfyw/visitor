@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RoleEnum;
 use App\Traits\HasAuth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -75,5 +76,20 @@ class User extends Authenticatable
     public function scopeAdminAlwaysBeHidden(Builder $builder): Builder
     {
         return $builder->where('name', '<>', User::SUPER_ADMIN);
+    }
+
+    public function scopeCanSee(Builder $builder)
+    {
+        /**@var User $user * */
+        $user = auth()->user();
+        if ($user->hasRoles([RoleEnum::ADMIN, RoleEnum::SYSTEM_ADMIN])) {
+            return $builder;
+        } elseif ($user->hasRole(RoleEnum::EMPLOYEE)) {
+            return $builder->where('id', $user->id);
+        }elseif ($user->hasRole(RoleEnum::DEPARTMENT_ADMIN)){
+            //当是部门管理员时，以该人员所属部门为权限，可以查看该部门下所有人的临时访客申请记录
+            return $builder->where('department_id', $user->department_id);
+        }
+        return $builder->where('user_id', 0);
     }
 }

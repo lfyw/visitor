@@ -11,7 +11,6 @@ use App\Models\Auditor;
 use App\Models\OperationLog;
 use App\Models\User;
 use App\Models\Visitor;
-use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -38,7 +37,7 @@ class UserController extends Controller
 
     public function store(UserRequest $userRequest)
     {
-        $user = DB::transaction(function() use ($userRequest){
+        $user = DB::transaction(function () use ($userRequest) {
             $validated = $userRequest->only(['name', 'real_name', 'department_id', 'user_type_id', 'role_id', 'user_status', 'duty', 'id_card', 'phone_number', 'issue_status']);
             $validated['id_card'] = Str::upper($validated['id_card']);
             $validated['password'] = bcrypt(Str::substr($validated['id_card'], -6, 6));
@@ -72,10 +71,10 @@ class UserController extends Controller
 
     public function update(UserRequest $userRequest, User $user)
     {
-        $user = DB::transaction(function() use ($user, $userRequest){
+        $user = DB::transaction(function () use ($user, $userRequest) {
             $validated = $userRequest->only(['real_name', 'department_id', 'user_type_id', 'role_id', 'user_status', 'duty', 'id_card', 'phone_number', 'issue_status']);
 
-            if ($user->name == User::SUPER_ADMIN){
+            if ($user->name == User::SUPER_ADMIN) {
                 unset($validated['role_id']);
             }
 
@@ -99,11 +98,11 @@ class UserController extends Controller
 
     public function destroy(UserRequest $userRequest)
     {
-        User::findMany($userRequest->ids)->each(function(User $user){
-            if ($user->name !== User::SUPER_ADMIN){
+        User::findMany($userRequest->ids)->each(function (User $user) {
+            if ($user->name !== User::SUPER_ADMIN) {
                 $user->detachFiles();
                 $user->ways()->detach();
-                if ($visitor = Visitor::firstWhere('id_card', $user->id_card)){
+                if ($visitor = Visitor::firstWhere('id_card', $user->id_card)) {
                     PullIssue::dispatch(
                         $visitor->id_card,
                         $visitor->name,
@@ -129,7 +128,7 @@ class UserController extends Controller
     {
         $this->validate(request(), [
             'password' => ['required']
-        ],[], [
+        ], [], [
             'password' => '密码'
         ]);
         $user->fill(['password' => bcrypt(request('password'))])->save();
