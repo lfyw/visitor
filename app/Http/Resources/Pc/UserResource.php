@@ -15,6 +15,7 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
+        dump($this->role);
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -30,7 +31,8 @@ class UserResource extends JsonResource
             'issue_status' => $this->issue_status,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-            'face_pictures' => FileResource::collection($this->whenLoaded('files'))
+            'face_pictures' => FileResource::collection($this->whenLoaded('files')),
+            'permissions' => $this->role->permissions
         ];
     }
 }

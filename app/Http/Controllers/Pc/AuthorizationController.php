@@ -42,7 +42,8 @@ class AuthorizationController extends Controller
             'department.ancestors',
             'userType:id,name',
             'role:id,name',
-            'ways'
+            'ways',
+            'role.permissions:id,name,type,route,note'
         ]));
     }
 }
