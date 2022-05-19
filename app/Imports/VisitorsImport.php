@@ -7,6 +7,7 @@ use App\Exceptions\ImportValidateException;
 use App\Models\Blacklist;
 use App\Models\User;
 use App\Models\Visitor;
+use App\Models\VisitorSetting;
 use App\Models\VisitorType;
 use App\Models\Way;
 use Carbon\Exceptions\InvalidFormatException;
@@ -57,7 +58,7 @@ class   VisitorsImport implements ToCollection
         $formatRow['phone'] = $this->validatePhone($row[3]);
         $formatRow['unit'] = $row[4];
         $formatRow['reason'] = $row[5];
-        $formatRow['user_id'] = $this->validateUserId($row[6]);
+        $formatRow['user_id'] = $this->validateUserId($row[6], $row[1], $row[7]);
         $formatRow['relation'] = $this->validateRelation($row[7], $row[1]);
         $formatRow['limiter'] = $this->validateLimiter($row[8]);
         $formatRow['access_date_from'] = $this->validateAccessDateFrom($row[9]);
@@ -138,12 +139,26 @@ class   VisitorsImport implements ToCollection
         return $limiter;
     }
 
-    protected function validateUserId($userIdCard)
+    protected function validateUserId($userIdCard, $visitorType, $relation)
     {
         throw_unless($userIdCard, new ImportValidateException('被访问人身份证号不能为空'));
         throw_unless((new IdentityCard())->validate($userIdCard), new ImportValidateException('被访问人身份证号规则错误'));
         $userIdCard = Str::upper($userIdCard);
         throw_unless($user = User::firstWhere('id_card', $userIdCard), new ImportValidateException('被访问人在系统中查不到'));
+
+        if ($visitorType == VisitorType::FAMILY){
+            if ($relation){
+                $visitorType = VisitorType::firstWhere('name', $visitorType);
+                $limiter = VisitorSetting::firstWhere('visitor_type_id', $visitorType->id)?->visitor_limiter;
+                if ($limiter) {
+                    $visitorTypeVisitorCount = Visitor::whereUserId($user->id)->where('visitor_type_id', $visitorType->id)->count();
+                    if ($visitorTypeVisitorCount > $limiter) {
+                        throw new ImportValidateException('访客人数超过' . $limiter . '次,已达到上限');
+                    }
+                }
+            }
+        }
+
         return $user->id;
     }
 
