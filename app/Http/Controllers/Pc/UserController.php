@@ -25,6 +25,7 @@ class UserController extends Controller
             ->whenUserStatus(request('user_status'))
             ->whenDepartmentId(request('department_id'))
             ->adminShouldBeHidden(auth()->user())
+            ->canSee()
             ->with([
                 'department.ancestors',
                 'userType:id,name',
