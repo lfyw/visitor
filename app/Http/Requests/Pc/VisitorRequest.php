@@ -4,6 +4,9 @@ namespace App\Http\Requests\Pc;
 
 use AlicFeng\IdentityCard\InfoHelper;
 use App\Models\Blacklist;
+use App\Models\Visitor;
+use App\Models\VisitorSetting;
+use App\Models\VisitorType;
 use App\Rules\IdCard;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -26,12 +29,12 @@ class VisitorRequest extends FormRequest
      */
     public function rules()
     {
-        return match($this->method()){
+        return match ($this->method()) {
             'POST' => [
                 'name' => ['required'],
                 'visitor_type_id' => ['required', 'exists:visitor_types,id'],
-                'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail){
-                    if (Blacklist::idCard($value)->exists()){
+                'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail) {
+                    if (Blacklist::idCard($value)->exists()) {
                         return $fail('已经存在于黑名单中');
                     }
                 }],
@@ -39,7 +42,18 @@ class VisitorRequest extends FormRequest
                 'unit' => ['required'],
                 'reason' => ['nullable'],
                 'relation' => ['nullable'],
-                'user_id' => ['required', 'exists:users,id'],
+                'user_id' => ['required', 'exists:users,id', function ($attribute, $value, $fail) {
+                    //如果有亲属关系;判断被访问者亲属是不是超过了配置值
+                    if ($this->relation) {
+                        $limiter = VisitorSetting::firstWhere('visitor_type_id', $this->visitor_type_id)?->visitor_limiter;
+                        if ($limiter) {
+                            $visitorTypeVisitorCount = Visitor::whereUserId($this->user_id)->where('visitor_type_id', $this->visitor_type_id)->count();
+                            if ($visitorTypeVisitorCount > $limiter) {
+                                return $fail('访客人数超过' . $limiter . '次,已达到上限');
+                            }
+                        }
+                    }
+                }],
                 'limiter' => ['required', 'integer'],
                 'access_date_from' => ['required', 'date'],
                 'access_date_to' => ['required', 'date'],
@@ -54,8 +68,8 @@ class VisitorRequest extends FormRequest
             'PUT' => [
                 'name' => ['required'],
                 'visitor_type_id' => ['required', 'exists:visitor_types,id'],
-                'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail){
-                    if (Blacklist::idCard($value)->exists()){
+                'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail) {
+                    if (Blacklist::idCard($value)->exists()) {
                         return $fail('已经存在于黑名单中');
                     }
                 }],
@@ -63,7 +77,18 @@ class VisitorRequest extends FormRequest
                 'unit' => ['required'],
                 'reason' => ['nullable'],
                 'relation' => ['nullable'],
-                'user_id' => ['required'],
+                'user_id' => ['required', function ($attribute, $value, $fail) {
+                    //如果有亲属关系;判断被访问者亲属是不是超过了配置值
+                    if ($this->relation) {
+                        $limiter = VisitorSetting::firstWhere('visitor_type_id', $this->visitor_type_id)?->visitor_limiter;
+                        if ($limiter) {
+                            $visitorTypeVisitorCount = Visitor::whereUserId($this->user_id)->where('visitor_type_id', $this->visitor_type_id)->count();
+                            if ($visitorTypeVisitorCount > $limiter) {
+                                return $fail('访客人数超过' . $limiter . '次,已达到上限');
+                            }
+                        }
+                    }
+                }],
                 'limiter' => ['required', 'integer'],
                 'access_date_from' => ['required', 'date'],
                 'access_date_to' => ['required', 'date'],
