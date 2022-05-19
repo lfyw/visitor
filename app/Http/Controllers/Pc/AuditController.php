@@ -16,6 +16,7 @@ use App\Models\Visitor;
 use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class AuditController extends Controller
@@ -100,6 +101,12 @@ class AuditController extends Controller
                 'ways',
                 'auditors.user:id,name',
             ])->loadFiles()));
+        }
+        //5.2 如果日期超过一天，也中止下发
+        $start = Carbon::parse($auditRequest->access_date_from);
+        $end = Carbon::parse($auditRequest->access_date_to);
+        if ($end->floatDiffInRealDays($start) > 1){
+            return error('临时访客访问日期不能超过24小时', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         //6.更新或创建访客信息+路线+照片
