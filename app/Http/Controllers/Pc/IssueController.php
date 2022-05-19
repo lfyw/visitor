@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Visitor;
 use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 
 class IssueController extends Controller
 {
@@ -93,6 +94,9 @@ class IssueController extends Controller
             'access_time_to' => '截止访问时间',
             'limiter' => '访问次数限制'
         ]);
+        if (Carbon::parse(request('access_date_to'))->floatDiffInRealDays(Carbon::parse(request('access_date_from'))) > 365){
+            return error('下发时间不能超过1年', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $idCards = Visitor::whereIn('id', request('ids'))->pluck('id_card')->toArray();
         foreach ($idCards as $idCard){
             PushVisitor::dispatch($idCard,
@@ -129,6 +133,9 @@ class IssueController extends Controller
             'access_time_to' => '截止访问时间',
             'limiter' => '访问次数限制'
         ]);
+        if (Carbon::parse(request('access_date_to'))->floatDiffInRealDays(Carbon::parse(request('access_date_from'))) > 365){
+            return error('下发时间不能超过1年', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $idCards = User::whereIn('id', request('ids'))->pluck('id_card')->toArray();
         foreach ($idCards as $idCard){
             PushUser::dispatch(
@@ -161,6 +168,9 @@ class IssueController extends Controller
             'access_time_to' => '截止访问时间',
             'limiter' => '访问次数限制'
         ]);
+        if (Carbon::parse(request('access_date_to'))->floatDiffInRealDays(Carbon::parse(request('access_date_from'))) > 365){
+            return error('下发时间不能超过1年', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
         $visitors = Visitor::all();
         foreach ($visitors->pluck('id_card')->toArray() as $idCard){
             PushVisitor::dispatch($idCard,
@@ -192,6 +202,11 @@ class IssueController extends Controller
             'access_time_to' => '截止访问时间',
             'limiter' => '访问次数限制'
         ]);
+
+        if (Carbon::parse(request('access_date_to'))->floatDiffInRealDays(Carbon::parse(request('access_date_from'))) > 365){
+            return error('下发时间不能超过1年', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $users = User::all();
         foreach ($users->pluck('id_card')->toArray() as $idCard){
             PushUser::dispatch(
