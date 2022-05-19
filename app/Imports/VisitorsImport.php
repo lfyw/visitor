@@ -152,7 +152,7 @@ class   VisitorsImport implements ToCollection
                 $limiter = VisitorSetting::firstWhere('visitor_type_id', $visitorType->id)?->visitor_limiter;
                 if ($limiter) {
                     $visitorTypeVisitorCount = Visitor::whereUserId($user->id)->where('visitor_type_id', $visitorType->id)->count();
-                    if ($visitorTypeVisitorCount > $limiter) {
+                    if ($visitorTypeVisitorCount >= $limiter) {
                         throw new ImportValidateException('访客人数超过' . $limiter . '次,已达到上限');
                     }
                 }

@@ -48,7 +48,7 @@ class VisitorRequest extends FormRequest
                         $limiter = VisitorSetting::firstWhere('visitor_type_id', $this->visitor_type_id)?->visitor_limiter;
                         if ($limiter) {
                             $visitorTypeVisitorCount = Visitor::whereUserId($this->user_id)->where('visitor_type_id', $this->visitor_type_id)->count();
-                            if ($visitorTypeVisitorCount > $limiter) {
+                            if ($visitorTypeVisitorCount >= $limiter) {
                                 return $fail('访客人数超过' . $limiter . '次,已达到上限');
                             }
                         }
@@ -83,7 +83,7 @@ class VisitorRequest extends FormRequest
                         $limiter = VisitorSetting::firstWhere('visitor_type_id', $this->visitor_type_id)?->visitor_limiter;
                         if ($limiter) {
                             $visitorTypeVisitorCount = Visitor::whereUserId($this->user_id)->where('visitor_type_id', $this->visitor_type_id)->count();
-                            if ($visitorTypeVisitorCount > $limiter) {
+                            if ($visitorTypeVisitorCount >= $limiter) {
                                 return $fail('访客人数超过' . $limiter . '次,已达到上限');
                             }
                         }
