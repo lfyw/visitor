@@ -13,6 +13,7 @@ use App\Models\Issue;
 use App\Models\Passageway;
 use App\Models\Role;
 use App\Models\Visitor;
+use App\Models\VisitorSetting;
 use App\Supports\Sdks\VisitorIssue;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
@@ -108,6 +109,17 @@ class AuditController extends Controller
         if ($end->floatDiffInRealDays($start) > 1){
             return error('临时访客访问日期不能超过24小时', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+        //5.3 如果作为亲属，被访问人数量超过6个，禁止下发
+        if ($audit->relation) {
+            $limiter = VisitorSetting::firstWhere('visitor_type_id', $audit->visitor_type_id)?->visitor_limiter;
+            if ($limiter) {
+                $visitorTypeVisitorCount = Visitor::whereUserId($audit->user_id)->where('visitor_type_id', $audit->visitor_type_id)->count();
+                if ($visitorTypeVisitorCount >= $limiter) {
+                    return error('访客人数超过' . $limiter . '次,已达到上限', Response::HTTP_UNPROCESSABLE_ENTITY);
+                }
+            }
+        }
+
 
         //6.更新或创建访客信息+路线+照片
         $visitor = Visitor::updateOrCreate([
