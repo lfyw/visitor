@@ -38,6 +38,8 @@ class WarningController extends Controller
                 'note' => $request->note,
                 'handled_at' => now(),
             ])->save();
+
+
         });
 
     }

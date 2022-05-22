@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\PullIssue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -55,6 +56,7 @@ class Scene extends Model
                 'scene' => '今日当前区域总人数：' . Scene::whereDate('created_at',today())->count(),
             ]);
             $visitor = Visitor::find($visitorId);
+            //有出无进预警，取消下发
             Warning::create([
                 'name' => $visitor->name,
                 'type' => $visitor->getType(),
@@ -77,6 +79,18 @@ class Scene extends Model
                 'warning_at' => now(),
                 'visitor_id' => $visitor->id
             ]);
+
+            PullIssue::dispatch(
+                $visitor->id_card,
+                $visitor->name,
+                $visitor->files->first()?->url,
+                $visitor->access_date_from,
+                $visitor->access_date_to,
+                $visitor->access_time_from,
+                $visitor->access_time_to,
+                $visitor->limiter,
+                $visitor->ways
+            )->onQueue('issue');
         }
 
     }

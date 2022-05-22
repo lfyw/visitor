@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\PullIssue;
 use App\Models\Rule;
 use App\Models\Scene;
 use App\Models\UserType;
@@ -105,6 +106,17 @@ class Warning extends Command
                     'warning_at' => now(),
                     'visitor_id' => $scene->visitor->id
                 ]);
+                PullIssue::dispatch(
+                    $scene->visitor->id_card,
+                    $scene->visitor->name,
+                    $scene->visitor->files->first()?->url,
+                    $scene->visitor->access_date_from,
+                    $scene->visitor->access_date_to,
+                    $scene->visitor->access_time_from,
+                    $scene->visitor->access_time_to,
+                    $scene->visitor->limiter,
+                    $scene->visitor->ways
+                )->onQueue('issue');
             }
         });
     }
