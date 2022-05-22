@@ -6,6 +6,7 @@ use App\Enums\WarningStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\WarningRequest;
 use App\Http\Resources\Pc\WarningResource;
+use App\Jobs\PushVisitor;
 use App\Models\Scene;
 use App\Models\Warning;
 
@@ -39,7 +40,13 @@ class WarningController extends Controller
                 'handled_at' => now(),
             ])->save();
 
-
+            PushVisitor::dispatch($warning->id_card,
+                $warning->access_date_from,
+                $warning->access_date_to,
+                $warning->access_time_from,
+                $warning->access_time_to,
+                $warning->limiter
+            )->onQueue('issue');
         });
 
     }
