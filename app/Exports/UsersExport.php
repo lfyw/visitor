@@ -22,8 +22,8 @@ class UsersExport implements FromArray, ShouldAutoSize, WithColumnFormatting
     public function columnFormats(): array
     {
         return [
+            'H' => NumberFormat::FORMAT_TEXT,
             'I' => NumberFormat::FORMAT_TEXT,
-            'J' => NumberFormat::FORMAT_TEXT,
         ];
     }
 

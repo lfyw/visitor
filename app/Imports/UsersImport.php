@@ -51,22 +51,22 @@ class UsersImport implements ToCollection
     {
         $formatRow['name'] = $this->validateName($row[0]);
         $formatRow['real_name'] = $this->validateRealName($row[1]);
-        $formatRow['department_id'] = $this->validateDepartmentId($row[2], $row[3]);
-        $formatRow['user_type_id'] = $this->validateUserTypeId($row[4]);
-        $formatRow['role_id'] = $this->validateRoleId($row[5]);
-        $formatRow['user_status'] = $this->validateUserStatus($row[6]);
-        $formatRow['duty'] = $row[7];
-        $formatRow['id_card'] = $this->validateIdCard($row[8]);
-        $formatRow['phone_number'] = $this->validatePhoneNumber($row[9]);
+        $formatRow['department_id'] = $this->validateDepartmentId($row[2]);
+        $formatRow['user_type_id'] = $this->validateUserTypeId($row[3]);
+        $formatRow['role_id'] = $this->validateRoleId($row[4]);
+        $formatRow['user_status'] = $this->validateUserStatus($row[5]);
+        $formatRow['duty'] = $row[6];
+        $formatRow['id_card'] = $this->validateIdCard($row[7]);
+        $formatRow['phone_number'] = $this->validatePhoneNumber($row[8]);
         $formatRow['password'] = bcrypt(Str::substr($formatRow['id_card'], -6, 6));
-        $wayIds = $this->validateWayIds($row[10]);
+        $wayIds = $this->validateWayIds($row[9]);
 
         return compact('formatRow', 'wayIds');
     }
 
     protected function formatNumberToString($row)
     {
-        $row[8] = "'" . $row[8];
+        $row[7] = "'" . $row[7];
         return $row;
     }
 
@@ -130,19 +130,12 @@ class UsersImport implements ToCollection
         return $realName;
     }
 
-    protected function validateDepartmentId($department, $office)
+    protected function validateDepartmentId($department)
     {
-        throw_unless($department, new ImportValidateException('部门不能为空'));
-        throw_unless($departmentModel = Department::where('name', $department)->first(), new ImportValidateException('部门名称在系统中不存在'));
-
-        if (!$office) {
-            return $departmentModel->id;
-        }
-
-        //如果有科室
-        throw_unless($officeModel = Department::where('name', $office)->first(), new ImportValidateException('科室名称在系统中不存在'));
-        throw_unless($departmentModel->isAncestorOf($officeModel), new ImportValidateException('该科室在系统中不属于该部门'));
-        return $officeModel->id;
+        throw_unless($department, new ImportValidateException('部门/科室不能为空'));
+        throw_unless($departmentModel = Department::where('name', $department)->first(), new ImportValidateException('部门/科室名称在系统中不存在'));
+        throw_unless(Department::where('name', $department)->count() > 1, new ImportValidateException('部门/科室名称在系统中有重复'));
+        return $departmentModel->id;
     }
 
     protected function setRowsCount($count)
@@ -169,7 +162,7 @@ class UsersImport implements ToCollection
 
     protected function getHeaders(): array
     {
-        return ['用户名', '姓名', '所属部门', '所属科室', '人员类型', '角色', '在职状态', '职务', '身份证号', '手机号', '通行路线'];
+        return ['用户名', '姓名', '所属部门/科室', '人员类型', '角色', '在职状态', '职务', '身份证号', '手机号', '通行路线'];
     }
 
     protected function pushError($row, $message = ''): array
