@@ -132,11 +132,7 @@ class Visitor extends Model
         $userDepartment = '';
         if ($this->type == Visitor::TEMPORARY) {
             $department = $this->user->department;
-            if ($parent = $department?->ancestors->first()) {
-                $userDepartment = $parent->name . '-' . $department->name;
-            } else {
-                $userDepartment = $department?->name;
-            }
+            $userDepartment = $department->getAncestors(['name'])->pluck('name')->push($department->name)->implode('-');
         }
         return $userDepartment;
     }

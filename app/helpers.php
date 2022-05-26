@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Department;
 use App\Supports\Helpers\ApiResponse\XResponse;
 
 if (!function_exists('error')){
