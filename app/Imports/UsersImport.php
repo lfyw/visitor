@@ -134,7 +134,7 @@ class UsersImport implements ToCollection
     {
         throw_unless($department, new ImportValidateException('部门/科室不能为空'));
         throw_unless($departmentModel = Department::where('name', $department)->first(), new ImportValidateException('部门/科室名称在系统中不存在'));
-        throw_unless(Department::where('name', $department)->count() > 1, new ImportValidateException('部门/科室名称在系统中有重复'));
+        throw_if(Department::where('name', $department)->count() > 1, new ImportValidateException('部门/科室名称在系统中有重复'));
         return $departmentModel->id;
     }
 
