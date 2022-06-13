@@ -15,7 +15,6 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        dump($this->role);
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -26,8 +25,8 @@ class UserResource extends JsonResource
             'role' => $this->role,
             'user_status' => $this->user_status,
             'duty' => $this->duty,
-            'id_card' => $this->id_card,
-            'phone_number' => $this->phone_number,
+            'id_card' => sm4decrypt($this->id_card),
+            'phone_number' => sm4decrypt($this->phone_number),
             'issue_status' => $this->issue_status,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,

@@ -15,11 +15,11 @@ class FacePictureController extends Controller
     {
         foreach ($request->face_pictures as $facePicture) {
             if ($request->type == 'user') {
-                if ($user = User::firstWhere('id_card', $facePicture['id_card'])) {
+                if ($user = User::firstWhere('id_card', sm4encrypt($facePicture['id_card']))) {
                     $user->syncFiles($facePicture['id']);
                 }
             } else {
-                if ($visitor = Visitor::firstWhere('id_card', $facePicture['id_card'])) {
+                if ($visitor = Visitor::firstWhere('id_card', sm4encrypt($facePicture['id_card']))) {
                     $visitor->syncFiles($facePicture['id']);
                 }
             }

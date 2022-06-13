@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pc;
 
 use App\Exports\PassingLogsExport;
+use App\Exports\UserExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\ExportRequest;
 use Illuminate\Http\Response;
@@ -21,7 +22,7 @@ class ExportController extends Controller
         $export = new PassingLogsExport();
         $filename = '综合查询-' . now()->format('YmdHis') . '.xlsx';
         $export->searcher([
-            'id_card' => request('id_card'),
+            'id_card' => sm4encrypt(request('id_card')),
             'name' => request('name'),
             'type' => request('type'),
             'passageway_id' => request('passageway_id'),
@@ -33,6 +34,24 @@ class ExportController extends Controller
         ])
             ->store($filename, 'output');
 
-        return ['url' => Storage::disk('output')->url($filename)];
+        return ['url' => Str::after(Storage::disk('output')->url($filename), config('app.url'))];
+    }
+
+    protected function user()
+    {
+        $export = new UserExport();
+        $filename = '人员-' . now()->format('YmdHis') . '.xlsx';
+        $export->searcher([
+            'real_name' => request('real_name'),
+            'role_id' => request('role_id'),
+            'user_status' => request('user_status'),
+            'department_id' => request('department_id'),
+            'id_card' => sm4encrypt(request('id_card')),
+            'phone_number' => request('phone_number'),
+            'ids' => request('ids')
+        ])
+            ->store($filename, 'output');
+
+        return ['url' => Str::after(Storage::disk('output')->url($filename), config('app.url'))];
     }
 }

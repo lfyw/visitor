@@ -21,7 +21,7 @@ class IdCardController extends Controller
         if ((new IdentityCard())->age(request('id_card')) > 60){
             return error('年龄超过60岁不允许登记', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        if (Blacklist::idCard(\request('id_card'))->exists()){
+        if (Blacklist::idCard(sm4encrypt(\request('id_card')))->exists()){
             return error('您已被纳入黑名单，无法进行访客登记', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         //返回访客信息

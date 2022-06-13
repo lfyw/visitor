@@ -11,13 +11,15 @@ use App\Jobs\PullIssue;
 use App\Models\OperationLog;
 use App\Models\Visitor;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class VisitorController extends Controller
 {
     public function index()
     {
         return VisitorResource::collection(Visitor::whenName(request('name'))
-            ->whenIdCard(request('id_card'))
+            ->whenIdCard(sm4encrypt(request('id_card')))
+            ->whenPhone(sm4encrypt(request('phone')))
             ->whenVisitorTypeId(request('visitor_type_id'))
             ->whenWayId(request('way_id'))
             ->whenAgeFrom(request('age_from'))
@@ -44,6 +46,8 @@ class VisitorController extends Controller
             $validated = Arr::except($visitorRequest->validated(), ['face_picture_ids', 'way_ids']);
             $validated['gender'] = InfoHelper::identityCard()->sex($visitorRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($visitorRequest->id_card);
+            $validated['id_card'] = sm4encrypt(Str::upper($validated['id_card']));
+            $validated['phone'] = sm4encrypt($validated['phone']);
             $visitor = Visitor::create($validated);
             $visitor->attachFiles($visitorRequest->face_picture_ids);
             $visitor->ways()->attach($visitorRequest->way_ids);
@@ -76,6 +80,8 @@ class VisitorController extends Controller
             $validated = Arr::except($visitorRequest->validated(), ['face_picture_ids', 'way_ids']);
             $validated['gender'] = InfoHelper::identityCard()->sex($visitorRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($visitorRequest->id_card);
+            $validated['id_card'] = sm4encrypt(Str::upper($validated['id_card']));
+            $validated['phone'] = sm4encrypt($validated['phone']);
             $visitor->fill($validated)->save();
             $visitor->syncFiles($visitorRequest->face_picture_ids);
             $visitor->ways()->sync($visitorRequest->way_ids);
@@ -97,7 +103,7 @@ class VisitorController extends Controller
         $visitors = Visitor::findMany($visitorRequest->ids);
         foreach ($visitors as $visitor) {
             PullIssue::dispatch(
-                $visitor->id_card,
+                sm4decrypt($visitor->id_card),
                 $visitor->name,
                 $visitor->files->first()?->url,
                 $visitor->access_date_from,

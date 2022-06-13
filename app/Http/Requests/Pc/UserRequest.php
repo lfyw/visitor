@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Pc;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Lfyw\LfywEnum\Rules\EnumValue;
 use App\Enums\UserStatus;
 use App\Enums\IssueStatus;
@@ -36,8 +38,16 @@ class UserRequest extends FormRequest
                 'role_id' => ['nullable', 'exists:roles,id'],
                 'user_status' => ['nullable', new EnumValue(UserStatus::class)],
                 'duty' => ['nullable'],
-                'id_card' => ['required', 'unique:users', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/'],
-                'phone_number' => ['required', 'unique:users'],
+                'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function($attribute, $value, $fail){
+                    if (User::whereIdCard(sm4encrypt(Str::upper($value)))->exists()){
+                        return $fail('该身份证号已存在');
+                    }
+                }],
+                'phone_number' => ['required', function($attribute, $value, $fail){
+                    if (User::wherePhoneNumber(sm4encrypt($value))->exists()){
+                        return $fail('该手机号已存在');
+                    }
+                }],
                 'issue_status' => ['nullable', new EnumValue(IssueStatus::class)],
                 'face_picture_ids' => ['required', 'array'],
                 'face_picture_ids.*' => ['required', 'exists:files,id'],
@@ -51,8 +61,16 @@ class UserRequest extends FormRequest
                 'role_id' => ['nullable', 'exists:roles,id'],
                 'user_status' => ['nullable', new EnumValue(UserStatus::class)],
                 'duty' => ['nullable'],
-                'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', Rule::unique('users')->ignore($this->user)],
-                'phone_number' => ['required', Rule::unique('users')->ignore($this->user)],
+                'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function($attribute, $value, $fail){
+                    if (User::whereIdCard(sm4encrypt(Str::upper($value)))->where('id', '<>', $this->user->id)->exists()){
+                        return $fail('该身份证号已存在');
+                    }
+                }],
+                'phone_number' => ['required', function($attribute, $value, $fail){
+                    if (User::wherePhoneNumber(sm4encrypt($value))->where('id', '<>', $this->user->id)->exists()){
+                        return $fail('该手机号已存在');
+                    }
+                }],
                 'issue_status' => ['nullable', new EnumValue(IssueStatus::class)],
                 'face_picture_ids' => ['required', 'array'],
                 'face_picture_ids.*' => ['required', 'exists:files,id'],

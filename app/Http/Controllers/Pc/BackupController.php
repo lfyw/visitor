@@ -10,6 +10,7 @@ use App\Models\OperationLog;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BackupController extends Controller
 {
@@ -53,7 +54,7 @@ class BackupController extends Controller
             auth()->id()
         ));
         return send_data([
-            'url' => Storage::disk('public')->url('backups/' . $backup->name)
+            'url' => Str::after(Storage::disk('public')->url('backups/' . $backup->name), config('app.url'))
         ], Response::HTTP_OK);
     }
 }

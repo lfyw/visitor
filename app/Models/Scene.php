@@ -15,12 +15,17 @@ class Scene extends Model
 
     protected $guarded = [];
 
-    public function visitor():BelongsTo
+    public function visitor(): BelongsTo
     {
         return $this->belongsTo(Visitor::class);
     }
 
-    public function scopeOnlyToday(Builder $builder):Builder
+    public function gate(): BelongsTo
+    {
+        return $this->belongsTo(Gate::class,);
+    }
+
+    public function scopeOnlyToday(Builder $builder): Builder
     {
         return $builder->whereDay('created_at', today());
     }
@@ -44,16 +49,16 @@ class Scene extends Model
         ]);
     }
 
-    public static function out($visitorId, $passagewayId)
+    public static function out($visitorId, $passagewayId, $passingLog)
     {
-        if (static::whereVisitorId($visitorId)->where('passageway_id', $passagewayId)->first()){
+        if (static::whereVisitorId($visitorId)->where('passageway_id', $passagewayId)->first()) {
             static::whereVisitorId($visitorId)->where('passageway_id', $passagewayId)->delete();
             Log::info('实时人员离开记录:', [
-                'scene' => '今日当前区域总人数：' . Scene::whereDate('created_at',today())->count(),
+                'scene' => '今日当前区域总人数：' . Scene::whereDate('created_at', today())->count(),
             ]);
-        }else{
+        } else {
             Log::info('实时人员无进有出:', [
-                'scene' => '今日当前区域总人数：' . Scene::whereDate('created_at',today())->count(),
+                'scene' => '今日当前区域总人数：' . Scene::whereDate('created_at', today())->count(),
             ]);
             $visitor = Visitor::find($visitorId);
             //有出无进预警，取消下发
@@ -71,6 +76,8 @@ class Scene extends Model
                 'access_date_from' => $visitor->access_date_from,
                 'access_date_to' => $visitor->access_date_to,
                 'ways' => $visitor->ways->pluck('name')->implode(','),
+                'gate_name' => $passingLog?->gate->name,
+                'gate_ip' => $passingLog?->gate->ip,
                 'access_time_from' => $visitor->access_time_from,
                 'access_time_to' => $visitor->access_time_to,
                 'limiter' => $visitor->limiter,
@@ -81,7 +88,7 @@ class Scene extends Model
             ]);
 
             PullIssue::dispatch(
-                $visitor->id_card,
+                sm4decrypt($visitor->id_card),
                 $visitor->name,
                 $visitor->files->first()?->url,
                 $visitor->access_date_from,

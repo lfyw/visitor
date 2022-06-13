@@ -19,13 +19,14 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AuditController extends Controller
 {
     public function index()
     {
         return AuditResource::collection(Audit::name(request('name'))
-            ->idCard(request('id_card'))
+            ->idCard(sm4encrypt(request('id_card')))
             ->auditStatus(request('audit_status'))
             ->wayId(request('way_id'))
             ->accessDateFrom(request('access_date_from'))
@@ -88,6 +89,8 @@ class AuditController extends Controller
         $validated = Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
         $validated['gender'] = InfoHelper::identityCard()->sex($auditRequest->id_card) == 'M' ? '男' : '女';
         $validated['age'] = InfoHelper::identityCard()->age($auditRequest->id_card);
+        $validated['id_card'] = sm4encrypt(Str::upper($auditRequest->id_card));
+        $validated['phone'] = sm4encrypt($auditRequest->phone);
         $validated['audit_at'] = now();
         $audit->fill($validated)->save();
         $audit->ways()->sync($auditRequest->way_ids);

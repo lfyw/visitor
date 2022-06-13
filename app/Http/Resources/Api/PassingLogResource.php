@@ -4,6 +4,7 @@ namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PassingLogResource extends JsonResource
 {
@@ -19,7 +20,7 @@ class PassingLogResource extends JsonResource
             'id' => $this->id,
             'gate' => $this->whenLoaded('gate'),
             'passed_at' => (string)$this->passed_at,
-            'snapshot' => Storage::disk('snapshot')->url($this->snapshot)
+            'snapshot' => Str::after(Storage::disk('snapshot')->url($this->snapshot), config('app.url'))
         ];
     }
 }

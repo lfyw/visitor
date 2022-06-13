@@ -21,7 +21,7 @@ class AuditController extends Controller
     {
         return AuditResource::collection(Audit::accessDateFrom(request('access_date_from'))
             ->accessDateTo(request('access_date_to'))
-            ->whereIdCard(\request('id_card'))
+            ->whereIdCard(sm4encrypt(\request('id_card')))
             ->with([
                 'user:id,name,real_name,department_id',
                 'user.department.ancestors',
@@ -35,9 +35,9 @@ class AuditController extends Controller
     {
         $audit = DB::transaction(function () use ($auditRequest) {
             $validated = Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
-            $validated['id_card'] = \Str::upper($validated['id_card']);
             $validated['gender'] = InfoHelper::identityCard()->sex($auditRequest->id_card) == 'M' ? '男' : '女';
             $validated['age'] = InfoHelper::identityCard()->age($auditRequest->id_card);
+            $validated['id_card'] = sm4encrypt(\Str::upper($validated['id_card']));
             $audit = Audit::create($validated);
 
             $audit->ways()->attach($auditRequest->way_ids);
@@ -77,7 +77,7 @@ class AuditController extends Controller
 
     public function history()
     {
-        if (!$audit = Audit::latest()->firstWhere('id_card', request('id_card'))){
+        if (!$audit = Audit::latest()->firstWhere('id_card', sm4encrypt(request('id_card')))){
             return error('未查询到历史信息', Response::HTTP_NOT_FOUND);
         }
         return send_data(new AuditResource($audit->load([

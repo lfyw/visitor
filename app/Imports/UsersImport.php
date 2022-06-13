@@ -58,7 +58,7 @@ class UsersImport implements ToCollection
         $formatRow['duty'] = $row[6];
         $formatRow['id_card'] = $this->validateIdCard($row[7]);
         $formatRow['phone_number'] = $this->validatePhoneNumber($row[8]);
-        $formatRow['password'] = bcrypt(Str::substr($formatRow['id_card'], -6, 6));
+        $formatRow['password'] = bcrypt(Str::substr(sm4decrypt($formatRow['id_card']), -6, 6));
         $wayIds = $this->validateWayIds($row[9]);
 
         return compact('formatRow', 'wayIds');
@@ -84,14 +84,14 @@ class UsersImport implements ToCollection
     protected function validatePhoneNumber($phoneNumber)
     {
         throw_unless($phoneNumber, new ImportValidateException('手机号不能为空'));
-        return $phoneNumber;
+        return sm4encrypt($phoneNumber);
     }
 
     protected function validateIdCard($idCard)
     {
         throw_unless($idCard, new ImportValidateException('身份证号不能为空'));
         throw_unless((new IdentityCard())->validate($idCard), new ImportValidateException('身份证号规则错误'));
-        $idCard = Str::upper($idCard);
+        $idCard = sm4encrypt(Str::upper($idCard));
         throw_if(User::firstWhere('id_card', $idCard), new ImportValidateException('身份证号已存在系统中'));
         return $idCard;
     }

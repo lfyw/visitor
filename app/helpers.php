@@ -59,3 +59,36 @@ if(!function_exists('send_data')){
         return XResponse::sendData($data, $status);
     }
 }
+
+
+if (!function_exists('sm4encrypt')) {
+    /**
+     * @desc sm4 加密方法
+     * @param null $value
+     * @return string
+     */
+    function sm4encrypt($value = null)
+    {
+        $sm4 = new \App\Supports\Helpers\SM4();
+        $key = config('app.sm4_key');
+        if (!$value){
+            return null;
+        }
+        return $sm4->encrypt($key, $value);
+    }
+}
+
+if (!function_exists('sm4decrypt')) {
+    /**
+     * @desc sm4 解密方法
+     * @param null $value
+     * @return bool|string
+     */
+    function sm4decrypt($value = null)
+    {
+        $sm4 = new \App\Supports\Helpers\SM4();
+        $key = config('app.sm4_key');
+
+        return \Illuminate\Support\Str::length($value) < 24 ? false : $sm4->decrypt($key, $value);
+    }
+}

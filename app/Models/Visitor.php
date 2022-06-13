@@ -60,6 +60,11 @@ class Visitor extends Model
         return $builder->when(filled($idCard), fn(Builder $visitor) => $visitor->where('id_card', 'like', "%{$idCard}%"));
     }
 
+    public function scopeWhenPhone(Builder $builder, $phone):Builder
+    {
+        return $builder->when(filled($phone), fn(Builder $visitor) => $visitor->where('phone', $phone));
+    }
+
     public function scopeWhenVisitorTypeId(Builder $builder, $visitorTypeId):Builder
     {
         return $builder->when(filled($visitorTypeId), fn(Builder $visitor) => $visitor->where('visitor_type_id', $visitorTypeId));

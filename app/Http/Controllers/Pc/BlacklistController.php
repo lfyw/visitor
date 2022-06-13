@@ -11,24 +11,27 @@ use App\Jobs\PullIssue;
 use App\Models\Blacklist;
 use App\Models\OperationLog;
 use App\Models\Visitor;
+use Illuminate\Support\Str;
 
 class BlacklistController extends Controller
 {
     public function index()
     {
-        return BlacklistResource::collection(Blacklist::name(request('name'))->idCard(request('id_card'))->latest()->paginate(request('pageSize', 10)));
+        return BlacklistResource::collection(Blacklist::name(request('name'))->idCard(sm4encrypt(request('id_card')))->latest()->paginate(request('pageSize', 10)));
     }
 
     public function store(BlacklistRequest $blacklistRequest)
     {
         $validated = $blacklistRequest->validated();
         $validated['gender'] = InfoHelper::identityCard()->sex($validated['id_card']) == 'M' ? '男' : '女';
+        $validated['id_card'] = sm4encrypt(Str::upper($validated['id_card']));
+        $validated['phone'] = sm4encrypt($validated['phone']);
         $blacklist = Blacklist::create($validated);
 
         $visitor = Visitor::firstWhere('id_card', $blacklist->id_card)->loadFiles();
         $visitor->blockBlacklist();
         PullIssue::dispatch(
-            $visitor->id_card,
+            sm4decrypt($visitor->id_card),
             $visitor->name,
             $visitor->files->first()?->url,
             $visitor->access_date_from,
@@ -53,6 +56,8 @@ class BlacklistController extends Controller
     {
         $validated = $blacklistRequest->validated();
         $validated['gender'] = InfoHelper::identityCard()->sex($validated['id_card']) == 'M' ? '男' : '女';
+        $validated['id_card'] = sm4encrypt(Str::upper($validated['id_card']));
+        $validated['phone'] = sm4encrypt($validated['phone']);
         $blacklist->fill($validated)->save();
         event(new OperationDone(OperationLog::BLACKLIST,
             sprintf(sprintf("编辑黑名单【%s】", $blacklistRequest->name)),
@@ -92,7 +97,7 @@ class BlacklistController extends Controller
             ]);
             $visitor->blockBlacklist();
             PullIssue::dispatch(
-                $visitor->id_card,
+                sm4decrypt($visitor->id_card),
                 $visitor->name,
                 $visitor->files->first()?->url,
                 $visitor->access_date_from,

@@ -20,14 +20,14 @@ class IssueController extends Controller
 {
     public function index()
     {
-        return IssueResource::collection(Issue::filterByIdCard(\request('id_card'))->with(['gate.passageways'])->latest('id')->paginate(\request('pageSize', 10)));
+        return IssueResource::collection(Issue::filterByIdCard(sm4encrypt(\request('id_card')))->with(['gate.passageways'])->latest('id')->paginate(\request('pageSize', 10)));
     }
 
     public function update(Issue $issue)
     {
         try {
             //下发请求
-            VisitorIssue::addByIdCard($issue->id_card, $issue->gate()->get(['ip'])->toArray());
+            VisitorIssue::addByIdCard(sm4decrypt($issue->id_card), $issue->gate()->get(['ip'])->toArray());
             //成功则记录下发成功记录
             $issue->fill(['issue_status' => true])->save();
             Issue::syncIssue($issue->id_card);
@@ -48,14 +48,14 @@ class IssueController extends Controller
     public function deleteUser()
     {
         $this->validate(\request(), [
-            'id_card' => 'required', 'exists:visitors,id_card'
+            'id_card' => 'required'
         ], [], [
             'id_card' => '身份证号'
         ]);
         try {
-            $visitor = Visitor::firstWhere('id_card', request('id_card'));
+            $visitor = Visitor::firstWhere('id_card', sm4encrypt(request('id_card')));
             PullIssue::dispatch(
-                $visitor->id_card,
+                sm4decrypt($visitor->id_card),
                 $visitor->name,
                 $visitor->files->first()?->url,
                 $visitor->access_date_from,
@@ -86,8 +86,8 @@ class IssueController extends Controller
             'access_time_to' => ['required'],
             'limiter' => ['required'],
         ], [], [
-            'ids' => '身份证号',
-            'ids.*' => '身份证号',
+            'ids' => 'id',
+            'ids.*' => 'id',
             'access_date_from' => '起始访问日期',
             'access_date_to' => '截止访问日期',
             'access_time_from' => '起始访问时间',
@@ -97,7 +97,7 @@ class IssueController extends Controller
 
         $idCards = Visitor::whereIn('id', request('ids'))->pluck('id_card')->toArray();
         foreach ($idCards as $idCard){
-            PushVisitor::dispatch($idCard,
+            PushVisitor::dispatch(sm4decrypt($idCard),
                 request('access_date_from'),
                 request('access_date_to'),
                 request('access_time_from'),
@@ -123,8 +123,8 @@ class IssueController extends Controller
             'access_time_to' => ['required'],
             'limiter' => ['required'],
         ], [], [
-            'ids' => '身份证号',
-            'ids.*' => '身份证号',
+            'ids' => 'id',
+            'ids.*' => 'id',
             'access_date_from' => '起始访问日期',
             'access_date_to' => '截止访问日期',
             'access_time_from' => '起始访问时间',
@@ -135,7 +135,7 @@ class IssueController extends Controller
         $idCards = User::whereIn('id', request('ids'))->pluck('id_card')->toArray();
         foreach ($idCards as $idCard){
             PushUser::dispatch(
-                $idCard,
+                sm4decrypt($idCard),
                 request('access_date_from'),
                 request('access_date_to'),
                 request('access_time_from'),
@@ -167,7 +167,7 @@ class IssueController extends Controller
 
         $visitors = Visitor::all();
         foreach ($visitors->pluck('id_card')->toArray() as $idCard){
-            PushVisitor::dispatch($idCard,
+            PushVisitor::dispatch(sm4decrypt($idCard),
                 request('access_date_from'),
                 request('access_date_to'),
                 request('access_time_from'),
@@ -201,7 +201,7 @@ class IssueController extends Controller
         $users = User::all();
         foreach ($users->pluck('id_card')->toArray() as $idCard){
             PushUser::dispatch(
-                $idCard,
+                sm4decrypt($idCard),
                 request('access_date_from'),
                 request('access_date_to'),
                 request('access_time_from'),

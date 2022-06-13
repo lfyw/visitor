@@ -49,6 +49,16 @@ class Warning extends Model
         return $builder->when(filled($type), fn(Builder $builder) => $builder->where('type', $type));
     }
 
+    public function scopeWhenIdCard(Builder $builder, $idCard): Builder
+    {
+        return $builder->when(filled($idCard), fn(Builder $builder) => $builder->where('id_card', $idCard));
+    }
+
+    public function scopeWhenPhone(Builder $builder, $phone): Builder
+    {
+        return $builder->when(filled($phone), fn(Builder $builder) => $builder->where('phone', $phone));
+    }
+
     public function scopeStatus(Builder $builder, $status): Builder
     {
         return $builder->when(filled($status), function (Builder $builder) use ($status) {

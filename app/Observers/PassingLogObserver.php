@@ -40,7 +40,7 @@ class PassingLogObserver
             if ($gate->rule == GateRule::IN->value) {
                 Scene::in($visitor->id, $way->id, $passingLog->gate_id, $passageway->id, $passingLog->passed_at);
             } else {
-                Scene::out($visitor->id, $passageway->id);
+                Scene::out($visitor->id, $passageway->id, $passingLog);
             }
         }
     }
@@ -76,7 +76,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $age = $passingLog->visitor->age;
         } else {
-            $age = (new IdentityCard())->age($passingLog->visitor->userAsVisitor->id_card);
+            $age = (new IdentityCard())->age(sm4decrypt($passingLog->visitor->userAsVisitor->id_card));
         }
         return $age;
     }
@@ -86,7 +86,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $gender = $passingLog->visitor->gender;
         } else {
-            $gender = (new IdentityCard())->sex($passingLog->visitor->userAsVisitor->id_card) == 'M' ? '男' : '女';
+            $gender = (new IdentityCard())->sex(sm4decrypt($passingLog->visitor->userAsVisitor->id_card)) == 'M' ? '男' : '女';
         }
         return $gender;
     }

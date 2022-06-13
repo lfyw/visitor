@@ -24,6 +24,8 @@ class UserController extends Controller
             ->whenRoleId(request('role_id'))
             ->whenUserStatus(request('user_status'))
             ->whenDepartmentId(request('department_id'))
+            ->whenIdCard(sm4encrypt(request('id_card')))
+            ->whenPhoneNumber(sm4encrypt(request('phone_number')))
             ->adminShouldBeHidden(auth()->user())
             ->canSee()
             ->with([
@@ -40,8 +42,9 @@ class UserController extends Controller
     {
         $user = DB::transaction(function () use ($userRequest) {
             $validated = $userRequest->only(['name', 'real_name', 'department_id', 'user_type_id', 'role_id', 'user_status', 'duty', 'id_card', 'phone_number', 'issue_status']);
-            $validated['id_card'] = Str::upper($validated['id_card']);
-            $validated['password'] = bcrypt(Str::substr($validated['id_card'], -6, 6));
+            $validated['password'] = bcrypt(Str::substr(Str::upper($validated['id_card']), -6, 6));
+            $validated['id_card'] = sm4encrypt(Str::upper($validated['id_card']));
+            $validated['phone_number'] = sm4encrypt($validated['phone_number']);
             $user = User::create($validated);
             $user->attachFiles($userRequest->face_picture_ids);
             $user->ways()->attach($userRequest->way_ids);
@@ -78,7 +81,8 @@ class UserController extends Controller
             if ($user->name == User::SUPER_ADMIN) {
                 unset($validated['role_id']);
             }
-
+            $validated['id_card'] = sm4encrypt(Str::upper($validated['id_card']));
+            $validated['phone_number'] = sm4encrypt($validated['phone_number']);
             $user->fill($validated)->save();
             $user->syncFiles($userRequest->face_picture_ids);
             $user->ways()->sync($userRequest->way_ids);
@@ -105,7 +109,7 @@ class UserController extends Controller
                 $user->ways()->detach();
                 if ($visitor = Visitor::firstWhere('id_card', $user->id_card)) {
                     PullIssue::dispatch(
-                        $visitor->id_card,
+                        sm4decrypt($visitor->id_card),
                         $visitor->name,
                         $visitor->files->first()?->url,
                         $visitor->access_date_from,
@@ -137,5 +141,24 @@ class UserController extends Controller
             sprintf("重置【%s】密码", $user->real_name),
             auth()->id()));
         return no_content(Response::HTTP_OK);
+    }
+
+    public function changeType()
+    {
+        $this->validate(request(), [
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'exists:users,id'],
+            'user_type_id' => ['required', 'exists:user_types,id']
+        ], [], [
+            'ids' => '人员id',
+            'ids.*' => '人员id',
+            'user_type_id' => '人员类型id'
+        ]);
+
+        $users = User::findMany(request('ids'));
+        $users->each(function ($user){
+            $user->fill(['user_type_id' => request('user_type_id')])->save();
+        });
+        return no_content();
     }
 }

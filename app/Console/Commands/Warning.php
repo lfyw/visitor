@@ -65,14 +65,14 @@ class Warning extends Command
                 //与当前时差超过规则，添加到预警库
                 info(sprintf("超时未出预警 => 检测到符合条件的预警 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
                     $userType,
-                    $scene->visitor->id_card,
+                    sm4decrypt($scene->visitor->id_card),
                     $scene->visitor->name)
                 );
                 $warningHasExists = WarningModel::onlyToday()->where('id_card', $scene->visitor->id_card)->exists();
                 if ($warningHasExists){
                     info(sprintf("超时未出预警 => 检测到当日已存在预警信息，不再重复预警 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
                             $userType,
-                            $scene->visitor->id_card,
+                            sm4decrypt($scene->visitor->id_card),
                             $scene->visitor->name)
                     );
                     return ;
@@ -80,7 +80,7 @@ class Warning extends Command
 
                 info(sprintf("超时未出预警 => 检测到符合条件的预警，添加入预警库 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
                         $userType,
-                        $scene->visitor->id_card,
+                        sm4decrypt($scene->visitor->id_card),
                         $scene->visitor->name)
                 );
 
@@ -98,6 +98,8 @@ class Warning extends Command
                     'access_date_from' => $scene->visitor->access_date_from,
                     'access_date_to' => $scene->visitor->access_date_to,
                     'ways' => $scene->visitor->ways->pluck('name')->implode(','),
+                    'gate_name' => $scene?->gate->name,
+                    'gate_ip' => $scene?->gate->ip,
                     'access_time_from' => $scene->visitor->access_time_from,
                     'access_time_to' => $scene->visitor->access_time_to,
                     'limiter' => $scene->visitor->limiter,
@@ -107,7 +109,7 @@ class Warning extends Command
                     'visitor_id' => $scene->visitor->id
                 ]);
                 PullIssue::dispatch(
-                    $scene->visitor->id_card,
+                    sm4decrypt($scene->visitor->id_card),
                     $scene->visitor->name,
                     $scene->visitor->files->first()?->url,
                     $scene->visitor->access_date_from,

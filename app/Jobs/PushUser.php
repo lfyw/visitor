@@ -87,7 +87,7 @@ class PushUser implements ShouldQueue
         } else {
             try {
                 $parameter = [
-                    'id_card' => $visitor->id_card,
+                    'id_card' => sm4decrypt($visitor->id_card),
                     'real_name' => $visitor->name,
                     'face_picture' => config('app.url') . $facePicture->url,
                     'access_date_from' => $visitor->access_date_from,

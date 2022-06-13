@@ -10,4 +10,5 @@ enum Export:string implements Enumable
     use HasEnum;
 
     case PASSING_LOG = 'passing_log';
+    case USER = 'user';
 }

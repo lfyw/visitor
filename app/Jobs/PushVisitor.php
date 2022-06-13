@@ -43,7 +43,7 @@ class PushVisitor implements ShouldQueue
      */
     public function handle()
     {
-        $visitor = Visitor::firstWhere('id_card', $this->idCard);
+        $visitor = Visitor::firstWhere('id_card', sm4encrypt($this->idCard));
         Log::info(sprintf('访客【%s】启动下发...', $this->idCard), ['id_card' => $this->idCard, 'visitor' => $visitor]);
 
         $passageways = Passageway::getByWays($visitor->ways)->get();
@@ -62,7 +62,7 @@ class PushVisitor implements ShouldQueue
         } else {
             try {
                 $parameter = [
-                    'id_card' => $visitor->id_card,
+                    'id_card' => sm4decrypt($visitor->id_card),
                     'real_name' => $visitor->name,
                     'face_picture' => config('app.url') . $facePicture->url,
                     'access_date_from' => $this->accessDateFrom,

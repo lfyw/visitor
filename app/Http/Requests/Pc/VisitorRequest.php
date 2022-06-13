@@ -34,7 +34,7 @@ class VisitorRequest extends FormRequest
                 'name' => ['required'],
                 'visitor_type_id' => ['required', 'exists:visitor_types,id'],
                 'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail) {
-                    if (Blacklist::idCard($value)->exists()) {
+                    if (Blacklist::idCard(sm4encrypt($value))->exists()) {
                         return $fail('已经存在于黑名单中');
                     }
                 }],
@@ -69,7 +69,7 @@ class VisitorRequest extends FormRequest
                 'name' => ['required'],
                 'visitor_type_id' => ['required', 'exists:visitor_types,id'],
                 'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail) {
-                    if (Blacklist::idCard($value)->exists()) {
+                    if (Blacklist::idCard(sm4encrypt($value))->exists()) {
                         return $fail('已经存在于黑名单中');
                     }
                 }],

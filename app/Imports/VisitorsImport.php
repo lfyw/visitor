@@ -53,8 +53,8 @@ class   VisitorsImport implements ToCollection
         $formatRow['name'] = $this->validateName($row[0]);
         $formatRow['visitor_type_id'] = $this->validateVisitorTypeId($row[1]);
         $formatRow['id_card'] = $this->validateIdCard($row[2]);
-        $formatRow['gender'] = (new IdentityCard())->sex($formatRow['id_card']) == 'M' ? '男' : '女';
-        $formatRow['age'] = (new IdentityCard())->age($formatRow['id_card']);
+        $formatRow['gender'] = (new IdentityCard())->sex(sm4decrypt($formatRow['id_card'])) == 'M' ? '男' : '女';
+        $formatRow['age'] = (new IdentityCard())->age(sm4decrypt($formatRow['id_card']));
         $formatRow['phone'] = $this->validatePhone($row[3]);
         $formatRow['unit'] = $row[4];
         $formatRow['reason'] = $row[5];
@@ -144,7 +144,7 @@ class   VisitorsImport implements ToCollection
         throw_unless($userIdCard, new ImportValidateException('被访问人身份证号不能为空'));
         throw_unless((new IdentityCard())->validate($userIdCard), new ImportValidateException('被访问人身份证号规则错误'));
         $userIdCard = Str::upper($userIdCard);
-        throw_unless($user = User::firstWhere('id_card', $userIdCard), new ImportValidateException('被访问人在系统中查不到'));
+        throw_unless($user = User::firstWhere('id_card', sm4encrypt($userIdCard)), new ImportValidateException('被访问人在系统中查不到'));
 
         if ($visitorType == VisitorType::FAMILY){
             if ($relation){
@@ -165,14 +165,14 @@ class   VisitorsImport implements ToCollection
     protected function validatePhone($phone)
     {
         throw_unless($phone, new ImportValidateException('手机号不能为空'));
-        return $phone;
+        return sm4encrypt($phone);
     }
 
     protected function validateIdCard($idCard)
     {
         throw_unless($idCard, new ImportValidateException('身份证号不能为空'));
         throw_unless((new IdentityCard())->validate($idCard), new ImportValidateException('身份证号规则错误'));
-        $idCard = Str::upper($idCard);
+        $idCard = sm4encrypt(Str::upper($idCard));
         throw_if(Visitor::firstWhere('id_card', $idCard), new ImportValidateException('身份证号已存在系统中'));
         throw_if(Blacklist::firstWhere('id_card', $idCard), new ImportValidateException('该人员处于黑名单中'));
         return $idCard;

@@ -31,7 +31,7 @@ class PassingLogController extends Controller
 //            $path = $request->file('snapshot')->store(now()->format('Y-m') . '/' . now()->format('d'), 'snapshot');
 //        }
         $passingLog = PassingLog::create([
-            'id_card' => $idCard,
+            'id_card' => sm4encrypt($idCard),
             'gate_id' => $gate->id,
             'passed_at' => now(),
 //            'snapshot' => $path ?? null
@@ -43,7 +43,7 @@ class PassingLogController extends Controller
     public function withSnapShot(PassingLogRequest $request)
     {
         $gate = Gate::firstWhere(['ip' => $request->ip]);
-        $idCard = Str::upper($request->id_card);
+        $idCard = sm4encrypt(Str::upper($request->id_card));
         //todo 测试逻辑，正式服测完要清掉
         if (!$gate) {
             $gate = Gate::create([
@@ -68,7 +68,7 @@ class PassingLogController extends Controller
         $visitor = Visitor::firstWhere('id_card', $idCard);
         $visitor->increment('actual_pass_count');
         if ($visitor->actual_pass_count >= $visitor->limiter){
-            VisitorIssue::delete($visitor->id_card);
+            VisitorIssue::delete(sm4decrypt($visitor->id_card));
         }
 
         return send_data(new PassingLogResource($passingLog->load('gate')));

@@ -18,7 +18,7 @@ class AuditResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'id_card' => $this->id_card,
+            'id_card' => sm4decrypt($this->id_card),
             'name' => $this->name,
             'reason' => $this->reason,
             'access_date_from' => $this->access_date_from,

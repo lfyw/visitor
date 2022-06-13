@@ -74,6 +74,16 @@ class User extends Authenticatable
         });
     }
 
+    public function scopeWhenIdCard(Builder $builder, $idCard):Builder
+    {
+        return $builder->when($idCard, fn(Builder $builder) => $builder->where('id_card', $idCard));
+    }
+
+    public function scopeWhenPhoneNumber(Builder $builder, $phoneNumber):Builder
+    {
+        return $builder->when($phoneNumber, fn(Builder $builder) => $builder->where('phone_number', $phoneNumber));
+    }
+
     public function scopeAdminShouldBeHidden(Builder $builder, $user): Builder
     {
         return $builder->when($user->name !== User::SUPER_ADMIN,fn(Builder $user) => $user->where('name', '<>', User::SUPER_ADMIN));

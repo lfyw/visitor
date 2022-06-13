@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Pc;
 
+use App\Models\Blacklist;
 use App\Rules\IdCard;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class BlacklistRequest extends FormRequest
@@ -28,13 +30,21 @@ class BlacklistRequest extends FormRequest
         return match($this->method()){
             'POST' =>[
                 'name' => ['required'],
-                'id_card' => ['required', new IdCard(), 'unique:blacklists'],
+                'id_card' => ['required', new IdCard(), function($attribute, $value, $fail){
+                    if (Blacklist::whereIdCard(sm4encrypt(Str::upper($value)))->exists()){
+                        return $fail('该身份证号已被拉黑');
+                    }
+                }],
                 'phone' => ['required'],
                 'reason' => ['nullable']
             ],
             'PUT' => [
                 'name' => ['required'],
-                'id_card' => ['required', new IdCard(), Rule::unique('blacklists')->ignore($this->blacklist)],
+                'id_card' => ['required', new IdCard(), function($attribute, $value, $fail){
+                    if (Blacklist::whereIdCard(sm4encrypt(Str::upper($value)))->where('id', '<>', $this->blacklist->id)->exists()){
+                        return $fail('该身份证号已被拉黑');
+                    }
+                }],
                 'phone' => ['required'],
                 'reason' => ['nullable']
             ],

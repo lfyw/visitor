@@ -12,7 +12,8 @@ class PassingLogController extends Controller
 {
     public function index()
     {
-        return PassingLogResource::collection(PassingLog::whenIdCard(\request('id_card'))
+        return PassingLogResource::collection(PassingLog::whenIdCard(sm4encrypt(\request('id_card')))
+            ->whenPhone(sm4encrypt(request('phone')))
             ->whenName(request('name'))
             ->whenType(request('type'))
             ->whenPassagewayId(request('passageway_id'))

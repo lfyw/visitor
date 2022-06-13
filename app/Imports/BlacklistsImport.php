@@ -46,8 +46,8 @@ class BlacklistsImport implements ToCollection
     {
         $data['name'] = $row[0];
         $data['id_card'] = $this->validateIdCard($row[1]);
-        $data['gender'] = (new IdentityCard())->sex($data['id_card']) == 'M' ? '男' : '女';
-        $data['phone'] = $row[2];
+        $data['gender'] = (new IdentityCard())->sex(sm4decrypt($data['id_card'])) == 'M' ? '男' : '女';
+        $data['phone'] = sm4encrypt($row[2]);
         $data['reason'] = $row[3];
         return $data;
     }
@@ -56,7 +56,8 @@ class BlacklistsImport implements ToCollection
     {
         throw_unless($idCard, new ImportValidateException('身份证号不能为空'));
         throw_unless((new IdentityCard())->validate($idCard), new ImportValidateException('身份证号规则错误'));
-        $idCard = Str::upper($idCard);
+        $idCard = sm4encrypt(Str::upper($idCard));
+        throw_if(Blacklist::firstWhere('id_card', $idCard), new ImportValidateException('该人员已处于黑名单中'));
         return $idCard;
     }
 

@@ -18,6 +18,8 @@ class WarningController extends Controller
             ->type(\request('type'))
             ->warningAtFrom(\request('warning_at_from'))
             ->warningAtTo(\request('warning_at_to'))
+            ->whenIdCard(sm4encrypt(request('id_card')))
+            ->whenPhone(sm4encrypt(request('phone')))
             ->status(\request('status'))
             ->with([
                 'visitor:id,access_count',

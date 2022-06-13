@@ -64,7 +64,7 @@ class PassingLogsExport implements FromArray
                 ->whenRule($searcher['rule'] ?? null)
                 ->whenPassedAtFrom($searcher['passed_at_from'] ?? null)
                 ->whenPassedAtTo($searcher['passed_at_to'] ?? null)
-                ->when($searcher['ids'] ?? null, fn(Builder $builder) => $builder->whereIn('id', $searcher));
+                ->when($searcher['ids'] ?? null, fn(Builder $builder) => $builder->whereIn('id', $searcher['ids']));
         }
         return $this;
     }

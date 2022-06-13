@@ -24,7 +24,7 @@ class VisitorIssue
 
         $facePicture = $audit->files()->first();
         $parameter = [
-            'id_card' => $audit->id_card,
+            'id_card' => sm4decrypt($audit->id_card),
             'real_name' => $audit->name,
             'face_picture' => config('app.url') . $facePicture->url,
             'access_date_from' => $audit->access_date_from,
@@ -44,7 +44,7 @@ class VisitorIssue
 
     public static function addByIdCard($idCard, $gates)
     {
-        $visitor = Visitor::firstWhere('id_card', $idCard)->loadFiles();
+        $visitor = Visitor::firstWhere('id_card', sm4encrypt($idCard))->loadFiles();
 
         if (config('app.env') !== 'production') {
             Log::info('【测试环境】重新下放直接通过', ['id_card' => $idCard, 'visitor' => $visitor]);
@@ -54,7 +54,7 @@ class VisitorIssue
         Log::info('【生产环境】重新下放', ['id_card' => $idCard, 'visitor' => $visitor]);
 
         $parameter = [
-            'id_card' => $visitor->id_card,
+            'id_card' => sm4decrypt($visitor->id_card),
             'real_name' => $visitor->name,
             'face_picture' => config('app.url') . $visitor->files()->first()?->url,
             'access_date_from' => $visitor->access_date_from,
@@ -71,7 +71,7 @@ class VisitorIssue
 
     public static function delete($idCard, $gates = null)
     {
-        $visitor = Visitor::firstWhere('id_card', $idCard)?->loadFiles();
+        $visitor = Visitor::firstWhere('id_card', sm4encrypt($idCard))?->loadFiles();
 
         if (config('app.env') !== 'production') {
             Log::info('【测试环境】临时访客删除下放直接通过', ['id_card' => $idCard, 'visitor' => $visitor]);
@@ -88,7 +88,7 @@ class VisitorIssue
         }
 
         $parameter = [
-            'id_card' => $visitor->id_card,
+            'id_card' => sm4decrypt($visitor->id_card),
             'real_name' => $visitor->name,
             'face_picture' => config('app.url') . $visitor->files()->first()?->url,
             'access_date_from' => $visitor->access_date_from,
