@@ -132,7 +132,7 @@ class Warning extends Command
         if (!$rule) {
             return 0;
         }
-        $notOutRule = $rule->value['not_out'];
+        $notOutRule = $rule->value['no_out'];
         $runUserTypeId = UserType::firstWhere('name', $userType)?->id;
         $runUserNotRule = current(Arr::where($notOutRule, fn($item) => $item['user_type_id'] == $runUserTypeId));
         return data_get($runUserNotRule, 'duration');
