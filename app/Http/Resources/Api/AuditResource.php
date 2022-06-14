@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api;
 
+use App\Http\Resources\FileResource;
 use App\Models\Auditor;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -27,6 +28,7 @@ class AuditResource extends JsonResource
             'access_time_to' => $this->access_time_to,
             'limiter' => $this->limiter,
             'audit_status' => $this->audit_status,
+            'face_pictures' => FileResource::collection($this->whenLoaded('files')),
             'user' => $this->whenLoaded('user'),
             'auditors' => AuditorResource::collection($this->whenLoaded('auditors')),
             'visitor_type' => new VisitorTypeResource($this->whenLoaded('visitorType')),

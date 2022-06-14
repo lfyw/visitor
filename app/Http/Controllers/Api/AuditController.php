@@ -86,6 +86,6 @@ class AuditController extends Controller
             'ways',
             'visitorType',
             'auditors.user:id,name',
-        ])));
+        ])->loadFiles()));
     }
 }
