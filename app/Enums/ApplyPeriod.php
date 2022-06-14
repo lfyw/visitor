@@ -13,4 +13,5 @@ enum ApplyPeriod:string implements Enumable
 
     case DAY = 'day';
     case YEAR = 'year';
+    case MONTH = 'month';
 }
