@@ -33,7 +33,7 @@ class AuditRequest extends FormRequest
             }
             }],
             'phone' => 'required',
-            'unit' => 'required',
+            'unit' => 'nullable',
             'user_id' => ['required', 'exists:users,id'],
             'visitor_type_id' => ['required', 'exists:visitor_types,id'],
             'way_ids' => ['required', 'array'],
