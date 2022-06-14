@@ -28,6 +28,8 @@ class AuditResource extends JsonResource
             'access_time_to' => $this->access_time_to,
             'limiter' => $this->limiter,
             'audit_status' => $this->audit_status,
+            'phone' => sm4decrypt($this->phone),
+            'unit' => $this->unit,
             'face_pictures' => FileResource::collection($this->whenLoaded('files')),
             'user' => $this->whenLoaded('user'),
             'auditors' => AuditorResource::collection($this->whenLoaded('auditors')),
