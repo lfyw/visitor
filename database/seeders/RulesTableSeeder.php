@@ -15,10 +15,10 @@ class RulesTableSeeder extends Seeder
     public function run()
     {
         Rule::updateOrCreate([
-            'name' => '规则设置'
+            'name' => '预警设置'
         ], [
             'value' => [
-                'not_out' => [
+                'no_out' => [
                     [
                         'user_type_id' => 1,
                         'duration' => 9

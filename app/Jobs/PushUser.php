@@ -46,7 +46,7 @@ class PushUser implements ShouldQueue
      */
     public function handle()
     {
-        $user = User::firstWhere('id_card', $this->idCard);
+        $user = User::firstWhere('id_card', sm4encrypt($this->idCard));
         Log::info(sprintf('人员【%s】启动下发...', $this->idCard), ['id_card' => $this->idCard, 'user' => $user]);
 
         $facePicture = $user->files()->first();
