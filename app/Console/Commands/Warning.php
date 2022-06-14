@@ -128,7 +128,7 @@ class Warning extends Command
 
     private function getDuration($userType)
     {
-        $rule = Rule::firstWhere('name', '规则设置');
+        $rule = Rule::firstWhere('name', '预警设置');
         if (!$rule) {
             return 0;
         }
