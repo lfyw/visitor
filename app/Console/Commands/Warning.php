@@ -53,6 +53,9 @@ class Warning extends Command
     protected function runUserNotOut($userType)
     {
         $duration = $this->getDuration($userType);
+        if (!$duration){
+            return ;
+        }
         Scene::whereHas('visitor', function (Builder $builder) use ($userType){
             $builder->whereHas('userAsVisitor', function (Builder $userBuilder) use ($userType){
                 $userBuilder->whereHas('userType', function (Builder $userTypeBuilder) use ($userType){
