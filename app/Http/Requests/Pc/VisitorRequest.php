@@ -39,7 +39,7 @@ class VisitorRequest extends FormRequest
                     }
                 }],
                 'phone' => ['required'],
-                'unit' => ['required'],
+                'unit' => ['nullable'],
                 'reason' => ['nullable'],
                 'relation' => ['nullable'],
                 'user_id' => ['required', 'exists:users,id', function ($attribute, $value, $fail) {
@@ -74,7 +74,7 @@ class VisitorRequest extends FormRequest
                     }
                 }],
                 'phone' => ['required'],
-                'unit' => ['required'],
+                'unit' => ['nullable'],
                 'reason' => ['nullable'],
                 'relation' => ['nullable'],
                 'user_id' => ['required', function ($attribute, $value, $fail) {

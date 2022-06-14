@@ -101,7 +101,7 @@ class Warning extends Command
                     'access_date_from' => $scene->visitor->access_date_from,
                     'access_date_to' => $scene->visitor->access_date_to,
                     'ways' => $scene->visitor->ways->pluck('name')->implode(','),
-                    'gate_name' => $scene?->gate->name,
+                    'gate_name' => $scene?->gate->number,
                     'gate_ip' => $scene?->gate->ip,
                     'access_time_from' => $scene->visitor->access_time_from,
                     'access_time_to' => $scene->visitor->access_time_to,

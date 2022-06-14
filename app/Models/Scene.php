@@ -76,7 +76,7 @@ class Scene extends Model
                 'access_date_from' => $visitor->access_date_from,
                 'access_date_to' => $visitor->access_date_to,
                 'ways' => $visitor->ways->pluck('name')->implode(','),
-                'gate_name' => $passingLog?->gate->name,
+                'gate_name' => $passingLog?->gate->number,
                 'gate_ip' => $passingLog?->gate->ip,
                 'access_time_from' => $visitor->access_time_from,
                 'access_time_to' => $visitor->access_time_to,

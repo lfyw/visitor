@@ -88,7 +88,7 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function () 
     Route::apiResource('user-types', UserTypeController::class);
 
     //人员管理
-    Route::put('users/change-type', [UserController::class, 'changeType'])->name('users.changeType');
+    Route::patch('users/change-type', [UserController::class, 'changeType'])->name('users.changeType');
     Route::delete('users', [UserController::class, 'destroy'])->name('users.destroy');
     Route::patch('users/{user}/reset', [UserController::class, 'reset'])->name('users.reset');
     Route::apiResource('users', UserController::class);
