@@ -214,4 +214,31 @@ class IssueController extends Controller
             auth()->id()));
         return send_message('后台下发中...', Response::HTTP_OK);
     }
+
+    public function reissue()
+    {
+        $this->validate(request(), [
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'exists:visitors,id'],
+        ], [], [
+            'ids' => 'id',
+            'ids.*' => 'id',
+        ]);
+
+        $visitors = Visitor::findMany(request('ids'));
+        foreach ($visitors as $visitor){
+            PushVisitor::dispatch(sm4decrypt($visitor->id_card),
+                $visitor->access_date_from,
+                $visitor->access_date_to,
+                $visitor->access_time_from,
+                $visitor->access_time_to,
+                $visitor->limiter
+            )->onQueue('issue');
+        }
+
+        event(new OperationDone(OperationLog::VISITOR,
+            sprintf(sprintf("重新批量下发访客")),
+            auth()->id()));
+        return send_message('后台下发中...', Response::HTTP_OK);
+    }
 }
