@@ -104,7 +104,7 @@ class User extends Authenticatable
             return $builder->where('id', $user->id);
         }elseif ($user->hasRole(RoleEnum::DEPARTMENT_ADMIN)){
             //当是部门管理员时，以该人员所属部门为权限，可以查看该部门下所有人的临时访客申请记录
-            return $builder->where('department_id', $user->department_id);
+            return $builder->where('department_id', $user->department->getDescendants()->pluck('id'));
         }
         return $builder->where('user_id', 0);
     }

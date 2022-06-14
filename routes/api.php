@@ -137,6 +137,8 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function () 
     Route::post('issue/all-visitor', [IssueController::class, 'allVisitor'])->name('issue.allVisitor');
     //全部人员下发
     Route::post('issue/all-user', [IssueController::class, 'allUser'])->name('issue.allUser');
+    //访客按照之前配置下发
+    Route::post('issue/visitors/reissue', [IssueController::class, 'reissue'])->name('issue.reissue');
 
     //访问记录
     Route::get('passing-log', [PassingLogController::class, 'index'])->name('passing-log.index');

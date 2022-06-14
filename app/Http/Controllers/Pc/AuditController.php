@@ -71,7 +71,7 @@ class AuditController extends Controller
 
         //3.填充审核人信息
         if (auth()->user()->role->name !== Role::SUPER_ADMIN) {
-            $auditor = $audit->auditors()->where('user_id', $audit->id)->first();
+            $auditor = $audit->auditors()->where('user_id', $audit->user_id)->first();
             $auditor->fill([
                 'suggestion' => $auditRequest->refused_reason,
                 'audit_status' => $auditRequest->audit_status,

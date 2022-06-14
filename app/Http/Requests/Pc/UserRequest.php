@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests\Pc;
 
+use App\Enums\IssueStatus;
+use App\Enums\UserStatus;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Lfyw\LfywEnum\Rules\EnumValue;
-use App\Enums\UserStatus;
-use App\Enums\IssueStatus;
-use Illuminate\Validation\Rule;
 
 class UserRequest extends FormRequest
 {
@@ -29,7 +28,7 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        return match($this->method()){
+        return match ($this->method()) {
             'POST' => [
                 'name' => ['required', 'unique:users', 'string', 'max:32'],
                 'real_name' => ['required', 'string', 'max:16'],
@@ -38,13 +37,13 @@ class UserRequest extends FormRequest
                 'role_id' => ['nullable', 'exists:roles,id'],
                 'user_status' => ['nullable', new EnumValue(UserStatus::class)],
                 'duty' => ['nullable'],
-                'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function($attribute, $value, $fail){
-                    if (User::whereIdCard(sm4encrypt(Str::upper($value)))->exists()){
+                'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function ($attribute, $value, $fail) {
+                    if (User::whereIdCard(sm4encrypt(Str::upper($value)))->exists()) {
                         return $fail('该身份证号已存在');
                     }
                 }],
-                'phone_number' => ['required', function($attribute, $value, $fail){
-                    if (User::wherePhoneNumber(sm4encrypt($value))->exists()){
+                'phone_number' => ['required', function ($attribute, $value, $fail) {
+                    if (User::wherePhoneNumber(sm4encrypt($value))->exists()) {
                         return $fail('该手机号已存在');
                     }
                 }],
@@ -61,13 +60,13 @@ class UserRequest extends FormRequest
                 'role_id' => ['nullable', 'exists:roles,id'],
                 'user_status' => ['nullable', new EnumValue(UserStatus::class)],
                 'duty' => ['nullable'],
-                'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function($attribute, $value, $fail){
-                    if (User::whereIdCard(sm4encrypt(Str::upper($value)))->where('id', '<>', $this->user->id)->exists()){
+                'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function ($attribute, $value, $fail) {
+                    if (User::whereIdCard(sm4encrypt(Str::upper($value)))->where('id', '<>', $this->user->id)->exists()) {
                         return $fail('该身份证号已存在');
                     }
                 }],
-                'phone_number' => ['required', function($attribute, $value, $fail){
-                    if (User::wherePhoneNumber(sm4encrypt($value))->where('id', '<>', $this->user->id)->exists()){
+                'phone_number' => ['required', function ($attribute, $value, $fail) {
+                    if (User::wherePhoneNumber(sm4encrypt($value))->where('id', '<>', $this->user->id)->exists()) {
                         return $fail('该手机号已存在');
                     }
                 }],
