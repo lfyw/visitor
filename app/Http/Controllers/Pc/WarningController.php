@@ -42,7 +42,7 @@ class WarningController extends Controller
                 'handled_at' => now(),
             ])->save();
 
-            PushVisitor::dispatch($warning->id_card,
+            PushVisitor::dispatch(sm4decrypt($warning->id_card),
                 $warning->access_date_from,
                 $warning->access_date_to,
                 $warning->access_time_from,
