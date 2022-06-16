@@ -165,7 +165,7 @@ class IssueController extends Controller
             'limiter' => '访问次数限制'
         ]);
 
-        $visitors = Visitor::all();
+        $visitors = Visitor::canSee()->get();
         foreach ($visitors->pluck('id_card')->toArray() as $idCard){
             PushVisitor::dispatch(sm4decrypt($idCard),
                 request('access_date_from'),
@@ -198,7 +198,7 @@ class IssueController extends Controller
         ]);
 
 
-        $users = User::all();
+        $users = User::canSee()->get();
         foreach ($users->pluck('id_card')->toArray() as $idCard){
             PushUser::dispatch(
                 sm4decrypt($idCard),
