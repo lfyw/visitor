@@ -71,9 +71,9 @@ class Warning extends Command
                     sm4decrypt($scene->visitor->id_card),
                     $scene->visitor->name)
                 );
-                $warningHasExists = WarningModel::onlyToday()->where('id_card', $scene->visitor->id_card)->exists();
+                $warningHasExists = WarningModel::where('id_card', $scene->visitor->id_card)->exists();
                 if ($warningHasExists){
-                    info(sprintf("超时未出预警 => 检测到当日已存在预警信息，不再重复预警 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
+                    info(sprintf("超时未出预警 => 检测到已存在预警信息，不再重复预警 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
                             $userType,
                             sm4decrypt($scene->visitor->id_card),
                             $scene->visitor->name)
