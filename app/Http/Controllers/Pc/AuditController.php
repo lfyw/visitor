@@ -109,8 +109,8 @@ class AuditController extends Controller
         //5.2 如果日期超过一天，也中止下发
         $start = Carbon::parse($auditRequest->access_date_from);
         $end = Carbon::parse($auditRequest->access_date_to);
-        if ($end->floatDiffInRealDays($start) > 1){
-            return error('临时访客访问日期不能超过24小时', Response::HTTP_UNPROCESSABLE_ENTITY);
+        if ($end->floatDiffInRealDays($start) > 7){
+            return error('临时访客访问日期不能超过7天', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         //5.3 如果作为亲属，被访问人数量超过6个，禁止下发
         if ($audit->relation) {
