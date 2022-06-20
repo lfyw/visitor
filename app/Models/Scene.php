@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\WarningStatus;
 use App\Jobs\PullIssue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -32,8 +33,9 @@ class Scene extends Model
 
     public static function in($visitorId, $wayId, $gateId, $passagewayId, $passedAt)
     {
-        static::create([
+        static::updateOrCreate([
             'visitor_id' => $visitorId,
+        ],[
             'way_id' => $wayId,
             'gate_id' => $gateId,
             'passageway_id' => $passagewayId,
@@ -82,6 +84,7 @@ class Scene extends Model
                 'access_time_to' => $visitor->access_time_to,
                 'limiter' => $visitor->limiter,
                 'relation' => $visitor->relation,
+                'status' => WarningStatus::AT_DISPOSAL->getValue(),
                 'warning_type' => '有出无进',
                 'warning_at' => now(),
                 'visitor_id' => $visitor->id

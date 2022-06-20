@@ -32,7 +32,7 @@ class WarningController extends Controller
     public function update(WarningRequest $request)
     {
         Warning::findMany(\request('ids'))->each(function (Warning $warning) use ($request) {
-            if ($warning->status == WarningStatus::LEAVE->getValue()) {
+            if ($request->status == WarningStatus::LEAVE->getValue()) {
                 Scene::where('visitor_id', $warning->visitor_id)->delete();
             }
             $warning->fill([

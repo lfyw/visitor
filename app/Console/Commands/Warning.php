@@ -72,7 +72,7 @@ class Warning extends Command
                     sm4decrypt($scene->visitor->id_card),
                     $scene->visitor->name)
                 );
-                $warningHasExists = WarningModel::where('id_card', $scene->visitor->id_card)->where('status', WarningStatus::AT_DISPOSAL)->exists();
+                $warningHasExists = WarningModel::where('id_card', $scene->visitor->id_card)->where('status', WarningStatus::AT_DISPOSAL->getValue())->exists();
                 if ($warningHasExists){
                     info(sprintf("超时未出预警 => 检测到已存在为处置的预警信息，不再重复预警 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
                             $userType,
@@ -108,6 +108,7 @@ class Warning extends Command
                     'access_time_to' => $scene->visitor->access_time_to,
                     'limiter' => $scene->visitor->limiter,
                     'relation' => $scene->visitor->relation,
+                    'status' => WarningStatus::AT_DISPOSAL->getValue(),
                     'warning_type' => '超时未出',
                     'warning_at' => now(),
                     'visitor_id' => $scene->visitor->id
