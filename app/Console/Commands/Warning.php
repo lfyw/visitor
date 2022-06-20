@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\WarningStatus;
 use App\Jobs\PullIssue;
 use App\Models\Rule;
 use App\Models\Scene;
@@ -71,9 +72,9 @@ class Warning extends Command
                     sm4decrypt($scene->visitor->id_card),
                     $scene->visitor->name)
                 );
-                $warningHasExists = WarningModel::where('id_card', $scene->visitor->id_card)->exists();
+                $warningHasExists = WarningModel::where('id_card', $scene->visitor->id_card)->where('status', WarningStatus::AT_DISPOSAL)->exists();
                 if ($warningHasExists){
-                    info(sprintf("超时未出预警 => 检测到已存在预警信息，不再重复预警 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
+                    info(sprintf("超时未出预警 => 检测到已存在为处置的预警信息，不再重复预警 预警人员类型：%s 预警人员身份证号：%s 预警人员姓名：%s" ,
                             $userType,
                             sm4decrypt($scene->visitor->id_card),
                             $scene->visitor->name)
