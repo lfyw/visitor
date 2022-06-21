@@ -64,7 +64,11 @@ class Warning extends Command
                 });
             });
         })
-            ->whereHas('way', fn(Builder $way) => $way->where('name', '生产区'))
+            ->whereHas('passageway', function (Builder $passageway){
+                $rule = Rule::first();
+                $scope = $rule->value['scope'];
+                return $passageway->whereIn('id', $scope);
+            })
             ->get()
             ->each(function (Scene $scene) use ($duration, $userType) {
                 $diffInHour = now()->diffInHours($scene->passed_at);

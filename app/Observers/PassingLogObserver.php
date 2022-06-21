@@ -5,6 +5,7 @@ namespace App\Observers;
 use AlicFeng\IdentityCard\Application\IdentityCard;
 use App\Enums\GateRule;
 use App\Models\PassingLog;
+use App\Models\Rule;
 use App\Models\Scene;
 use App\Models\Visitor;
 
@@ -34,9 +35,11 @@ class PassingLogObserver
 
         //记录现场人员
         $gate = $passingLog->gate;
-        $passageway = $passingLog->gate->passageways()->first();
+        $passageway = $passingLog->gate->passageways()->first();//获取闸机对应的通道
+        $rule = Rule::first();
+        $scope = $rule->value['scope'];
         $way = $passageway->ways()->first();
-        if ($way->name == '生产区'){
+        if (in_array($passageway->id, $scope)){
             if ($gate->rule == GateRule::IN->value) {
                 Scene::in($visitor->id, $way->id, $passingLog->gate_id, $passageway->id, $passingLog->passed_at);
             } else {

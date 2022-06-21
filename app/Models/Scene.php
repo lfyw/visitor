@@ -26,6 +26,11 @@ class Scene extends Model
         return $this->belongsTo(Gate::class,);
     }
 
+    public function passageway(): BelongsTo
+    {
+        return $this->belongsTo(Passageway::class,);
+    }
+
     public function way(): BelongsTo
     {
         return $this->belongsTo(Way::class);
