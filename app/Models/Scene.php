@@ -26,6 +26,11 @@ class Scene extends Model
         return $this->belongsTo(Gate::class,);
     }
 
+    public function way(): BelongsTo
+    {
+        return $this->belongsTo(Way::class);
+    }
+
     public function scopeOnlyToday(Builder $builder): Builder
     {
         return $builder->whereDay('created_at', today());
