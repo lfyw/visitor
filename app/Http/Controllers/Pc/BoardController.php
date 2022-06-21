@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Pc;
 
 use App\Enums\GateRule;
+use App\Enums\WarningStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Passageway;
 use App\Models\PassingLog;
@@ -139,7 +140,7 @@ class BoardController extends Controller
             ->selectRaw('status, count(id) as warning_count')
             ->get()
             ->map(function (Warning $warning) {
-                $warning->status = ($warning->status == null ? '未处置' : '已处置');
+                $warning->status = ($warning->status == WarningStatus::AT_DISPOSAL->getValue() ? '未处置' : '已处置');
                 return $warning;
             });
         return $warnings;
