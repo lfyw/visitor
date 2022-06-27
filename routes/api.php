@@ -129,6 +129,8 @@ Route::prefix('pc')->middleware('auth:sanctum')->name('pc.')->group(function () 
     Route::put('issue/{issue}', [IssueController::class, 'update'])->name('issue.update');
     //删除下发
     Route::delete('issue/delete-user', [IssueController::class, 'deleteUser'])->name('issue.deleteUser');
+    //按单位批量删除下发
+    Route::delete('issue/delete-user-by-department', [IssueController::class, 'deleteUserByDepartment'])->name('issue.deleteUserByDepartment');
     //多个访客下发
     Route::post('issue/multi-visitor', [IssueController::class, 'multiVisitor'])->name('issue.multiVisitor');
     //多个人员下发
