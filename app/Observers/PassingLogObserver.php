@@ -35,9 +35,9 @@ class PassingLogObserver
 
         //记录现场人员
         $gate = $passingLog->gate;
-        $passageway = $passingLog->gate->passageways()->first();//获取闸机对应的通道
         $rule = Rule::first();
         $scope = $rule->value['scope'];
+        $passageway = $passingLog->gate->passageways()->whereIn('id', $scope)->first();//获取闸机对应的通道
         $way = $passageway->ways()->first();
         if (in_array($passageway->id, $scope)){
             if ($gate->rule == GateRule::IN->value) {
@@ -109,7 +109,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             return $passingLog->visitor->name;
         }
-        return $passingLog->visitor->userAsVisitor->real_name;
+        return $passingLog->visitor->userAsVisitor?->real_name;
     }
 
     protected function isTemporary($passingLog)
