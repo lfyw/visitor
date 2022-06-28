@@ -62,10 +62,9 @@ class Warning extends Model
     public function scopeStatus(Builder $builder, $status): Builder
     {
         return $builder->when(filled($status), function (Builder $builder) use ($status) {
-            dump($status);
-            if ($status == WarningStatus::AT_DISPOSAL->getValue()) {
-                return $builder->whereNull('status');
-            }
+//            if ($status == WarningStatus::AT_DISPOSAL->getValue()) {
+//                return $builder->whereNull('status');
+//            }
             return $builder->where('status', $status);
         });
     }
