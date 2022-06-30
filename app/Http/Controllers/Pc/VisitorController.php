@@ -113,7 +113,7 @@ class VisitorController extends Controller
                 $visitor->limiter,
                 $visitor->ways
             )->onQueue('issue');
-            $visitor->detachFiles();
+            $visitor->syncFiles(clear: false);
             $visitor->ways()->detach();
             $visitor->delete();
         }
