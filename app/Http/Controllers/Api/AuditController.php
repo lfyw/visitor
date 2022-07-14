@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AuditController extends Controller
@@ -33,6 +34,13 @@ class AuditController extends Controller
 
     public function store(AuditRequest $auditRequest)
     {
+        //5.2 如果日期超过一天，也中止下发
+        $start = Carbon::parse($auditRequest->access_date_from);
+        $end = Carbon::parse($auditRequest->access_date_to);
+        if ($end->floatDiffInRealDays($start) > 2){
+            return error('临时访客访问日期不能超过2天', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $audit = DB::transaction(function () use ($auditRequest) {
             $validated = Arr::except($auditRequest->validated(), ['face_picture_ids', 'way_ids']);
             $validated['gender'] = InfoHelper::identityCard()->sex($auditRequest->id_card) == 'M' ? '男' : '女';
