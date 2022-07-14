@@ -41,7 +41,7 @@ class PassingLog extends Model
 
     public function scopeWhenName(Builder $builder, $name): Builder
     {
-        return $builder->when($name, fn(Builder $log) => $log->where('name', 'like', "{$name}"));
+        return $builder->when($name, fn(Builder $log) => $log->where('name', 'like', "%{$name}%"));
     }
 
     public function scopeWhenType(Builder $builder, $type): Builder
