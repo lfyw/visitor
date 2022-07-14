@@ -37,6 +37,9 @@ class VisitorRequest extends FormRequest
                     if (Blacklist::idCard(sm4encrypt($value))->exists()) {
                         return $fail('已经存在于黑名单中');
                     }
+                    if(auth()->user()->id_card == sm4encrypt($value)){
+                        return $fail('不能添加自己');
+                    }
                 }],
                 'phone' => ['required'],
                 'unit' => ['nullable'],
@@ -71,6 +74,9 @@ class VisitorRequest extends FormRequest
                 'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail) {
                     if (Blacklist::idCard(sm4encrypt($value))->exists()) {
                         return $fail('已经存在于黑名单中');
+                    }
+                    if(auth()->user()->id_card == sm4encrypt($value)){
+                        return $fail('不能添加自己');
                     }
                 }],
                 'phone' => ['required'],
