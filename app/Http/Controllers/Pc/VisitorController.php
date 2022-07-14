@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Pc\VisitorRequest;
 use App\Http\Resources\Pc\VisitorResource;
 use App\Jobs\PullIssue;
+use App\Jobs\PushVisitor;
 use App\Models\OperationLog;
 use App\Models\Visitor;
 use Illuminate\Support\Arr;
@@ -53,6 +54,18 @@ class VisitorController extends Controller
             $visitor->ways()->attach($visitorRequest->way_ids);
             return $visitor;
         });
+
+        //判断如果是亲属类型，则直接下发,1为访客类型为亲属的id
+        if ($visitor->visitor_type_id == 1){
+            PushVisitor::dispatch(sm4decrypt($visitor->id_card),
+                $visitor->access_date_from,
+                $visitor->access_date_to,
+                $visitor->access_time_from,
+                $visitor->access_time_to,
+                $visitor->limiter,
+            )->onQueue('issue');
+        }
+
         event(new OperationDone(OperationLog::VISITOR,
             sprintf("新增访客【%s】", $visitorRequest->name),
             auth()->id()));
@@ -87,6 +100,17 @@ class VisitorController extends Controller
             $visitor->ways()->sync($visitorRequest->way_ids);
             return $visitor;
         });
+        //判断如果是亲属类型，则直接下发,1为访客类型为亲属的id
+        if ($visitor->visitor_type_id == 1){
+            PushVisitor::dispatch(sm4decrypt($visitor->id_card),
+                $visitor->access_date_from,
+                $visitor->access_date_to,
+                $visitor->access_time_from,
+                $visitor->access_time_to,
+                $visitor->limiter,
+            )->onQueue('issue');
+        }
+
         event(new OperationDone(OperationLog::VISITOR,
             sprintf("编辑访客【%s】", $visitorRequest->name),
             auth()->id()));
