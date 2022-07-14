@@ -58,7 +58,8 @@ class UserController extends Controller
             'userType:id,name',
             'role:id,name',
             'ways',
-            'files'
+            'files',
+            'visitor'
         ])->loadFiles()));
     }
 

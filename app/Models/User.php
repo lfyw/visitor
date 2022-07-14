@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -46,7 +45,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Way::class);
     }
 
-    public function permissions():BelongsTo
+    public function visitor(): BelongsTo
+    {
+        return $this->belongsTo(Visitor::class, 'id_card', 'id_card');
+    }
+
+    public function permissions(): BelongsTo
     {
         return $this->belongsTo(Permission::class);
     }
@@ -74,19 +78,19 @@ class User extends Authenticatable
         });
     }
 
-    public function scopeWhenIdCard(Builder $builder, $idCard):Builder
+    public function scopeWhenIdCard(Builder $builder, $idCard): Builder
     {
         return $builder->when($idCard, fn(Builder $builder) => $builder->where('id_card', $idCard));
     }
 
-    public function scopeWhenPhoneNumber(Builder $builder, $phoneNumber):Builder
+    public function scopeWhenPhoneNumber(Builder $builder, $phoneNumber): Builder
     {
         return $builder->when($phoneNumber, fn(Builder $builder) => $builder->where('phone_number', $phoneNumber));
     }
 
     public function scopeAdminShouldBeHidden(Builder $builder, $user): Builder
     {
-        return $builder->when($user->name !== User::SUPER_ADMIN,fn(Builder $user) => $user->where('name', '<>', User::SUPER_ADMIN));
+        return $builder->when($user->name !== User::SUPER_ADMIN, fn(Builder $user) => $user->where('name', '<>', User::SUPER_ADMIN));
     }
 
     public function scopeAdminAlwaysBeHidden(Builder $builder): Builder
@@ -102,7 +106,7 @@ class User extends Authenticatable
             return $builder;
         } elseif ($user->hasRole(RoleEnum::EMPLOYEE)) {
             return $builder->where('id', $user->id);
-        }elseif ($user->hasRole(RoleEnum::DEPARTMENT_ADMIN)){
+        } elseif ($user->hasRole(RoleEnum::DEPARTMENT_ADMIN)) {
             //当是部门管理员时，以该人员所属部门为权限，可以查看该部门下所有人的临时访客申请记录
             return $builder->whereIn('department_id', $user->department->getDescendants()->pluck('id'));
         }
