@@ -39,6 +39,9 @@ class UserRequest extends FormRequest
                 'user_status' => ['nullable', new EnumValue(UserStatus::class)],
                 'duty' => ['nullable'],
                 'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function ($attribute, $value, $fail) {
+                    if(!InfoHelper::identityCard()->validate($value)){
+                        return $fail('身份证号不合法');
+                    }
                     if (User::whereIdCard(sm4encrypt(Str::upper($value)))->exists()) {
                         return $fail('该身份证号已存在');
                     }
@@ -69,6 +72,9 @@ class UserRequest extends FormRequest
                 'user_status' => ['nullable', new EnumValue(UserStatus::class)],
                 'duty' => ['nullable'],
                 'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function ($attribute, $value, $fail) {
+                    if(!InfoHelper::identityCard()->validate($value)){
+                        return $fail('身份证号不合法');
+                    }
                     if (User::whereIdCard(sm4encrypt(Str::upper($value)))->where('id', '<>', $this->user->id)->exists()) {
                         return $fail('该身份证号已存在');
                     }
