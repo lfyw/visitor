@@ -57,6 +57,7 @@ class PushVisitor implements ShouldQueue
 
         if (config('app.env') !== 'production') {
             Log::info('【测试环境】访客下放直接通过', ['id_card' => $this->idCard, 'visitor' => $visitor]);
+            Issue::whereIdCard($visitor->id_card)->delete();
             $gates->each->createIssue($visitor->id_card, true);
             Issue::syncIssue($visitor->id_card);
         } else {
@@ -74,6 +75,7 @@ class PushVisitor implements ShouldQueue
                 ];
                 $response = Http::timeout(150)->post(Constant::getSetUserUrl(), $parameter);
                 $response->throw();
+                Issue::whereIdCard($visitor->id_card)->delete();
                 $gates->each->createIssue($visitor->id_card, true);
                 Issue::syncIssue($visitor->id_card);
                 $visitor->fill([
@@ -88,6 +90,7 @@ class PushVisitor implements ShouldQueue
             } catch (\Exception $exception) {
                 Log::error('【生产环境】下发异常:' . $exception->getMessage());
                 //失败则记录下发失败记录
+                Issue::whereIdCard($visitor->id_card)->delete();
                 $gates->each->createIssue($visitor->id_card, false);
                 Issue::syncIssue($visitor->id_card);
             }

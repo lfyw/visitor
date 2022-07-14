@@ -6,6 +6,7 @@ use AlicFeng\IdentityCard\Application\IdentityCard;
 use App\Models\Gate;
 use App\Models\Issue;
 use App\Models\Passageway;
+use App\Models\PassingLog;
 use App\Models\User;
 use App\Models\Visitor;
 use App\Supports\Sdks\Constant;
@@ -71,10 +72,18 @@ class PushUser implements ShouldQueue
             'access_date_to' => $this->accessDateTo,
             'access_time_from' => $this->accessTimeFrom,
             'access_time_to' => $this->accessTimeTo,
-            'type' => Visitor::USER
+            'type' => Visitor::USER,
+            'reason' => null,
+            'relation' => null
         ]);
         $visitor->syncFiles($facePicture->id);
         $visitor->ways()->sync($user->ways->pluck('id'));
+
+        //如果是同步的人员，那么历史记录所有的访客关系和访问事由都需要清空
+        PassingLog::whereIdCard($user->id_card)->first()?->fill([
+            'reason' => null,
+            'relation' => null
+        ])->save();
 
         $passageways = Passageway::getByWays($visitor->ways)->get();
         $gates = Gate::getByPassageways($passageways)->get();
@@ -82,6 +91,7 @@ class PushUser implements ShouldQueue
 
         if (config('app.env') !== 'production') {
             Log::info('【测试环境】员工下放直接通过', ['id_card' => $this->idCard, 'visitor' => $visitor]);
+            Issue::whereIdCard($visitor->id_card)->delete();
             $gates->each->createIssue($visitor->id_card, true);
             Issue::syncIssue($visitor->id_card);
         } else {
@@ -99,6 +109,8 @@ class PushUser implements ShouldQueue
                 ];
                 $response = Http::timeout(150)->post(Constant::getSetUserUrl(), $parameter);
                 $response->throw();
+                //先删除历史记录，再创建本次记录
+                Issue::whereIdCard($visitor->id_card)->delete();
                 $gates->each->createIssue($visitor->id_card, true);
                 Issue::syncIssue($visitor->id_card);
                 Log::info('【生产环境】员工下发成功:', ['body' => $response->body(), 'json' => $response->json(), 'visitor' => $visitor, 'id_card' => $this->idCard]);
@@ -113,6 +125,7 @@ class PushUser implements ShouldQueue
             } catch (\Exception $exception) {
                 Log::error('【生产环境】员工下发异常:' . $exception->getMessage());
                 //失败则记录下发失败记录
+                Issue::whereIdCard($visitor->id_card)->delete();
                 $gates->each->createIssue($visitor->id_card, false);
                 Issue::syncIssue($visitor->id_card);
             }

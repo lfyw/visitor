@@ -152,7 +152,8 @@ class AuditController extends Controller
         try {
             //下发请求
             VisitorIssue::add($audit);
-            //成功则记录下发成功记录
+            //先删除之前记录，再批量建立本次记录，成功则记录下发成功记录
+            Issue::whereIdCard($visitor->id_card)->delete();
             $gates->each->createIssue($visitor->id_card, true);
             Issue::syncIssue($visitor->id_card);
             $visitor->fill(['actual_pass_count' => 0])->save();
@@ -165,7 +166,8 @@ class AuditController extends Controller
             ])->loadFiles()));
         } catch (\Exception $exception) {
             Log::error('下发异常:' . $exception->getMessage());
-            //失败则记录下发失败记录
+            //先删除之前记录，再批量建立本次记录
+            Issue::whereIdCard($visitor->id_card)->delete();
             $gates->each->createIssue($visitor->id_card, false);
             Issue::syncIssue($visitor->id_card);
             return send_message('网络异常', Response::HTTP_INTERNAL_SERVER_ERROR);

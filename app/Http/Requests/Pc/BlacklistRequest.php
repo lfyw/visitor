@@ -35,7 +35,7 @@ class BlacklistRequest extends FormRequest
                         return $fail('该身份证号已被拉黑');
                     }
                 }],
-                'phone' => ['required'],
+                'phone' => ['nullable'],
                 'reason' => ['nullable']
             ],
             'PUT' => [
@@ -45,7 +45,7 @@ class BlacklistRequest extends FormRequest
                         return $fail('该身份证号已被拉黑');
                     }
                 }],
-                'phone' => ['required'],
+                'phone' => ['nullable'],
                 'reason' => ['nullable']
             ],
             default => [],

@@ -25,7 +25,7 @@ class BlacklistController extends Controller
         $validated = $blacklistRequest->validated();
         $validated['gender'] = InfoHelper::identityCard()->sex($validated['id_card']) == 'M' ? '男' : '女';
         $validated['id_card'] = sm4encrypt(Str::upper($validated['id_card']));
-        $validated['phone'] = sm4encrypt($validated['phone']);
+        $validated['phone'] = $validated['phone'] ? sm4encrypt($validated['phone']) : null;
         $blacklist = Blacklist::create($validated);
 
         $visitor = Visitor::firstWhere('id_card', $blacklist->id_card)->loadFiles();
@@ -57,7 +57,7 @@ class BlacklistController extends Controller
         $validated = $blacklistRequest->validated();
         $validated['gender'] = InfoHelper::identityCard()->sex($validated['id_card']) == 'M' ? '男' : '女';
         $validated['id_card'] = sm4encrypt(Str::upper($validated['id_card']));
-        $validated['phone'] = sm4encrypt($validated['phone']);
+        $validated['phone'] = $validated['phone'] ? sm4encrypt($validated['phone']) : null;
         $blacklist->fill($validated)->save();
         event(new OperationDone(OperationLog::BLACKLIST,
             sprintf(sprintf("编辑黑名单【%s】", $blacklistRequest->name)),

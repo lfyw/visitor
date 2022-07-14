@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Pc;
 
+use AlicFeng\IdentityCard\InfoHelper;
 use App\Enums\IssueStatus;
 use App\Enums\UserStatus;
 use App\Models\User;
@@ -41,6 +42,13 @@ class UserRequest extends FormRequest
                     if (User::whereIdCard(sm4encrypt(Str::upper($value)))->exists()) {
                         return $fail('该身份证号已存在');
                     }
+                    //判断如果时外协人员，年龄不能超过60岁,外协人员的 id 是3
+                    if ($this->user_type_id == 3){
+                        $age = InfoHelper::identityCard()->age($value);
+                        if ($age > 60){
+                            return $fail('外协人员年龄不得超过60岁');
+                        }
+                    }
                 }],
                 'phone_number' => ['required', function ($attribute, $value, $fail) {
                     if (User::wherePhoneNumber(sm4encrypt($value))->exists()) {
@@ -63,6 +71,13 @@ class UserRequest extends FormRequest
                 'id_card' => ['required', 'regex:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/', function ($attribute, $value, $fail) {
                     if (User::whereIdCard(sm4encrypt(Str::upper($value)))->where('id', '<>', $this->user->id)->exists()) {
                         return $fail('该身份证号已存在');
+                    }
+                    //判断如果时外协人员，年龄不能超过60岁,外协人员的 id 是3
+                    if ($this->user_type_id == 3){
+                        $age = InfoHelper::identityCard()->age($value);
+                        if ($age > 60){
+                            return $fail('外协人员年龄不得超过60岁');
+                        }
                     }
                 }],
                 'phone_number' => ['required', function ($attribute, $value, $fail) {

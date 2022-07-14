@@ -38,8 +38,8 @@ class PassingLogObserver
         $rule = Rule::first();
         $scope = $rule->value['scope'];
         $passageway = $passingLog->gate->passageways()->whereIn('id', $scope)->first();//获取闸机对应的通道
-        $way = $passageway->ways()->first();
-        if (in_array($passageway->id, $scope)){
+        $way = $passageway?->ways()->first();
+        if (in_array($passageway?->id, $scope)){
             if ($gate->rule == GateRule::IN->value) {
                 Scene::in($visitor->id, $way->id, $passingLog->gate_id, $passageway->id, $passingLog->passed_at);
             } else {

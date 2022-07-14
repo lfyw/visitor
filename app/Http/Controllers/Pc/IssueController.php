@@ -28,7 +28,8 @@ class IssueController extends Controller
         try {
             //下发请求
             VisitorIssue::addByIdCard(sm4decrypt($issue->id_card), $issue->gate()->get(['ip'])->toArray());
-            //成功则记录下发成功记录
+            //先删除之前记录，成功则记录下发成功记录
+            Issue::whereIdCard($issue->id_card)->delete();
             $issue->fill(['issue_status' => true])->save();
             Issue::syncIssue($issue->id_card);
 
@@ -40,6 +41,8 @@ class IssueController extends Controller
             return no_content();
         } catch (\Exception $exception) {
             \Log::error('下发异常:' . $exception->getMessage());
+            Issue::whereIdCard($issue->id_card)->delete();
+            $issue->fill(['issue_status' => false])->save();
             Issue::syncIssue($issue->id_card);
             return send_message('网络异常，请稍后重试', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
