@@ -35,6 +35,7 @@ class VisitorController extends Controller
                 'user.department.ancestors'
             ])
             ->canSee()
+            ->fromTemporary()
             ->withFiles()
             ->latest('id')
             ->paginate(request('pageSize', 10))
