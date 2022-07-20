@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('warning:no_out')->hourly()->runsInEnvironment('production');
-//         $schedule->command('verify')->daily()->runsInEnvironment('production');
+         $schedule->command('backup:db')->daily()->runsInEnvironment('production');
     }
 
     /**
