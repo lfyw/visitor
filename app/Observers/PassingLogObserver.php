@@ -99,7 +99,7 @@ class PassingLogObserver
         if ($this->isTemporary($passingLog)) {
             $type = $passingLog->visitor->visitorType->name;
         } else {
-            $type = $passingLog->visitor->userAsVisitor->userType->name;
+            $type = $passingLog->visitor->userAsVisitor?->userType->name;
         }
         return $type;
     }
