@@ -16,6 +16,7 @@ class WarningController extends Controller
     {
         return WarningResource::collection(Warning::name(\request('name'))
             ->type(\request('type'))
+            ->warningType(request('warning_type'))
             ->warningAtFrom(\request('warning_at_from'))
             ->warningAtTo(\request('warning_at_to'))
             ->whenIdCard(sm4encrypt(request('id_card')))

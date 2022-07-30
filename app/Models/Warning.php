@@ -49,6 +49,11 @@ class Warning extends Model
         return $builder->when(filled($type), fn(Builder $builder) => $builder->where('type', $type));
     }
 
+    public function scopeWarningType(Builder $builder, $warningType): Builder
+    {
+        return $builder->when(filled($warningType), fn(Builder $builder) => $builder->where('warning_type', $warningType));
+    }
+
     public function scopeWhenIdCard(Builder $builder, $idCard): Builder
     {
         return $builder->when(filled($idCard), fn(Builder $builder) => $builder->where('id_card', $idCard));
