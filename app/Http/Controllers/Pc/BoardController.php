@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Pc;
 
+use AlicFeng\IdentityCard\InfoHelper;
 use App\Enums\GateRule;
 use App\Enums\WarningStatus;
 use App\Http\Controllers\Controller;
@@ -46,7 +47,22 @@ class BoardController extends Controller
 
         $atDisposalWarningCount = Warning::whereNull('status')->count();
 
+        $maleCount = $femaleCount = 0;
+        foreach ($visitors as $visitor){
+            $idCard = sm4decrypt($visitor->id_card);
+            if (InfoHelper::identityCard()->sex($idCard) == 'M'){
+                $maleCount++;
+            }else{
+                $femaleCount++;
+            }
+        }
+        $genderCount = [
+            'male_count' => $maleCount,
+            'female_count' => $femaleCount
+        ];
+
         return send_data([
+            'gender_count' => $genderCount,
             'total_person_count' => $totalPersonCount,
             'type_person_count' => $typePersonCount,
             'at_disposal_warning_count' => $atDisposalWarningCount ?: 0,
