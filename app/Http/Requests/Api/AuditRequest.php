@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api;
 
 use App\Enums\AuditStatus;
 use App\Models\Audit;
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AuditRequest extends FormRequest
@@ -30,6 +31,9 @@ class AuditRequest extends FormRequest
             'id_card' => ['required', function($attribute, $value, $fail){
             if (Audit::where('id_card', $value)->whereAuditStatus(AuditStatus::WAITING)->first()){
                 return $fail('正在审核中，请勿重新提交');
+            }
+            if (User::firstWhere('id_card', sm4encrypt($value))){
+                return $fail('正式员工无需通过临时访客申请');
             }
             }],
             'phone' => 'required',

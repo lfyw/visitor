@@ -4,6 +4,7 @@ namespace App\Http\Requests\Pc;
 
 use AlicFeng\IdentityCard\InfoHelper;
 use App\Models\Blacklist;
+use App\Models\User;
 use App\Models\Visitor;
 use App\Models\VisitorSetting;
 use App\Models\VisitorType;
@@ -36,6 +37,9 @@ class VisitorRequest extends FormRequest
                 'id_card' => ['required', new IdCard(), function ($attribute, $value, $fail) {
                     if (Blacklist::idCard(sm4encrypt($value))->exists()) {
                         return $fail('已经存在于黑名单中');
+                    }
+                    if (User::firstWhere('id_card', sm4encrypt($value))){
+                        return $fail('不能添加正式员工');
                     }
                     if(auth()->user()->id_card == sm4encrypt($value)){
                         return $fail('不能添加自己');
