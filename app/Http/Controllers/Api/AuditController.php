@@ -47,6 +47,7 @@ class AuditController extends Controller
             $validated['age'] = InfoHelper::identityCard()->age($auditRequest->id_card);
             $validated['id_card'] = sm4encrypt(\Str::upper($validated['id_card']));
             $validated['phone'] = sm4encrypt($validated['phone']);
+            $validated['limiter'] = 10;
             $audit = Audit::create($validated);
 
             $audit->ways()->attach($auditRequest->way_ids);

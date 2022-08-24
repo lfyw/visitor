@@ -11,6 +11,7 @@ class OperationLogController extends Controller
     public function index()
     {
         return OperationLogResource::collection(OperationLog::whenName(request('name'))
+            ->whenUnitId(request('unit_id'))
             ->whenOperatedAtFrom(request('operated_at_from'))
             ->whenOperatedAtTo(request('operated_at_to'))
             ->whenModule(request('module'))
