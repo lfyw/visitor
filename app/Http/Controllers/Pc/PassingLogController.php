@@ -21,6 +21,7 @@ class PassingLogController extends Controller
             ->whenRule(request('rule'))
             ->whenPassedAtFrom(request('passed_at_from'))
             ->whenPassedAtTo(request('passed_at_to'))
+            ->whenUnit(request('unit'))
             ->with([
                 'gate.passageways',
                 'visitor.visitorType',

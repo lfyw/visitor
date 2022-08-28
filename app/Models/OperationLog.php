@@ -46,14 +46,6 @@ class OperationLog extends Model
         });
     }
 
-    public function scopeWhenUnitId(Builder $builder, $unitId): Builder
-    {
-        return $builder->when(filled($unitId), function (Builder $operationLog) use ($unitId){
-             $department = Department::find($unitId);
-             return $operationLog->where('unit', 'like', "%{$department->name}%");
-        });
-    }
-
     public function scopeWhenOperatedAtFrom(Builder $builder, $operatedAtFrom): Builder
     {
         return $builder->when(filled($operatedAtFrom), fn(Builder $operationLog) => $operationLog->where('operated_at', '>=', $operatedAtFrom));

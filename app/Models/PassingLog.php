@@ -34,6 +34,13 @@ class PassingLog extends Model
         return $builder->when($idCard, fn(Builder $log) => $log->where('id_card', $idCard));
     }
 
+    public function scopeWhenUnit(Builder $builder, $unit): Builder
+    {
+        return $builder->when($unit, function (Builder $builder) use ($unit) {
+            return $builder->where('unit', 'like', "%{$unit}%");
+        });
+    }
+
     public function scopeWhenPhone(Builder $builder, $phone): Builder
     {
         return $builder->when($phone, fn(Builder $log) => $log->where('phone', $phone));
