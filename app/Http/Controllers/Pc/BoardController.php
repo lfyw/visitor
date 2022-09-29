@@ -20,12 +20,9 @@ class BoardController extends Controller
 {
     public function index()
     {
-        $totalPersonCount = Scene::onlyToday()
-            ->distinct()
-            ->select('visitor_id')
-            ->count();
-
         $visitors = Visitor::whereIn('id', Scene::onlyToday()->pluck('visitor_id'))->get();
+        $totalPersonCount = $visitors->count();
+
         $visitorsFromUser = $visitors->where('type', Visitor::USER);
         $visitorsFromTemporary = $visitors->where('type', Visitor::TEMPORARY);
         $temporaryVisitorCount = $visitorsFromTemporary->count();
