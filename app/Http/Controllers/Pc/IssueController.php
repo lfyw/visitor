@@ -133,7 +133,8 @@ class IssueController extends Controller
             'limiter' => '访问次数限制'
         ]);
 
-        $idCards = Visitor::whereIn('id', request('ids'))->pluck('id_card')->toArray();
+        $visitors =  Visitor::whereIn('id', request('ids'))->get();
+        $idCards = $visitors->pluck('id_card')->toArray();
         foreach ($idCards as $idCard) {
             PushVisitor::dispatch(sm4decrypt($idCard),
                 request('access_date_from'),
@@ -144,7 +145,7 @@ class IssueController extends Controller
             )->onQueue('issue');
         }
         event(new OperationDone(OperationLog::VISITOR,
-            sprintf(sprintf("批量下发访客")),
+            sprintf(sprintf("批量下发访客：%s", $visitors->pluck('name')->join(','))),
             auth()->id()));
         return send_message('后台下发中...', Response::HTTP_OK);
     }
@@ -170,7 +171,8 @@ class IssueController extends Controller
             'limiter' => '访问次数限制'
         ]);
 
-        $idCards = User::whereIn('id', request('ids'))->pluck('id_card')->toArray();
+        $users = User::whereIn('id', request('ids'))->get();
+        $idCards = $users->pluck('id_card')->toArray();
         foreach ($idCards as $idCard) {
             PushUser::dispatch(
                 sm4decrypt($idCard),
@@ -182,7 +184,7 @@ class IssueController extends Controller
             )->onQueue('issue');
         }
         event(new OperationDone(OperationLog::VISITOR,
-            sprintf(sprintf("批量下发员工")),
+            sprintf(sprintf("批量下发员工：", $users->pluck('name')->join(','))),
             auth()->id()));
         return send_message('后台下发中...', Response::HTTP_OK);
     }
