@@ -57,6 +57,7 @@ class IssueController extends Controller
         ]);
         try {
             $visitor = Visitor::firstWhere('id_card', sm4encrypt(request('id_card')));
+
             PullIssue::dispatch(
                 sm4decrypt($visitor->id_card),
                 $visitor->name,
@@ -87,10 +88,13 @@ class IssueController extends Controller
         ]);
         try {
             $visitors = Visitor::whereHas('userAsVisitor', function ($user) {
-                $descendantsWithSelf = Department::find(request('id'))->getDescendants()->pluck('id')->merge(request('id'));
+                $descendantsWithSelf = Department::find(request('department_id'))?->getDescendants()->pluck('id')->merge(request('department_id'));
                 $user->whereIn('department_id', $descendantsWithSelf)->canSee();
             })->get();
             foreach ($visitors as $visitor) {
+                //人员变为离职
+                $user = User::firstWhere('id_card', $visitor->id_card);
+                $user->fill(['user_status' => '离职'])->save();
                 PullIssue::dispatch(
                     sm4decrypt($visitor->id_card),
                     $visitor->name,
@@ -149,7 +153,6 @@ class IssueController extends Controller
             auth()->id()));
         return send_message('后台下发中...', Response::HTTP_OK);
     }
-
 
     public function multiUser()
     {
