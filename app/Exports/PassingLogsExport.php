@@ -37,8 +37,8 @@ class PassingLogsExport implements FromArray
                 $passingLog->type,
                 $passingLog->gender,
                 $passingLog->age,
-                "'" . $passingLog->id_card,
-                "'" . $passingLog->phone,
+                "'" . sm4decrypt($passingLog->id_card),
+                "'" . sm4decrypt($passingLog->phone),
                 $passingLog->unit,
                 $passingLog->user_name,
                 $passingLog->user_department,
@@ -55,17 +55,15 @@ class PassingLogsExport implements FromArray
 
     public function searcher(array $searchers)
     {
-        foreach ($searchers as $searcher) {
-            $this->searchBuilder->whenIdCard($searcher['id_card'] ?? null)
-                ->whenName($searcher['name'] ?? null)
-                ->whenType($searcher['type'] ?? null)
-                ->whenPassagewayId($searcher['passageway_id'] ?? null)
-                ->whenGateId($searcher['gate_id'] ?? null)
-                ->whenRule($searcher['rule'] ?? null)
-                ->whenPassedAtFrom($searcher['passed_at_from'] ?? null)
-                ->whenPassedAtTo($searcher['passed_at_to'] ?? null)
-                ->when($searcher['ids'] ?? null, fn(Builder $builder) => $builder->whereIn('id', $searcher['ids']));
-        }
+        $this->searchBuilder->whenIdCard($searchers['id_card'] ?? null)
+            ->whenName($searchers['name'] ?? null)
+            ->whenType($searchers['type'] ?? null)
+            ->whenPassagewayId($searchers['passageway_id'] ?? null)
+            ->whenGateId($searchers['gate_id'] ?? null)
+            ->whenRule($searchers['rule'] ?? null)
+            ->whenPassedAtFrom($searchers['passed_at_from'] ?? now()->subDays(3)->toDateString())
+            ->whenPassedAtTo($searchers['passed_at_to'] ?? null)
+            ->when($searchers['ids'] ?? null, fn(Builder $builder) => $builder->whereIn('id', $searchers['ids']));
         return $this;
     }
 }

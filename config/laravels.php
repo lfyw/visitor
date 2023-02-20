@@ -305,7 +305,7 @@ return [
         'socket_buffer_size' => 8 * 1024 * 1024,
         'package_max_length' => 4 * 1024 * 1024,
         'reload_async'       => true,
-        'max_wait_time'      => 60,
+        'max_wait_time'      => 6000,
         'enable_reuse_port'  => true,
         'enable_coroutine'   => false,
         'upload_tmp_dir'     => @is_writable('/dev/shm/') ? '/dev/shm' : '/tmp',

@@ -50,17 +50,15 @@ class UserExport implements FromArray
 
     public function searcher(array $searchers)
     {
-        foreach ($searchers as $searcher) {
-            $this->searchBuilder->whenRealName($searcher['real_name'] ?? null)
-                ->whenRoleId($searcher['role_id'] ?? null)
-                ->whenUserStatus($searcher['user_status'] ?? null)
-                ->whenDepartmentId($searcher['department_id'] ?? null)
-                ->whenIdCard($searcher['id_card'] ?? null)
-                ->whenPhoneNumber($searcher['phone_number'] ?? null)
-                ->adminAlwaysBeHidden()
-                ->canSee()
-                ->when($searcher['ids'] ?? null, fn(Builder $builder) => $builder->whereIn('id', $searcher['ids']));
-        }
+        $this->searchBuilder->whenRealName($searchers['real_name'] ?? null)
+            ->whenRoleId($searchers['role_id'] ?? null)
+            ->whenUserStatus($searchers['user_status'] ?? null)
+            ->whenDepartmentId($searchers['department_id'] ?? null)
+            ->whenIdCard($searchers['id_card'] ?? null)
+            ->whenPhoneNumber($searchers['phone_number'] ?? null)
+            ->adminAlwaysBeHidden()
+            ->canSee()
+            ->when($searchers['ids'] ?? null, fn(Builder $builder) => $builder->whereIn('id', $searchers['ids']));
         return $this;
     }
 
